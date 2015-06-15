@@ -1,0 +1,437 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1545DAF4-78E8-4E89-8B49-78427C19C3E4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>SNICSer.My.MyApplication</StartupObject>
+    <RootNamespace>SNICSer</RootNamespace>
+    <AssemblyName>SNICSer</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\wjj\SoftWare\SNICSr\Distribution\Test\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>2.4.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>SNICSer.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>SNICSer.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>E64D291545B8499ECC920ED0DBB20205A25D16E5</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SNICSr_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SNICSer.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <HintPath>..\ZedGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.Designer.vb">
+      <DependentUpon>About.vb</DependentUpon>
+    </Compile>
+    <Compile Include="About.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BrowseWheel.Designer.vb">
+      <DependentUpon>BrowseWheel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BrowseWheel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChngType.Designer.vb">
+      <DependentUpon>ChngType.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ChngType.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Bogus.Designer.vb">
+      <DependentUpon>Bogus.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Bogus.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CmbColor.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CompareFlags.Designer.vb">
+      <DependentUpon>CompareFlags.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CompareFlags.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGrpCmt.Designer.vb">
+      <DependentUpon>frmGrpCmt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmGrpCmt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupPlot.Designer.vb">
+      <DependentUpon>GroupPlot.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GroupPlot.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNorm.Designer.vb">
+      <DependentUpon>frmNorm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmNorm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmC13compare.Designer.vb">
+      <DependentUpon>frmC13compare.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmC13compare.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNotify.Designer.vb">
+      <DependentUpon>frmNotify.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmNotify.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WheelID.vb" />
+    <Compile Include="ExtStd.Designer.vb">
+      <DependentUpon>ExtStd.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ExtStd.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compare.Designer.vb">
+      <DependentUpon>Compare.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Compare.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBlankCorr.Designer.vb">
+      <DependentUpon>frmBlankCorr.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmBlankCorr.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupList.Designer.vb">
+      <DependentUpon>GroupList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GroupList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupSplit.Designer.vb">
+      <DependentUpon>GroupSplit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GroupSplit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupMerge.Designer.vb">
+      <DependentUpon>GroupMerge.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GroupMerge.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTargetInfo.Designer.vb">
+      <DependentUpon>frmTargetInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTargetInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="STDsAndBlks.Designer.vb">
+      <DependentUpon>STDsAndBlks.vb</DependentUpon>
+    </Compile>
+    <Compile Include="STDsAndBlks.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Worms.Designer.vb">
+      <DependentUpon>Worms.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Worms.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmInfo.Designer.vb">
+      <DependentUpon>frmInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Patience.Designer.vb">
+      <DependentUpon>Patience.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Patience.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropProp.Designer.vb">
+      <DependentUpon>PropProp.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PropProp.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Partial.Designer.vb">
+      <DependentUpon>Partial.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Partial.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Help.Designer.vb">
+      <DependentUpon>Help.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Help.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlotRaw.Designer.vb">
+      <DependentUpon>PlotRaw.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PlotRaw.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options.Designer.vb">
+      <DependentUpon>Options.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Options.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SNICRfrm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SNICRfrm.Designer.vb">
+      <DependentUpon>SNICRfrm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SplashSNICSer.Designer.vb">
+      <DependentUpon>SplashSNICSer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SplashSNICSer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BrowseWheel.resx">
+      <DependentUpon>BrowseWheel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChngType.resx">
+      <DependentUpon>ChngType.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Bogus.resx">
+      <DependentUpon>Bogus.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtStd.resx">
+      <DependentUpon>ExtStd.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compare.resx">
+      <DependentUpon>Compare.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CompareFlags.resx">
+      <DependentUpon>CompareFlags.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGrpCmt.resx">
+      <DependentUpon>frmGrpCmt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupPlot.resx">
+      <DependentUpon>GroupPlot.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNorm.resx">
+      <DependentUpon>frmNorm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmC13compare.resx">
+      <DependentUpon>frmC13compare.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNotify.resx">
+      <DependentUpon>frmNotify.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBlankCorr.resx">
+      <DependentUpon>frmBlankCorr.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupList.resx">
+      <DependentUpon>GroupList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupSplit.resx">
+      <DependentUpon>GroupSplit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupMerge.resx">
+      <DependentUpon>GroupMerge.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTargetInfo.resx">
+      <DependentUpon>frmTargetInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmInfo.resx">
+      <DependentUpon>frmInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Patience.resx">
+      <DependentUpon>Patience.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropProp.resx">
+      <DependentUpon>PropProp.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Partial.resx">
+      <DependentUpon>Partial.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help.resx">
+      <DependentUpon>Help.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlotRaw.resx">
+      <DependentUpon>PlotRaw.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options.resx">
+      <DependentUpon>Options.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SNICRfrm.resx">
+      <DependentUpon>SNICRfrm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashSNICSer.resx">
+      <DependentUpon>SplashSNICSer.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="STDsAndBlks.resx">
+      <DependentUpon>STDsAndBlks.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Worms.resx">
+      <DependentUpon>Worms.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="SNICSr_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\snickers1.jpg" />
+    <Content Include="SNICSer.ico" />
+    <Content Include="ZedGraph.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

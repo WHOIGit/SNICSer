@@ -1,0 +1,4 @@
+The code supplied here may be dated and is certainly a work in progress. 
+You are welcome to look through it to get an idea of how SNICSer works.
+This software is best viewed using Visual Studio 2013.
+Double click on SNICSr.sln
