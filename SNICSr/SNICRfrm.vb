@@ -1027,7 +1027,7 @@ Public Class SNICSrFrm
                     If subset.Count > 0 Then
                         .trvWheel.Nodes(node).Nodes(yrno).Nodes.Add(Months(im - 1), Months(im - 1), 3, 3)
                         If (AMS Is CFAMS) And (UserName = "mr") And (iy = thisYear) And (im = thisMonth) Then .trvWheel.Nodes(node).Nodes(yrno).Expand()
-                        If (AMS Is USAMS) And (UserName = "kvr") And (iy = thisYear) And (im = thisMonth) Then .trvWheel.Nodes(node).Nodes(yrno).Expand()
+                        If (AMS Is USAMS) And ((UserName = "kvr") Or (UserName = "brettl")) And (iy = thisYear) And (im = thisMonth) Then .trvWheel.Nodes(node).Nodes(yrno).Expand()
                         mno += 1
                         For Each s As WheelID In subset
                             Dim theImage As Integer = s.Analyzed
@@ -2380,9 +2380,15 @@ Public Class SNICSrFrm
                 .Columns.Add("Value_Used", GetType(Double))
                 .Columns.Add("Uncertainty", GetType(Double))
                 .Rows.Clear()
-                .Rows.Add("Large_Blank", 0.002, 0.0015)
-                .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
-                .Rows.Add("Cont Fm", 0.75, 0.25)
+                If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
+                    .Rows.Add("Large_Blank", 0.002, 0.0015)
+                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
+                    .Rows.Add("Cont Fm", 0.75, 0.25)
+                Else
+                    .Rows.Add("Large_Blank", 0.0008, 0.0004)
+                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
+                    .Rows.Add("Cont Fm", 0.75, 0.25)
+                End If
             End With
             .dgvInorganic.Width = .dgvInorganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
             .dgvInorganic.Height = .dgvInorganic.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvInorganic.ColumnHeadersHeight + 3
@@ -2392,9 +2398,15 @@ Public Class SNICSrFrm
                 .Columns.Add("Value_Used", GetType(Double))
                 .Columns.Add("Uncertainty", GetType(Double))
                 .Rows.Clear()
-                .Rows.Add("Large_Blank", 0.0045, 0.0022)
-                .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
-                .Rows.Add("Cont Fm", 0.5, 0.25)
+                If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
+                    .Rows.Add("Large_Blank", 0.0045, 0.0022)
+                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
+                    .Rows.Add("Cont Fm", 0.5, 0.25)
+                Else
+                    .Rows.Add("Large_Blank", 0.002, 0.001)
+                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
+                    .Rows.Add("Cont Fm", 0.5, 0.25)
+                End If
             End With
             With .tblWatson
                 .Columns.Clear()
@@ -5100,9 +5112,12 @@ Public Class SNICSrFrm
                     .ShowDialog()
                 End With
             End If
-            ISPARTIALWHEEL = False      ' clear this in case you've just updated a partial wheel
-            'doLoad()
-            'End
+        ISPARTIALWHEEL = False
+        ' clear this in case you've just updated a partial wheel
+        REAUTH = True
+        ' Set reauth to prevent first write issue if wheel is not reloaded
+        'doLoad()
+        'End
     End Sub    ' Save data to database
 
     Private Function RunNotAlreadyDone(iRun As Integer) As Boolean
