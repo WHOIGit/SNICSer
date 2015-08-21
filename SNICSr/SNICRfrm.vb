@@ -35,6 +35,7 @@ Public Class SNICSrFrm
 #End Region
 
 #Region "Flags"
+    Public ShowStdsBlanks As Boolean = True     ' show standards and blanks window
     Public AllowSelfNorm As Boolean = False     ' default to no self-normalization
     Public ISPARTIALWHEEL As Boolean = False        ' whether part of a wheel analyzed
     Public ISREADONLY As Boolean = False        ' is set if the wheel is reported, hence read-only
@@ -847,10 +848,13 @@ Public Class SNICSrFrm
                 nBrow += 1
             End If
         Next
-        StdsAndBlks.Visible = True
-        ReSizeStdsAndBlks()
-        Me.Visible = False
-        CheckStdsAndBlks()
+        If ShowStdsBlanks = True Then
+            StdsAndBlks.Visible = True
+            ReSizeStdsAndBlks()
+            Me.Visible = False
+            CheckStdsAndBlks()
+        End If
+
     End Sub
 
     Public Sub ReSizeStdsAndBlks()
@@ -2891,6 +2895,7 @@ Public Class SNICSrFrm
                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_MBC") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Sig_Mass_MBC") = DBNull.Value
                 If Not IsDBNull(.tblGroup(iGrp)(iRow).Item("Fm_Expected")) Then
+                    .tblGroup(iGrp)(iRow).Item("Delta_Fm") = (.tblGroup(iGrp)(iRow).Item("Fm_Corr") - .tblGroup(iGrp)(iRow).Item("Fm_Expected"))
                     .tblGroup(iGrp)(iRow).Item("Sigma_Val") = (.tblGroup(iGrp)(iRow).Item("Fm_Corr") - .tblGroup(iGrp)(iRow).Item("Fm_Expected")) / .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
                 End If
             End If   ' not locked

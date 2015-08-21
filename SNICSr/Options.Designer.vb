@@ -39,6 +39,7 @@ Partial Class Options
         Me.Label6 = New System.Windows.Forms.Label()
         Me.cmbFitType = New System.Windows.Forms.ComboBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chkShowStdsBlanks = New System.Windows.Forms.CheckBox()
         Me.chkClassic = New System.Windows.Forms.CheckBox()
         Me.chkTopPlot = New System.Windows.Forms.CheckBox()
         Me.Label14 = New System.Windows.Forms.Label()
@@ -111,9 +112,9 @@ Partial Class Options
         '
         Me.btnSave.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.btnSave.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSave.Location = New System.Drawing.Point(10, 247)
+        Me.btnSave.Location = New System.Drawing.Point(10, 323)
         Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(181, 36)
+        Me.btnSave.Size = New System.Drawing.Size(181, 37)
         Me.btnSave.TabIndex = 0
         Me.btnSave.Text = "Save and Continue"
         Me.btnSave.UseVisualStyleBackColor = False
@@ -275,6 +276,7 @@ Partial Class Options
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.chkShowStdsBlanks)
         Me.GroupBox2.Controls.Add(Me.chkClassic)
         Me.GroupBox2.Controls.Add(Me.chkTopPlot)
         Me.GroupBox2.Controls.Add(Me.Label14)
@@ -301,10 +303,22 @@ Partial Class Options
         Me.GroupBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox2.Location = New System.Drawing.Point(6, 6)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(409, 200)
+        Me.GroupBox2.Size = New System.Drawing.Size(409, 279)
         Me.GroupBox2.TabIndex = 29
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Display"
+        '
+        'chkShowStdsBlanks
+        '
+        Me.chkShowStdsBlanks.AutoSize = True
+        Me.chkShowStdsBlanks.Checked = True
+        Me.chkShowStdsBlanks.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkShowStdsBlanks.Location = New System.Drawing.Point(7, 210)
+        Me.chkShowStdsBlanks.Name = "chkShowStdsBlanks"
+        Me.chkShowStdsBlanks.Size = New System.Drawing.Size(208, 20)
+        Me.chkShowStdsBlanks.TabIndex = 45
+        Me.chkShowStdsBlanks.Text = "Show Stds Blanks Window"
+        Me.chkShowStdsBlanks.UseVisualStyleBackColor = True
         '
         'chkClassic
         '
@@ -550,9 +564,9 @@ Partial Class Options
         '
         Me.bntQuit.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.bntQuit.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bntQuit.Location = New System.Drawing.Point(135, 290)
+        Me.bntQuit.Location = New System.Drawing.Point(135, 366)
         Me.bntQuit.Name = "bntQuit"
-        Me.bntQuit.Size = New System.Drawing.Size(181, 36)
+        Me.bntQuit.Size = New System.Drawing.Size(181, 37)
         Me.bntQuit.TabIndex = 30
         Me.bntQuit.Text = "FahGeddAbowdIt!"
         Me.bntQuit.UseVisualStyleBackColor = False
@@ -565,7 +579,7 @@ Partial Class Options
         Me.tbcOpt.Location = New System.Drawing.Point(-3, 0)
         Me.tbcOpt.Name = "tbcOpt"
         Me.tbcOpt.SelectedIndex = 0
-        Me.tbcOpt.Size = New System.Drawing.Size(426, 232)
+        Me.tbcOpt.Size = New System.Drawing.Size(426, 317)
         Me.tbcOpt.TabIndex = 31
         '
         'tpCalc
@@ -576,7 +590,7 @@ Partial Class Options
         Me.tpCalc.Location = New System.Drawing.Point(4, 22)
         Me.tpCalc.Name = "tpCalc"
         Me.tpCalc.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpCalc.Size = New System.Drawing.Size(418, 206)
+        Me.tpCalc.Size = New System.Drawing.Size(418, 291)
         Me.tpCalc.TabIndex = 0
         Me.tpCalc.Text = "Calculations"
         '
@@ -587,7 +601,7 @@ Partial Class Options
         Me.tbAppear.Location = New System.Drawing.Point(4, 22)
         Me.tbAppear.Name = "tbAppear"
         Me.tbAppear.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbAppear.Size = New System.Drawing.Size(418, 206)
+        Me.tbAppear.Size = New System.Drawing.Size(418, 291)
         Me.tbAppear.TabIndex = 1
         Me.tbAppear.Text = "Appearance"
         '
@@ -599,7 +613,7 @@ Partial Class Options
         Me.tbcColor.Controls.Add(Me.GroupBox4)
         Me.tbcColor.Location = New System.Drawing.Point(4, 22)
         Me.tbcColor.Name = "tbcColor"
-        Me.tbcColor.Size = New System.Drawing.Size(418, 206)
+        Me.tbcColor.Size = New System.Drawing.Size(418, 291)
         Me.tbcColor.TabIndex = 2
         Me.tbcColor.Text = "Colors"
         Me.tbcColor.UseVisualStyleBackColor = True
@@ -821,9 +835,9 @@ Partial Class Options
         'btnHelp
         '
         Me.btnHelp.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.btnHelp.Location = New System.Drawing.Point(12, 297)
+        Me.btnHelp.Location = New System.Drawing.Point(12, 373)
         Me.btnHelp.Name = "btnHelp"
-        Me.btnHelp.Size = New System.Drawing.Size(50, 23)
+        Me.btnHelp.Size = New System.Drawing.Size(50, 24)
         Me.btnHelp.TabIndex = 32
         Me.btnHelp.Text = "Help"
         Me.btnHelp.UseVisualStyleBackColor = False
@@ -832,9 +846,9 @@ Partial Class Options
         '
         Me.btnCancel.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(128, Byte), Integer))
         Me.btnCancel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCancel.Location = New System.Drawing.Point(228, 247)
+        Me.btnCancel.Location = New System.Drawing.Point(228, 323)
         Me.btnCancel.Name = "btnCancel"
-        Me.btnCancel.Size = New System.Drawing.Size(181, 36)
+        Me.btnCancel.Size = New System.Drawing.Size(181, 37)
         Me.btnCancel.TabIndex = 33
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = False
@@ -844,7 +858,7 @@ Partial Class Options
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.AntiqueWhite
-        Me.ClientSize = New System.Drawing.Size(424, 338)
+        Me.ClientSize = New System.Drawing.Size(434, 412)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnHelp)
@@ -943,4 +957,5 @@ Partial Class Options
     Friend WithEvents chkClassic As System.Windows.Forms.CheckBox
     Friend WithEvents chkAllowSelfNorm As System.Windows.Forms.CheckBox
     Friend WithEvents btnCancel As System.Windows.Forms.Button
+    Friend WithEvents chkShowStdsBlanks As System.Windows.Forms.CheckBox
 End Class

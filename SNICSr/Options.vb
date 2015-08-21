@@ -274,4 +274,9 @@ Public Class Options
         Me.Visible = False
     End Sub
 
+
+
+    Private Sub chkShowStdsBlanks_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowStdsBlanks.CheckedChanged
+        SNICSrFrm.ShowStdsBlanks = chkShowStdsBlanks.Checked
+    End Sub
 End Class

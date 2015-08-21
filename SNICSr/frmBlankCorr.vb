@@ -67,6 +67,7 @@
     Private Sub UpDateBlankTables()
         With SNICSrFrm
             .SetUpStandardsBlankTables()
+            '.SetUpBlankBlankTable() 'Causes watson table to revert to old value when manually entering
             For iGrp = 0 To .NumGroups - 1
                 For iRow = 0 To tblGroup(iGrp).Rows.Count - 1
                     .SetLgBlkCorr(iGrp, iRow)
