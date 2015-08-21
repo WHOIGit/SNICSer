@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.62     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.63     ' this is the version number. Increment in units of 0.01 when updating 
 
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
@@ -2859,6 +2859,7 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmMBCorr(iPos), SigFmMBCorr(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Libby_Age") = SigLibbyAge(FmMBCorr(iPos), SigFmMBCorr(iPos))
                     If Not IsDBNull(.tblGroup(iGrp)(iRow).Item("Fm_Expected")) Then
+                        .tblGroup(iGrp)(iRow).Item("Delta_Fm") = (.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") - .tblGroup(iGrp)(iRow).Item("Fm_Expected"))
                         .tblGroup(iGrp)(iRow).Item("Sigma_Val") = (.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") - .tblGroup(iGrp)(iRow).Item("Fm_Expected")) / .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
                         If Math.Abs(.tblGroup(iGrp)(iRow).Item("Sigma_Val")) > 2 Then
                             .dgvGroup(iGrp).Rows(iRow).Cells("Sigma_Val").Style.BackColor = Color.Pink
