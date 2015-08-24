@@ -313,12 +313,14 @@ Partial Class Options
         Me.chkShowStdsBlanks.AutoSize = True
         Me.chkShowStdsBlanks.Checked = True
         Me.chkShowStdsBlanks.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkShowStdsBlanks.Enabled = False
         Me.chkShowStdsBlanks.Location = New System.Drawing.Point(7, 210)
         Me.chkShowStdsBlanks.Name = "chkShowStdsBlanks"
         Me.chkShowStdsBlanks.Size = New System.Drawing.Size(208, 20)
         Me.chkShowStdsBlanks.TabIndex = 45
         Me.chkShowStdsBlanks.Text = "Show Stds Blanks Window"
         Me.chkShowStdsBlanks.UseVisualStyleBackColor = True
+        Me.chkShowStdsBlanks.Visible = False
         '
         'chkClassic
         '
