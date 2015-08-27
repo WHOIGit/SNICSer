@@ -2697,8 +2697,8 @@ Public Class SNICSrFrm
             Next
             For i = 0 To .tblBlanks.Rows.Count - 1
                 Dim iPos As Integer = .tblBlanks(i).Item("Pos")
-                .tblBlanks(i).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
-                .tblBlanks(i).Item("Sig_Libby_Age") = SigLibbyAge(FmCorr(iPos), SigFmCorr(iPos))
+                .tblBlanks(i).Item("Libby_Age") = LibbyAge(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Max_Err"))
+                .tblBlanks(i).Item("Sig_Libby_Age") = SigLibbyAge(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Max_Err"))
             Next
         End With
     End Sub
