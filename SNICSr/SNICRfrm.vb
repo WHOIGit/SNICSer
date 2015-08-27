@@ -23,7 +23,7 @@ Public Class SNICSrFrm
     Dim USAMS As New List(Of WheelID)     ' list of USAMS wheel objects (see WheelID.vb)
     Public GroupAvgStdFm(MAXGROUPS) As Double       ' average Fm of standards in this group
     Public Peirce(60, 10) As Double                 ' storage for Peirce criteria lookup table
-    Public SNICSerControlDir As String = ""
+    Public SNICSerControlDir As String = ""         ' directory for email list
     Public MaxSmallSampleMass As Double = 100.0     ' maximum small sample mass (in micrograms) for automatic assignment
     ' (set to zero to suppress automatic assignment)
 
@@ -983,16 +983,23 @@ Public Class SNICSrFrm
 
     Private Sub SetupTreeImages()
         With BrowseWheel
-            .iList.Images.Clear()
-            .iList.Images.Add(Image.FromFile("Images\Wheel0.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\Wheel1.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\Wheel2.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\Month.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\Year.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\SNICS.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\Wheel1RO.jpg"))
-            .iList.Images.Add(Image.FromFile("Images\Wheel2RO.jpg"))
-            .trvWheel.ImageList = .iList
+            Try
+                .iList.Images.Clear()
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Wheel0.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Wheel1.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Wheel2.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Month.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Year.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\SNICS.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Wheel1RO.jpg"))
+                .iList.Images.Add(Image.FromFile(My.Application.Info.DirectoryPath & "\Images\Wheel2RO.jpg"))
+                .trvWheel.ImageList = .iList
+            Catch ex As Exception
+                MsgBox("Problem accessing or reading " & My.Application.Info.DirectoryPath & "\Images" & vbCrLf _
+                    & "If you are in the development environment, this is OK" & vbCrLf _
+                    & "Otherwise, please contact system adminstrator")
+            End Try
+
         End With
     End Sub
 
