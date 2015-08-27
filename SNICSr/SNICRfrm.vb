@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.63     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.64     ' this is the version number. Increment in units of 0.01 when updating 
 
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
@@ -1878,7 +1878,7 @@ Public Class SNICSrFrm
 
     Public Sub PopRuns(Posn As Integer)
         SelectedTarget = Posn
-        tspShowSecondaries.Visible = True
+        tspShowSecondaries.Enabled = True
         DeselectDGV(dgvTargets)         ' first deselect all rows for all categories
         DeselectDGV(dgvSecs)
         DeselectDGV(StdsAndBlks.dgvBlanks)

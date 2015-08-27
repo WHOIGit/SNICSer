@@ -318,14 +318,14 @@ Partial Class SNICSrFrm
         'tspHelp
         '
         Me.tspHelp.Name = "tspHelp"
-        Me.tspHelp.Size = New System.Drawing.Size(107, 22)
+        Me.tspHelp.Size = New System.Drawing.Size(152, 22)
         Me.tspHelp.Text = "Help"
         Me.tspHelp.Visible = False
         '
         'tspAbout
         '
         Me.tspAbout.Name = "tspAbout"
-        Me.tspAbout.Size = New System.Drawing.Size(107, 22)
+        Me.tspAbout.Size = New System.Drawing.Size(152, 22)
         Me.tspAbout.Text = "About"
         '
         'OptionsToolStripMenuItem
@@ -466,10 +466,10 @@ Partial Class SNICSrFrm
         '
         'tspShowSecondaries
         '
+        Me.tspShowSecondaries.Enabled = False
         Me.tspShowSecondaries.Name = "tspShowSecondaries"
         Me.tspShowSecondaries.Size = New System.Drawing.Size(201, 22)
         Me.tspShowSecondaries.Text = "Show Secondaries Table"
-        Me.tspShowSecondaries.Visible = False
         '
         'TALLToolStripMenuItem
         '
