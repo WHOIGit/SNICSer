@@ -320,7 +320,6 @@ Partial Class SNICSrFrm
         Me.tspHelp.Name = "tspHelp"
         Me.tspHelp.Size = New System.Drawing.Size(152, 22)
         Me.tspHelp.Text = "Help"
-        Me.tspHelp.Visible = False
         '
         'tspAbout
         '
