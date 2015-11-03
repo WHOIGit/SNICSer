@@ -1361,7 +1361,7 @@ Public Class SNICSrFrm
                 Dim npos As Integer = InStr(fName, ".xls")
                 If npos <= 0 Then npos = InStr(fName, ".txt")
                 If npos <= 0 Then
-                    MsgBox("Cannot fine legitimate wheel name from file name specified " & vbCrLf & fName)
+                    MsgBox("Cannot find legitimate wheel name from file name specified " & vbCrLf & fName)
                     End
                 End If
                 If ISACQUIFILE Then
@@ -5109,7 +5109,7 @@ Public Class SNICSrFrm
                 con1.Close()
             End Using
             SAVEDTODATABASE = True
-            PrintDatabaseImportFile(GroupNum)
+        'PrintDatabaseImportFile(GroupNum) 'Don't need db files anymore
             tspPrint.Visible = True
             If FIRSTAUTH Then
                 With FrmNotify2ndAuth
