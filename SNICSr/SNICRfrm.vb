@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.64     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.65     ' this is the version number. Increment in units of 0.01 when updating 
 
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
@@ -273,7 +273,7 @@ Public Class SNICSrFrm
         GetOptions()                ' get the options and update the window settings
         InitDataSets()              ' initialize the data arrays, data tables, and data grid views
         InitPrinter()             ' prepare for printing plots
-        TurnOnNumLock()           ' turn num lock on if off (mainly for Macs)
+        'TurnOnNumLock()           ' turn num lock on if off (mainly for Macs)
         SetupTreeImages()             ' for the wheel browser window
         GetNotifyRecipients()         ' for email notification
         setupbailbutton()
@@ -1239,7 +1239,8 @@ Public Class SNICSrFrm
     Private Sub LoadRawDataFromFile(fName As String)
         ' need to check with database to see if this wheel has been first/second authorized by the user
         ' if so, skip the file reading part and load directly from the database
-        '
+
+        ' initialization
         For i = 0 To OrigTypes.Length - 1       ' clear array of original types (for safety)
             OrigTypes(i) = ""
         Next
@@ -1265,6 +1266,8 @@ Public Class SNICSrFrm
         Next
         InputData.Clear()
         NumRuns = 0
+
+        ' open the file
         Try
             FileOpen(1, fName, OpenMode.Input)
         Catch ex As Exception
@@ -1284,6 +1287,8 @@ Public Class SNICSrFrm
         End If
         btnLoad.Text = "Load"
         Dim NewRow As DataRow
+
+        ' read the file and parse the data
         Try
             If ISACQUIFILE Then       ' there are no headers in an acquifile
                 For i = 1 To 2
@@ -1297,6 +1302,8 @@ Public Class SNICSrFrm
             For i = 0 To MAXTARGETS            ' must instantiate comments or errors will ensue...
                 TargetComments(i) = ""
             Next
+
+            ' if we're working from a saved analysis
             If WasSaved Then        ' if a saved (not raw/new) data file
                 Dim ncomms As Integer = 0
                 Input(1, ncomms)
@@ -1357,6 +1364,8 @@ Public Class SNICSrFrm
                 GroupEnd(NumGroups) = NumRuns - 1             ' point to end of last group
                 GroupTimes(NumGroups) = RunTimes(NumRuns)
                 whlName = FileHeader(1)
+
+                'If we're working from a raw data file
             Else
                 Dim npos As Integer = InStr(fName, ".xls")
                 If npos <= 0 Then npos = InStr(fName, ".txt")
@@ -1371,8 +1380,10 @@ Public Class SNICSrFrm
                         whlName = LatestWheelName("USAMS")
                     End If
                 Else
-                    whlName = fName.Substring(fName.LastIndexOf("AMS") - 2, 11)
+                    whlName = fName.Substring(fName.LastIndexOf("AMS") - 2, 11) ' assign wheelname based on filename
                 End If
+
+                ' read and parse lines from file
                 While Not EOF(1)
                     NewRow = InputData.NewRow
                     inpLine = LineInput(1)
@@ -1414,7 +1425,7 @@ Public Class SNICSrFrm
                             i += 1
                         Next
                         NewRow("Run") = NumRuns
-                        RunPos(NumRuns) = NewRow("Pos")
+                        RunPos(NumRuns) = NewRow("Pos") 'is this causing problems with skipping or not starting at 0
                         If ((whlName.Substring(0, 5)).ToUpper = "USAMS") And (NewRow("HE13/12") < 0.3) Then NewRow("HE13/12") = 100 * NewRow("HE13/12") ' convert to CFAMS convention for 13/12 X 100
                         C13C12(NumRuns) = NewRow("HE13/12")
                         theLTCorr = (NewRow("CntTotS") / NewRow("CntTotH"))
