@@ -318,13 +318,13 @@ Partial Class SNICSrFrm
         'tspHelp
         '
         Me.tspHelp.Name = "tspHelp"
-        Me.tspHelp.Size = New System.Drawing.Size(152, 22)
+        Me.tspHelp.Size = New System.Drawing.Size(107, 22)
         Me.tspHelp.Text = "Help"
         '
         'tspAbout
         '
         Me.tspAbout.Name = "tspAbout"
-        Me.tspAbout.Size = New System.Drawing.Size(152, 22)
+        Me.tspAbout.Size = New System.Drawing.Size(107, 22)
         Me.tspAbout.Text = "About"
         '
         'OptionsToolStripMenuItem
@@ -454,27 +454,27 @@ Partial Class SNICSrFrm
         '
         Me.StandardsAndBlanksToolStripMenuItem.Enabled = False
         Me.StandardsAndBlanksToolStripMenuItem.Name = "StandardsAndBlanksToolStripMenuItem"
-        Me.StandardsAndBlanksToolStripMenuItem.Size = New System.Drawing.Size(201, 22)
+        Me.StandardsAndBlanksToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
         Me.StandardsAndBlanksToolStripMenuItem.Text = "Standards and Blanks"
         '
         'TargetInfoToolStripMenuItem
         '
         Me.TargetInfoToolStripMenuItem.Name = "TargetInfoToolStripMenuItem"
-        Me.TargetInfoToolStripMenuItem.Size = New System.Drawing.Size(201, 22)
+        Me.TargetInfoToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
         Me.TargetInfoToolStripMenuItem.Text = "Target Info"
         '
         'tspShowSecondaries
         '
         Me.tspShowSecondaries.Enabled = False
         Me.tspShowSecondaries.Name = "tspShowSecondaries"
-        Me.tspShowSecondaries.Size = New System.Drawing.Size(201, 22)
+        Me.tspShowSecondaries.Size = New System.Drawing.Size(200, 22)
         Me.tspShowSecondaries.Text = "Show Secondaries Table"
         '
         'TALLToolStripMenuItem
         '
         Me.TALLToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TALLToolStripMenuItem1, Me.WIDEToolStripMenuItem})
         Me.TALLToolStripMenuItem.Name = "TALLToolStripMenuItem"
-        Me.TALLToolStripMenuItem.Size = New System.Drawing.Size(201, 22)
+        Me.TALLToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
         Me.TALLToolStripMenuItem.Text = "Screen Size"
         '
         'TALLToolStripMenuItem1
