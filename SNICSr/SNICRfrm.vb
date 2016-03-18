@@ -4142,13 +4142,15 @@ Public Class SNICSrFrm
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
                         wpos = rdr.GetByte(0)
-                        Tp_Num(wpos) = rdr.GetInt32(1)
-                        If Not rdr.IsDBNull(2) Then
-                            Rec_Num(wpos) = rdr.GetInt32(2)
-                        Else
-                            Rec_Num(wpos) = 0
+                        If TargetIsPresent(wpos) Then      ' do only if Target is present
+                            Tp_Num(wpos) = rdr.GetInt32(1)
+                            If Not rdr.IsDBNull(2) Then
+                                Rec_Num(wpos) = rdr.GetInt32(2)
+                            Else
+                                Rec_Num(wpos) = 0
+                            End If
+                            NumTargets += 1
                         End If
-                        NumTargets += 1
                     End While
                     If NumTargets = 0 Then MsgBox("Cannot find " & whlName & " in database")
                 End Using
