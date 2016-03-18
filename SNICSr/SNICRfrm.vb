@@ -1153,6 +1153,7 @@ Public Class SNICSrFrm
                 End If
                 GetRawDataFromDatabase(WheelName)
                 AssignTargets()                ' designate small targets with mass > 0 and < 100 ug
+                FindSmallSamples()
             Case 2
                 If GetWheelID(WheelName).SecondAuthName = UserName Then
                     REAUTH = True
@@ -1160,6 +1161,7 @@ Public Class SNICSrFrm
                 End If
                 GetRawDataFromDatabase(WheelName)
                 AssignTargets()                ' designate small targets with mass > 0 and < 100 ug
+                FindSmallSamples()
         End Select
         btnLoad.Visible = True
         tsmBlankCorrect.Visible = True
@@ -1516,6 +1518,7 @@ Public Class SNICSrFrm
         dgvInputData.AutoResizeRows()
         UpdateDataListLabel()
         CollectRats()
+        AssignTargets()          ' find out if target exists
         PopulateTargets()
         WheelName = whlName
         DoFillInC13Table()
@@ -1531,18 +1534,23 @@ Public Class SNICSrFrm
         PropertyPropertyToolStripMenuItem.Enabled = True
         StandardsAndBlanksToolStripMenuItem.Enabled = True
         LOADEDWHEEL = True
-        AssignTargets()          ' find out if target exists and/or if small
+        FindSmallSamples()          ' find out if target is small
         'If GROUPBOUNDS Then CommitGroupToDatabaseToolStripMenuItem.Enabled = True
     End Sub
 
     Public Sub AssignTargets()      ' find out if target exists and/or if small
         For iPos = 0 To MAXTARGETS
-            TargetIsSmall(iPos) = (TargetMass(iPos) > 0) And (TargetMass(iPos) < MaxSmallSampleMass)
             If RunKeys(iPos, 0) = 0 Then
                 TargetIsPresent(iPos) = False
             Else
                 TargetIsPresent(iPos) = True
             End If
+        Next
+    End Sub
+
+    Public Sub FindSmallSamples()      ' find out if target exists and/or if small
+        For iPos = 0 To MAXTARGETS
+            TargetIsSmall(iPos) = (TargetMass(iPos) > 0) And (TargetMass(iPos) < MaxSmallSampleMass)
         Next
         'ListSmallTargets()     ' optional listing for debugging purposes
     End Sub
@@ -1646,6 +1654,7 @@ Public Class SNICSrFrm
     End Sub
 
     Private Sub UpdateTargetTable()
+        'is this ever called?
         TargetData.Rows.Clear()
         NumTargets = 0
         For i = 0 To TargetTypes.Length - 1
@@ -1671,6 +1680,7 @@ Public Class SNICSrFrm
                 End If
             End If      ' do only if Target is present
         Next
+        MsgBox(NumTargets, , "UpdateTargetTable")
         ColorizeTargets()
         dgvTargets.ScrollBars = ScrollBars.Both
     End Sub
@@ -1821,6 +1831,8 @@ Public Class SNICSrFrm
                 Worms.cmbGoTo.Items.Add(New CmbColorItem(i.ToString & ": " & TargetNames(i).Trim, i.ToString, Color.Black, TargetColor(TargetTypes(i))))
             End If
         Next
+
+        MsgBox(NumTargets, , "PopulateTargets")
         RePopulateTargets()
         'For i = 0 To TargetData.Rows.Count - 1          ' first load the receipt numbers into the target table
         'TargetData(i).Item("Rec_Num") = Rec_Num(TargetData(i).Item("Pos"))
@@ -4145,6 +4157,7 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
+        MsgBox(NumTargets, , "GetWheelInfo") 'works OK here
         For i = 0 To NumRuns - 1
             TP_Nums(i) = Tp_Num(InputData.Rows(i).Item("Pos"))
         Next
@@ -4851,6 +4864,7 @@ Public Class SNICSrFrm
         dgvInputData.AutoResizeRows()
         UpdateDataListLabel()
         CollectRats()
+        AssignTargets()       ' find out if target exists
         PopulateTargets()
         GetWheelInfo(wheelname)
         SetUpStds()
@@ -4868,7 +4882,7 @@ Public Class SNICSrFrm
             CompareFlagsToolStripMenuItem.Visible = False
             FlagsToolStripMenuItem1.Visible = False
         End If
-        AssignTargets()       ' find out if target exists and/or if small
+        FindSmallSamples()       ' find out if target is small
         CommitGroupToDatabaseToolStripMenuItem.Enabled = False
         If Not FIRSTAUTH Then
             tspGroup.Visible = False
