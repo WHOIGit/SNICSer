@@ -5169,6 +5169,7 @@ Public Class SNICSrFrm
         ' Set reauth to prevent first write issue if wheel is not reloaded
         'doLoad()
         'End
+        frmPatience.Visible = False         ' disappear the Snickers
     End Sub    ' Save data to database
 
     Private Function RunNotAlreadyDone(iRun As Integer) As Boolean
