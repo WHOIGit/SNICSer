@@ -5148,6 +5148,8 @@ Public Class SNICSrFrm
         End Using
         SAVEDTODATABASE = True
         'PrintDatabaseImportFile(GroupNum) 'Don't need db files anymore
+        frmPatience.Visible = False         ' disappear the Snickers
+        Me.Enabled = True
         tspPrint.Visible = True
         If FIRSTAUTH Then
             With FrmNotify2ndAuth
@@ -5167,9 +5169,6 @@ Public Class SNICSrFrm
         ' clear this in case you've just updated a partial wheel
         REAUTH = True
         ' Set reauth to prevent first write issue if wheel is not reloaded
-        'doLoad()
-        'End
-        frmPatience.Visible = False         ' disappear the Snickers
     End Sub    ' Save data to database
 
     Private Function RunNotAlreadyDone(iRun As Integer) As Boolean
