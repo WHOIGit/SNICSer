@@ -1680,7 +1680,7 @@ Public Class SNICSrFrm
                 End If
             End If      ' do only if Target is present
         Next
-        MsgBox(NumTargets, , "UpdateTargetTable")
+        'MsgBox(NumTargets, , "UpdateTargetTable")
         ColorizeTargets()
         dgvTargets.ScrollBars = ScrollBars.Both
     End Sub
@@ -1832,7 +1832,7 @@ Public Class SNICSrFrm
             End If
         Next
 
-        MsgBox(NumTargets, , "PopulateTargets")
+        'MsgBox(NumTargets, , "PopulateTargets")
         RePopulateTargets()
         'For i = 0 To TargetData.Rows.Count - 1          ' first load the receipt numbers into the target table
         'TargetData(i).Item("Rec_Num") = Rec_Num(TargetData(i).Item("Pos"))
@@ -4159,7 +4159,7 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
-        MsgBox(NumTargets, , "GetWheelInfo") 'works OK here
+        'MsgBox(NumTargets, , "GetWheelInfo") 'works OK here
         For i = 0 To NumRuns - 1
             TP_Nums(i) = Tp_Num(InputData.Rows(i).Item("Pos"))
         Next
