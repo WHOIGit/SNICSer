@@ -2052,17 +2052,20 @@ Public Class SNICSrFrm
     Public Sub PresentTargetInfo()
         TargetInfo.Rows.Clear()
         For i = 0 To TargetData.Rows.Count - 1
-            Dim newrow = TargetInfo.NewRow
-            newrow("Pos") = TargetData(i).Item("Pos")
-            newrow("TP_Num") = Tp_Num(i)
-            newrow("Rec_Num") = Rec_Num(i)
-            newrow("N") = RunKeys(i, 0)
-            newrow("Typ") = TargetTypes(i)
-            newrow("SampleName") = TargetNames(i)
-            newrow("Mass") = TargetMass(i)
-            newrow("Proc") = TargetProcs(i)
-            newrow("Comment") = Trim(TargetComments(i))
-            TargetInfo.Rows.Add(newrow)
+            If TargetIsPresent(i) Then
+                Dim newrow = TargetInfo.NewRow
+                newrow("Pos") = i
+                newrow("TP_Num") = Tp_Num(i)
+                newrow("Rec_Num") = Rec_Num(i)
+                newrow("N") = RunKeys(i, 0)
+                newrow("Typ") = TargetTypes(i)
+                newrow("SampleName") = TargetNames(i)
+                newrow("Mass") = TargetMass(i)
+                newrow("Proc") = TargetProcs(i)
+                newrow("Comment") = Trim(TargetComments(i))
+                TargetInfo.Rows.Add(newrow)
+            End If
+
         Next
         With frmTargetInfo
             .Visible = True
