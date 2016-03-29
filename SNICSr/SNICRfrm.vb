@@ -4176,73 +4176,76 @@ Public Class SNICSrFrm
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 For ipos = 0 To TargetData.Rows.Count - 1
-                    Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
-                                           & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13" _
-                                           & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
-                    com.CommandText = theCmd
-                    Using rdr As IDataReader = com.ExecuteReader
-                        While rdr.Read
-                            NumC13Ents += 1         ' increment count of entries in dC13 table
-                            If Not rdr.IsDBNull(0) Then
-                                TotalMass(ipos) = 12.015 * rdr.GetDouble(0)
-                            Else
-                                TotalMass(ipos) = 0
-                                If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 32491) Then
-                                    MsgBox("Cannot find target " & ipos.ToString & " total mass in DC13 Table, please contact Al!")
-                                    'Exit For
+                    If TargetIsPresent(ipos) Then      ' do only if Target is present
+
+                        Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
+                                               & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13" _
+                                               & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
+                        com.CommandText = theCmd
+                        Using rdr As IDataReader = com.ExecuteReader
+                            While rdr.Read
+                                NumC13Ents += 1         ' increment count of entries in dC13 table
+                                If Not rdr.IsDBNull(0) Then
+                                    TotalMass(ipos) = 12.015 * rdr.GetDouble(0)
+                                Else
+                                    TotalMass(ipos) = 0
+                                    If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 32491) Then
+                                        MsgBox("Cannot find target " & ipos.ToString & " total mass in DC13 Table, please contact Al!")
+                                        'Exit For
+                                    End If
                                 End If
-                            End If
-                            If Not rdr.IsDBNull(1) Then
-                                TargetMass(ipos) = 12.015 * rdr.GetDouble(1)
-                            Else
-                                TargetMass(ipos) = TotalMass(ipos)
-                            End If
-                            If Not rdr.IsDBNull(2) Then
-                                MBCLgFm(ipos) = rdr.GetDouble(2)
-                            Else
-                                MBCLgFm(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(3) Then
-                                MBCLgFmSig(ipos) = rdr.GetDouble(3)
-                            Else
-                                MBCLgFmSig(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(4) Then
-                                MBCFm(ipos) = rdr.GetDouble(4)
-                            Else
-                                MBCFm(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(5) Then
-                                MBCFmSig(ipos) = rdr.GetDouble(5)
-                            Else
-                                MBCFmSig(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(6) Then
-                                MBCMass(ipos) = rdr.GetDouble(6)
-                            Else
-                                MBCMass(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(7) Then
-                                MBCMassSig(ipos) = rdr.GetDouble(7)
-                            Else
-                                MBCMassSig(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(8) Then
-                                IRMSdC13(ipos) = rdr.GetDouble(8)
-                            Else
-                                IRMSdC13(ipos) = -1000.0
-                            End If
-                        End While
-                    End Using
-                    TargetData(ipos).Item("Mass") = TargetMass(ipos)
-                    TargetData(ipos).Item("MSdC13") = IRMSdC13(ipos)
+                                If Not rdr.IsDBNull(1) Then
+                                    TargetMass(ipos) = 12.015 * rdr.GetDouble(1)
+                                Else
+                                    TargetMass(ipos) = TotalMass(ipos)
+                                End If
+                                If Not rdr.IsDBNull(2) Then
+                                    MBCLgFm(ipos) = rdr.GetDouble(2)
+                                Else
+                                    MBCLgFm(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(3) Then
+                                    MBCLgFmSig(ipos) = rdr.GetDouble(3)
+                                Else
+                                    MBCLgFmSig(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(4) Then
+                                    MBCFm(ipos) = rdr.GetDouble(4)
+                                Else
+                                    MBCFm(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(5) Then
+                                    MBCFmSig(ipos) = rdr.GetDouble(5)
+                                Else
+                                    MBCFmSig(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(6) Then
+                                    MBCMass(ipos) = rdr.GetDouble(6)
+                                Else
+                                    MBCMass(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(7) Then
+                                    MBCMassSig(ipos) = rdr.GetDouble(7)
+                                Else
+                                    MBCMassSig(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(8) Then
+                                    IRMSdC13(ipos) = rdr.GetDouble(8)
+                                Else
+                                    IRMSdC13(ipos) = -1000.0
+                                End If
+                            End While
+                        End Using
+                        TargetData(ipos).Item("Mass") = TargetMass(ipos)
+                        TargetData(ipos).Item("MSdC13") = IRMSdC13(ipos)
+                    End If
                 Next
             Catch ex As Exception
                 MsgBox("Pos 2" & vbCrLf & ex.Message)
             End Try
             con.Close()
         End Using
-        If NumC13Ents < TargetData.Rows.Count - 1 Then
+        If NumC13Ents < TargetData.Rows.Count - 1 Then 'change to -2?
             MsgBox("There were " & (TargetData.Rows.Count - 1 - NumC13Ents).ToString & " missing entries in the dC13 table for this wheel" _
                     & vbCrLf & "So there will be no target weights or del13C values for those targets" & vbCrLf & "The dC13 table should be filled in ")
         End If
