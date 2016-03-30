@@ -2074,7 +2074,7 @@ Public Class SNICSrFrm
             ReSizeDGV(.dgvTargetInfo, 25)
             .Width = .dgvTargetInfo.Right + 30
             For i = 0 To .dgvTargetInfo.Rows.Count - 1
-                .dgvTargetInfo.Rows(i).DefaultCellStyle.BackColor = TargetColor(TargetTypes(i))
+                .dgvTargetInfo.Rows(i).DefaultCellStyle.BackColor = TargetColor(TargetInfo(i).Item("Typ"))
             Next
         End With
     End Sub
