@@ -5,7 +5,7 @@
             If IsDBNull(dgvTargetInfo("Comment", i).Value) Then
                 SNICSrFrm.TargetComments(i) = ""
             Else
-                SNICSrFrm.TargetComments(i) = Trim(dgvTargetInfo("Comment", i).Value)
+                SNICSrFrm.TargetComments(SNICSrFrm.TargetData(i).Item("Pos")) = Trim(dgvTargetInfo("Comment", i).Value)
             End If
         Next
         Me.Visible = False
