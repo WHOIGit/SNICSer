@@ -3,7 +3,7 @@
     Private Sub btnClose_Click(sender As System.Object, e As System.EventArgs) Handles btnClose.Click
         For i = 0 To dgvTargetInfo.Rows.Count - 1
             If IsDBNull(dgvTargetInfo("Comment", i).Value) Then
-                SNICSrFrm.TargetComments(i) = ""
+                SNICSrFrm.TargetComments(SNICSrFrm.TargetData(i).Item("Pos")) = ""
             Else
                 SNICSrFrm.TargetComments(SNICSrFrm.TargetData(i).Item("Pos")) = Trim(dgvTargetInfo("Comment", i).Value)
             End If
