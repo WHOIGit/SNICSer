@@ -4237,10 +4237,13 @@ Public Class SNICSrFrm
                                 End If
                             End While
                         End Using
-                        TargetData(ipos).Item("Mass") = TargetMass(ipos)
-                        TargetData(ipos).Item("MSdC13") = IRMSdC13(ipos)
+                        
                     End If
                 Next
+                For Each row As DataRow In TargetData.Rows
+                    row.Item("Mass") = TargetMass(row.Item("Pos"))
+                    row.Item("MSdC13") = IRMSdC13(row.Item("Pos"))
+                Next row
             Catch ex As Exception
                 MsgBox("Pos 2" & vbCrLf & ex.Message)
             End Try
