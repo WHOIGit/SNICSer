@@ -1797,7 +1797,7 @@ Public Class SNICSrFrm
         Next
         TargetData.Rows.Clear()
         NumTargets = 0
-        For i = 0 To TargetTypes.Length - 1
+        For i = 0 To MAXTARGETS
             If TargetIsPresent(i) Then      ' do only if Target is present
                 If Trim(TargetNames(i)) <> "" Then
                     If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
@@ -1842,7 +1842,7 @@ Public Class SNICSrFrm
 
     Public Sub RePopulateTargets()
         TargetData.Rows.Clear()
-        For i = 0 To TargetTypes.Length - 1
+        For i = 0 To MAXTARGETS
             If TargetIsPresent(i) Then      ' do only if Target is present
                 If Trim(TargetNames(i)) <> "" Then
                     If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
@@ -4176,7 +4176,7 @@ Public Class SNICSrFrm
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
-                For ipos = 0 To 133
+                For ipos = 0 To MAXTARGETS
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
 
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
@@ -4237,7 +4237,7 @@ Public Class SNICSrFrm
                                 End If
                             End While
                         End Using
-                        
+
                     End If
                 Next
                 For Each row As DataRow In TargetData.Rows
@@ -4253,7 +4253,7 @@ Public Class SNICSrFrm
             MsgBox("There were " & (TargetData.Rows.Count - 1 - NumC13Ents).ToString & " missing entries in the dC13 table for this wheel" _
                     & vbCrLf & "So there will be no target weights or del13C values for those targets" & vbCrLf & "The dC13 table should be filled in ")
         End If
-        For i = 0 To 133
+        For i = 0 To MAXTARGETS
             If TargetIsPresent(i) Then
                 GetProcType(i)
             End If
@@ -4466,11 +4466,11 @@ Public Class SNICSrFrm
                         InputData(iRun).Item("Typ") = rdr.GetString(2)
                         If (analyst = FirstAuthName) And Not rdr.IsDBNull(3) Then InputData(iRun).Item("Typ") = rdr.GetString(3)
                         If (analyst = SecondAuthName) And Not rdr.IsDBNull(4) Then InputData(iRun).Item("Typ") = rdr.GetString(4)
-                        Dim npos As Integer = -1
-                        For i = 0 To TargetData.Rows.Count - 1
-                            If TargetData.Rows(i).Item("Pos") = InputData(iRun).Item("Pos") Then npos = i
-                        Next
-                        TargetData(npos).Item("Typ") = InputData(iRun).Item("Typ")
+                        'Dim npos As Integer = -1
+                        'For i = 0 To TargetData.Rows.Count - 1
+                        '    If TargetData.Rows(i).Item("Pos") = InputData(iRun).Item("Pos") Then npos = i
+                        'Next
+                        'TargetData(npos).Item("Typ") = InputData(iRun).Item("Typ")
                         TargetTypes(InputData(iRun).Item("Pos")) = InputData(iRun).Item("Typ")
                         Select Case InputData(iRun).Item("Typ")
                             Case "S"
@@ -4489,6 +4489,7 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
+        
         If Not HaveRecords Then ' this must be second authorizer and new generation raw data storage
             Using con As New SqlConnection
                 Try
@@ -4507,7 +4508,7 @@ Public Class SNICSrFrm
                             InputData(iRun).Item("Typ") = rdr.GetString(2)
                             If (analyst = FirstAuthName) And Not rdr.IsDBNull(3) Then InputData(iRun).Item("Typ") = rdr.GetString(3)
                             If (analyst = SecondAuthName) And Not rdr.IsDBNull(4) Then InputData(iRun).Item("Typ") = rdr.GetString(4)
-                            TargetData(InputData(iRun).Item("Pos")).Item("Typ") = InputData(iRun).Item("Typ")
+                            'TargetData(InputData(iRun).Item("Pos")).Item("Typ") = InputData(iRun).Item("Typ")
                             TargetTypes(InputData(iRun).Item("Pos")) = InputData(iRun).Item("Typ")
                             Select Case InputData(iRun).Item("Typ")
                                 Case "S"
@@ -4522,11 +4523,14 @@ Public Class SNICSrFrm
                         End While
                     End Using
                 Catch ex As Exception
-                    MsgBox("Pos2 " & vbCrLf & ex.Message)
+                    MsgBox("Pos2 " & iRun.ToString & " " & InputData(iRun).Item("Pos").ToString & vbCrLf & ex.Message & vbCrLf & ex.StackTrace)
                 End Try
                 con.Close()
             End Using
         End If
+        For Each row As DataRow In TargetData.Rows
+            row.Item("Typ") = TargetTypes(row.Item("Pos"))
+        Next row
         ColorizeTargets()
     End Sub
 
@@ -5472,13 +5476,13 @@ Public Class SNICSrFrm
                 .dgvFlags.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
             Next
             .dgvFlags.Columns(1).AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-            For i = 0 To 133
+            For i = 0 To MAXTARGETS
                 If TargetIsPresent(i) Then
                     'Dim ipos As Integer = TargetData(i).Item("Pos")
                     FlagTable.Rows.Add(TargetData(i).Item("Pos"), TargetData(i).Item("SampleName"))
                     .dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
                 End If
-                
+
             Next
         End With
         Using con As New SqlConnection
