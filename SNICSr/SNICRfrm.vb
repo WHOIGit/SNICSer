@@ -4176,7 +4176,7 @@ Public Class SNICSrFrm
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
-                For ipos = 0 To TargetData.Rows.Count - 1
+                For ipos = 0 To 133
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
 
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
@@ -4250,8 +4250,11 @@ Public Class SNICSrFrm
             MsgBox("There were " & (TargetData.Rows.Count - 1 - NumC13Ents).ToString & " missing entries in the dC13 table for this wheel" _
                     & vbCrLf & "So there will be no target weights or del13C values for those targets" & vbCrLf & "The dC13 table should be filled in ")
         End If
-        For ipos = 0 To TargetData.Rows.Count - 1
-            GetProcType(ipos)
+        For i = 0 To 133
+            If TargetIsPresent(i) Then
+                GetProcType(i)
+            End If
+
         Next
         Using con As New SqlConnection
             Try
@@ -5466,9 +5469,13 @@ Public Class SNICSrFrm
                 .dgvFlags.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
             Next
             .dgvFlags.Columns(1).AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-            For i = 0 To TargetData.Rows.Count - 1
-                FlagTable.Rows.Add(TargetData.Rows(i).Item("Pos"), TargetData.Rows(i).Item("SampleName"))
-                .dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
+            For i = 0 To 133
+                If TargetIsPresent(i) Then
+                    'Dim ipos As Integer = TargetData(i).Item("Pos")
+                    FlagTable.Rows.Add(TargetData(i).Item("Pos"), TargetData(i).Item("SampleName"))
+                    .dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
+                End If
+                
             Next
         End With
         Using con As New SqlConnection
