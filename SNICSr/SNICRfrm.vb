@@ -4489,7 +4489,7 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
-        
+
         If Not HaveRecords Then ' this must be second authorizer and new generation raw data storage
             Using con As New SqlConnection
                 Try
@@ -5477,11 +5477,11 @@ Public Class SNICSrFrm
             Next
             .dgvFlags.Columns(1).AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
             For i = 0 To MAXTARGETS
-                If TargetIsPresent(i) Then
-                    'Dim ipos As Integer = TargetData(i).Item("Pos")
-                    FlagTable.Rows.Add(TargetData(i).Item("Pos"), TargetData(i).Item("SampleName"))
-                    .dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
-                End If
+                'If TargetIsPresent(i) Then
+                'Dim ipos As Integer = TargetData(i).Item("Pos")
+                FlagTable.Rows.Add(i, TargetNames(i))
+                '.dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
+                'End If
 
             Next
         End With
@@ -5499,6 +5499,7 @@ Public Class SNICSrFrm
                         If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
                             iPos = rdr.GetByte(3)
                             RunNums(iPos) += 1              ' increment the run count
+
                             FlagTable(iPos).Item(RunNums(iPos).ToString) = "X"
                             iFirst = rdr.GetByte(1)
                             iSecond = rdr.GetByte(2)
@@ -5522,6 +5523,7 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
+        
     End Sub
 
 
