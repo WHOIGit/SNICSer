@@ -5523,7 +5523,12 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
-        
+        For i = 0 To CompareFlags.dgvFlags.Rows.Count - 1
+            If RunNums(i) <= 0 Then
+                CompareFlags.dgvFlags.Rows.Item(i).Visible = False
+            End If
+        Next
+
     End Sub
 
 
