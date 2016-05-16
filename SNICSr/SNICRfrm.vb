@@ -16,7 +16,9 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.64     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.7     ' this is the version number. Increment in units of 0.01 when updating 
+    Public Const TEST As Boolean = False         ' TRUE triggers test environment behavior, FALSE for production
+    Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
@@ -139,6 +141,7 @@ Public Class SNICSrFrm
 #End Region
 
 #Region "Target Table Storage"
+    Public TargetIsPresent(MAXTARGETS) As Boolean       ' whether a target is present/run
     Public TargetIsReadOnly(MAXTARGETS) As Boolean        ' target is a read only (has been promoted to OS table)
     Public TargetNonPerf(MAXTARGETS) As Boolean        ' target non-performer flag
     Public TargetIsSmall(MAXTARGETS) As Boolean        ' if considered a small sample
@@ -256,6 +259,7 @@ Public Class SNICSrFrm
         Me.Top = 10                 ' locate the main form in the upper left corner of the screen
         Me.Left = 10
         MySNICSerDir = My.Application.Info.DirectoryPath        ' save the location of the /App directory
+        If TEST Then TTE = "_test" ' test environment Database Test Table name extension
         Try
             MySNICSerDir = MySNICSerDir.Substring(0, MySNICSerDir.Length - 3) & "SNICSER Results"
             Dim dirinfo As DirectoryInfo = New DirectoryInfo(MySNICSerDir)      ' locate the default Results directory
@@ -1068,10 +1072,18 @@ Public Class SNICSrFrm
         Dim subDir As String = ""
         Dim FileName As String = ""
         If TheWheel.Year <> iyr Then subDir = "20" & TheWheel.Year.ToString & " Results\"
-        If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
-            FileName = "\\sharenosams.whoi.edu\shared\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
+        If TEST Then
+            If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
+                FileName = "\\sharenosams.whoi.edu\shared\SNICSer\ResultsTest\CFAMSResults\" & subDir & TheWheel.Name & "R.xls"
+            Else
+                FileName = "\\sharenosams.whoi.edu\shared\SNICSer\ResultsTest\USAMSResults\" & subDir & TheWheel.Name & "R.txt"
+            End If
         Else
-            FileName = "\\sharenosams.whoi.edu\shared\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
+            If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
+                FileName = "\\sharenosams.whoi.edu\shared\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
+            Else
+                FileName = "\\sharenosams.whoi.edu\shared\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
+            End If
         End If
         If TheWheel.Year <> iyr Then subDir = "20" & TheWheel.Year.ToString & " Results\"
         If TheWheel.Analyzed = 0 Then
@@ -1089,6 +1101,7 @@ Public Class SNICSrFrm
                 End If
             End If
         End If
+        '        MsgBox(FileName)
         Return FileName
     End Function
 
@@ -1139,14 +1152,16 @@ Public Class SNICSrFrm
                     SECONDAUTH = True
                 End If
                 GetRawDataFromDatabase(WheelName)
-                FindSmallTargets()                ' designate small targets with mass > 0 and < 100 ug
+                AssignTargets()                ' designate small targets with mass > 0 and < 100 ug
+                FindSmallSamples()
             Case 2
                 If GetWheelID(WheelName).SecondAuthName = UserName Then
                     REAUTH = True
                     SECONDAUTH = True
                 End If
                 GetRawDataFromDatabase(WheelName)
-                FindSmallTargets()                ' designate small targets with mass > 0 and < 100 ug
+                AssignTargets()                ' designate small targets with mass > 0 and < 100 ug
+                FindSmallSamples()
         End Select
         btnLoad.Visible = True
         tsmBlankCorrect.Visible = True
@@ -1503,6 +1518,7 @@ Public Class SNICSrFrm
         dgvInputData.AutoResizeRows()
         UpdateDataListLabel()
         CollectRats()
+        AssignTargets()          ' find out if target exists
         PopulateTargets()
         WheelName = whlName
         DoFillInC13Table()
@@ -1518,14 +1534,22 @@ Public Class SNICSrFrm
         PropertyPropertyToolStripMenuItem.Enabled = True
         StandardsAndBlanksToolStripMenuItem.Enabled = True
         LOADEDWHEEL = True
-        FindSmallTargets()
+        FindSmallSamples()          ' find out if target is small
         'If GROUPBOUNDS Then CommitGroupToDatabaseToolStripMenuItem.Enabled = True
     End Sub
 
-    Public Sub FindSmallTargets()
-        Dim iPos As Integer = 0
-        For i = 0 To TargetData.Rows.Count - 1
-            iPos = TargetData(i).Item("Pos")
+    Public Sub AssignTargets()      ' find out if target exists and/or if small
+        For iPos = 0 To MAXTARGETS
+            If RunKeys(iPos, 0) = 0 Then
+                TargetIsPresent(iPos) = False
+            Else
+                TargetIsPresent(iPos) = True
+            End If
+        Next
+    End Sub
+
+    Public Sub FindSmallSamples()      ' find out if target exists and/or if small
+        For iPos = 0 To MAXTARGETS
             TargetIsSmall(iPos) = (TargetMass(iPos) > 0) And (TargetMass(iPos) < MaxSmallSampleMass)
         Next
         'ListSmallTargets()     ' optional listing for debugging purposes
@@ -1630,29 +1654,33 @@ Public Class SNICSrFrm
     End Sub
 
     Private Sub UpdateTargetTable()
+        'is this ever called?
         TargetData.Rows.Clear()
         NumTargets = 0
         For i = 0 To TargetTypes.Length - 1
-            If Trim(TargetNames(i)) <> "" Then
-                If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
-                    Or (chkStandards.Checked And (TargetTypes(i) = "S")) Or (chkUnknowns.Checked And (TargetTypes(i) = "U")) Then
-                    NumTargets += 1
-                    Dim NewRow As DataRow = TargetData.NewRow
-                    NewRow("Pos") = i
-                    NewRow("SampleName") = TargetNames(i)
-                    NewRow("Typ") = TargetTypes(i)
-                    NewRow("N") = TargetRuns(i)
-                    NewRow("NormRat") = TargetRat(i)
-                    NewRow("IntErr") = IntErr(i)
-                    NewRow("ExtErr") = ExtErr(i)
-                    NewRow("DelC13") = 1000.0 * (C13Rat(i) - 1)
-                    NewRow("SigC13") = 1000.0 * Math.Max(SigC13(i), SigC13IntErr(i))
-                    NewRow("MSdC13") = IRMSdC13(i)
-                    NewRow("Rec_Num") = Rec_Num(i)
-                    TargetData.Rows.Add(NewRow)
+            If TargetIsPresent(i) Then      ' do only if Target is present
+                If Trim(TargetNames(i)) <> "" Then
+                    If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
+                        Or (chkStandards.Checked And (TargetTypes(i) = "S")) Or (chkUnknowns.Checked And (TargetTypes(i) = "U")) Then
+                        NumTargets += 1
+                        Dim NewRow As DataRow = TargetData.NewRow
+                        NewRow("Pos") = i
+                        NewRow("SampleName") = TargetNames(i)
+                        NewRow("Typ") = TargetTypes(i)
+                        NewRow("N") = TargetRuns(i)
+                        NewRow("NormRat") = TargetRat(i)
+                        NewRow("IntErr") = IntErr(i)
+                        NewRow("ExtErr") = ExtErr(i)
+                        NewRow("DelC13") = 1000.0 * (C13Rat(i) - 1)
+                        NewRow("SigC13") = 1000.0 * Math.Max(SigC13(i), SigC13IntErr(i))
+                        NewRow("MSdC13") = IRMSdC13(i)
+                        NewRow("Rec_Num") = Rec_Num(i)
+                        TargetData.Rows.Add(NewRow)
+                    End If
                 End If
-            End If
+            End If      ' do only if Target is present
         Next
+        'MsgBox(NumTargets, , "UpdateTargetTable")
         ColorizeTargets()
         dgvTargets.ScrollBars = ScrollBars.Both
     End Sub
@@ -1769,26 +1797,28 @@ Public Class SNICSrFrm
         Next
         TargetData.Rows.Clear()
         NumTargets = 0
-        For i = 0 To TargetTypes.Length - 1
-            If Trim(TargetNames(i)) <> "" Then
-                If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
-                    Or (chkStandards.Checked And (TargetTypes(i) = "S")) Or (chkUnknowns.Checked And (TargetTypes(i) = "U")) Then
-                    NumTargets += 1
-                    Dim NewRow As DataRow = TargetData.NewRow
-                    NewRow("NP") = TargetNonPerf(i)
-                    NewRow("Pos") = i
-                    NewRow("SampleName") = TargetNames(i)
-                    NewRow("Typ") = TargetTypes(i)
-                    NewRow("N") = TargetRuns(i)
-                    NewRow("NormRat") = TargetRat(i)
-                    NewRow("IntErr") = IntErr(i)
-                    NewRow("ExtErr") = ExtErr(i)
-                    NewRow("DelC13") = 1000 * (C13C12(i) - 1)
-                    NewRow("Rec_Num") = Rec_Num(i)
-                    NewRow("MSdC13") = IRMSdC13(i)
-                    TargetData.Rows.Add(NewRow)
+        For i = 0 To MAXTARGETS
+            If TargetIsPresent(i) Then      ' do only if Target is present
+                If Trim(TargetNames(i)) <> "" Then
+                    If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
+                        Or (chkStandards.Checked And (TargetTypes(i) = "S")) Or (chkUnknowns.Checked And (TargetTypes(i) = "U")) Then
+                        NumTargets += 1
+                        Dim NewRow As DataRow = TargetData.NewRow
+                        NewRow("NP") = TargetNonPerf(i)
+                        NewRow("Pos") = i
+                        NewRow("SampleName") = TargetNames(i)
+                        NewRow("Typ") = TargetTypes(i)
+                        NewRow("N") = TargetRuns(i)
+                        NewRow("NormRat") = TargetRat(i)
+                        NewRow("IntErr") = IntErr(i)
+                        NewRow("ExtErr") = ExtErr(i)
+                        NewRow("DelC13") = 1000 * (C13C12(i) - 1)
+                        NewRow("Rec_Num") = Rec_Num(i)
+                        NewRow("MSdC13") = IRMSdC13(i)
+                        TargetData.Rows.Add(NewRow)
+                    End If
                 End If
-            End If
+            End If      ' do only if Target is present
         Next
         For i = 0 To dgvTargets.Columns.Count - 1
             dgvTargets.Columns(i).ReadOnly = True
@@ -1801,6 +1831,8 @@ Public Class SNICSrFrm
                 Worms.cmbGoTo.Items.Add(New CmbColorItem(i.ToString & ": " & TargetNames(i).Trim, i.ToString, Color.Black, TargetColor(TargetTypes(i))))
             End If
         Next
+
+        'MsgBox(NumTargets, , "PopulateTargets")
         RePopulateTargets()
         'For i = 0 To TargetData.Rows.Count - 1          ' first load the receipt numbers into the target table
         'TargetData(i).Item("Rec_Num") = Rec_Num(TargetData(i).Item("Pos"))
@@ -1810,27 +1842,29 @@ Public Class SNICSrFrm
 
     Public Sub RePopulateTargets()
         TargetData.Rows.Clear()
-        For i = 0 To TargetTypes.Length - 1
-            If Trim(TargetNames(i)) <> "" Then
-                If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
-                    Or (chkStandards.Checked And (TargetTypes(i) = "S")) Or (chkUnknowns.Checked And (TargetTypes(i) = "U")) Then
-                    Dim NewRow As DataRow = TargetData.NewRow
-                    NewRow("NP") = TargetNonPerf(i)
-                    NewRow("Pos") = i
-                    NewRow("SampleName") = TargetNames(i)
-                    NewRow("Typ") = TargetTypes(i)
-                    NewRow("Proc") = TargetProcs(i)
-                    NewRow("Mass") = TargetMass(i)
-                    NewRow("N") = TargetRuns(i)
-                    NewRow("NormRat") = TargetRat(i)
-                    NewRow("IntErr") = IntErr(i)
-                    NewRow("ExtErr") = ExtErr(i)
-                    NewRow("DelC13") = 1000.0 * (C13Rat(i) - 1)
-                    NewRow("SigC13") = 1000.0 * Math.Max(SigC13(i), SigC13IntErr(i))
-                    NewRow("MSdC13") = IRMSdC13(i)
-                    TargetData.Rows.Add(NewRow)
+        For i = 0 To MAXTARGETS
+            If TargetIsPresent(i) Then      ' do only if Target is present
+                If Trim(TargetNames(i)) <> "" Then
+                    If (chkBlanks.Checked And (TargetTypes(i) = "B")) Or (chkSecondaries.Checked And (TargetTypes(i) = "SS")) _
+                        Or (chkStandards.Checked And (TargetTypes(i) = "S")) Or (chkUnknowns.Checked And (TargetTypes(i) = "U")) Then
+                        Dim NewRow As DataRow = TargetData.NewRow
+                        NewRow("NP") = TargetNonPerf(i)
+                        NewRow("Pos") = i
+                        NewRow("SampleName") = TargetNames(i)
+                        NewRow("Typ") = TargetTypes(i)
+                        NewRow("Proc") = TargetProcs(i)
+                        NewRow("Mass") = TargetMass(i)
+                        NewRow("N") = TargetRuns(i)
+                        NewRow("NormRat") = TargetRat(i)
+                        NewRow("IntErr") = IntErr(i)
+                        NewRow("ExtErr") = ExtErr(i)
+                        NewRow("DelC13") = 1000.0 * (C13Rat(i) - 1)
+                        NewRow("SigC13") = 1000.0 * Math.Max(SigC13(i), SigC13IntErr(i))
+                        NewRow("MSdC13") = IRMSdC13(i)
+                        TargetData.Rows.Add(NewRow)
+                    End If
                 End If
-            End If
+            End If      ' do only if Target is present
         Next
         For i = 0 To dgvTargets.Columns.Count - 1
             dgvTargets.Columns(i).ReadOnly = True
@@ -1854,7 +1888,7 @@ Public Class SNICSrFrm
             Else
                 dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Black
             End If
-            If TargetNonPerf(i) Then
+            If dgvTargets.Item("NP", i).Value Then            'If TargetNonPerf(i) Then
                 dgvTargets.Rows(i).DefaultCellStyle.BackColor = Color.Black
                 dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.White
                 If TargetIsReadOnly(i) Then dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Gray
@@ -2018,17 +2052,21 @@ Public Class SNICSrFrm
     Public Sub PresentTargetInfo()
         TargetInfo.Rows.Clear()
         For i = 0 To TargetData.Rows.Count - 1
+            'If TargetIsPresent(i) Then
+            Dim ipos As Integer = TargetData(i).Item("Pos")
             Dim newrow = TargetInfo.NewRow
-            newrow("Pos") = TargetData(i).Item("Pos")
-            newrow("TP_Num") = Tp_Num(i)
-            newrow("Rec_Num") = Rec_Num(i)
-            newrow("N") = RunKeys(i, 0)
-            newrow("Typ") = TargetTypes(i)
-            newrow("SampleName") = TargetNames(i)
-            newrow("Mass") = TargetMass(i)
-            newrow("Proc") = TargetProcs(i)
-            newrow("Comment") = Trim(TargetComments(i))
+            newrow("Pos") = ipos
+            newrow("TP_Num") = Tp_Num(ipos)
+            newrow("Rec_Num") = Rec_Num(ipos)
+            newrow("N") = RunKeys(ipos, 0)
+            newrow("Typ") = TargetTypes(ipos)
+            newrow("SampleName") = TargetNames(ipos)
+            newrow("Mass") = TargetMass(ipos)
+            newrow("Proc") = TargetProcs(ipos)
+            newrow("Comment") = Trim(TargetComments(ipos))
             TargetInfo.Rows.Add(newrow)
+            'End If
+
         Next
         With frmTargetInfo
             .Visible = True
@@ -2037,7 +2075,7 @@ Public Class SNICSrFrm
             ReSizeDGV(.dgvTargetInfo, 25)
             .Width = .dgvTargetInfo.Right + 30
             For i = 0 To .dgvTargetInfo.Rows.Count - 1
-                .dgvTargetInfo.Rows(i).DefaultCellStyle.BackColor = TargetColor(TargetTypes(i))
+                .dgvTargetInfo.Rows(i).DefaultCellStyle.BackColor = TargetColor(TargetInfo(i).Item("Typ"))
             Next
         End With
     End Sub
@@ -3957,7 +3995,7 @@ Public Class SNICSrFrm
         Using con As New SqlConnection
             Dim theName As String = ""
             Try
-                Dim theCmd As String = "SELECT DISTINCT wheel, analyst1, analyst2, date_1, date_2, norm_method, norm_method_2, ro FROM dbo.snics_results ORDER BY wheel"
+                Dim theCmd As String = "SELECT DISTINCT wheel, analyst1, analyst2, date_1, date_2, norm_method, norm_method_2, ro FROM dbo.snics_results" & TTE & " ORDER BY wheel"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -4108,13 +4146,15 @@ Public Class SNICSrFrm
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
                         wpos = rdr.GetByte(0)
-                        Tp_Num(wpos) = rdr.GetInt32(1)
-                        If Not rdr.IsDBNull(2) Then
-                            Rec_Num(wpos) = rdr.GetInt32(2)
-                        Else
-                            Rec_Num(wpos) = 0
+                        If TargetIsPresent(wpos) Then      ' do only if Target is present
+                            Tp_Num(wpos) = rdr.GetInt32(1)
+                            If Not rdr.IsDBNull(2) Then
+                                Rec_Num(wpos) = rdr.GetInt32(2)
+                            Else
+                                Rec_Num(wpos) = 0
+                            End If
+                            NumTargets += 1
                         End If
-                        NumTargets += 1
                     End While
                     If NumTargets = 0 Then MsgBox("Cannot find " & whlName & " in database")
                 End Using
@@ -4123,6 +4163,7 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
+        'MsgBox(NumTargets, , "GetWheelInfo") 'works OK here
         For i = 0 To NumRuns - 1
             TP_Nums(i) = Tp_Num(InputData.Rows(i).Item("Pos"))
         Next
@@ -4135,83 +4176,92 @@ Public Class SNICSrFrm
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
-                For ipos = 0 To TargetData.Rows.Count - 1
-                    Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
-                                           & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13" _
-                                           & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
-                    com.CommandText = theCmd
-                    Using rdr As IDataReader = com.ExecuteReader
-                        While rdr.Read
-                            NumC13Ents += 1         ' increment count of entries in dC13 table
-                            If Not rdr.IsDBNull(0) Then
-                                TotalMass(ipos) = 12.015 * rdr.GetDouble(0)
-                            Else
-                                TotalMass(ipos) = 0
-                                If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 32491) Then
-                                    MsgBox("Cannot find target " & ipos.ToString & " total mass in DC13 Table, please contact Al!")
-                                    'Exit For
+                For ipos = 0 To MAXTARGETS
+                    If TargetIsPresent(ipos) Then      ' do only if Target is present
+
+                        Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
+                                               & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13" _
+                                               & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
+                        com.CommandText = theCmd
+                        Using rdr As IDataReader = com.ExecuteReader
+                            While rdr.Read
+                                NumC13Ents += 1         ' increment count of entries in dC13 table
+                                If Not rdr.IsDBNull(0) Then
+                                    TotalMass(ipos) = 12.015 * rdr.GetDouble(0)
+                                Else
+                                    TotalMass(ipos) = 0
+                                    If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 32491) Then
+                                        MsgBox("Cannot find target " & ipos.ToString & " total mass in DC13 Table, please contact Al!")
+                                        'Exit For
+                                    End If
                                 End If
-                            End If
-                            If Not rdr.IsDBNull(1) Then
-                                TargetMass(ipos) = 12.015 * rdr.GetDouble(1)
-                            Else
-                                TargetMass(ipos) = TotalMass(ipos)
-                            End If
-                            If Not rdr.IsDBNull(2) Then
-                                MBCLgFm(ipos) = rdr.GetDouble(2)
-                            Else
-                                MBCLgFm(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(3) Then
-                                MBCLgFmSig(ipos) = rdr.GetDouble(3)
-                            Else
-                                MBCLgFmSig(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(4) Then
-                                MBCFm(ipos) = rdr.GetDouble(4)
-                            Else
-                                MBCFm(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(5) Then
-                                MBCFmSig(ipos) = rdr.GetDouble(5)
-                            Else
-                                MBCFmSig(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(6) Then
-                                MBCMass(ipos) = rdr.GetDouble(6)
-                            Else
-                                MBCMass(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(7) Then
-                                MBCMassSig(ipos) = rdr.GetDouble(7)
-                            Else
-                                MBCMassSig(ipos) = 0.0
-                            End If
-                            If Not rdr.IsDBNull(8) Then
-                                IRMSdC13(ipos) = rdr.GetDouble(8)
-                            Else
-                                IRMSdC13(ipos) = -1000.0
-                            End If
-                        End While
-                    End Using
-                    TargetData(ipos).Item("Mass") = TargetMass(ipos)
-                    TargetData(ipos).Item("MSdC13") = IRMSdC13(ipos)
+                                If Not rdr.IsDBNull(1) Then
+                                    TargetMass(ipos) = 12.015 * rdr.GetDouble(1)
+                                Else
+                                    TargetMass(ipos) = TotalMass(ipos)
+                                End If
+                                If Not rdr.IsDBNull(2) Then
+                                    MBCLgFm(ipos) = rdr.GetDouble(2)
+                                Else
+                                    MBCLgFm(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(3) Then
+                                    MBCLgFmSig(ipos) = rdr.GetDouble(3)
+                                Else
+                                    MBCLgFmSig(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(4) Then
+                                    MBCFm(ipos) = rdr.GetDouble(4)
+                                Else
+                                    MBCFm(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(5) Then
+                                    MBCFmSig(ipos) = rdr.GetDouble(5)
+                                Else
+                                    MBCFmSig(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(6) Then
+                                    MBCMass(ipos) = rdr.GetDouble(6)
+                                Else
+                                    MBCMass(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(7) Then
+                                    MBCMassSig(ipos) = rdr.GetDouble(7)
+                                Else
+                                    MBCMassSig(ipos) = 0.0
+                                End If
+                                If Not rdr.IsDBNull(8) Then
+                                    IRMSdC13(ipos) = rdr.GetDouble(8)
+                                Else
+                                    IRMSdC13(ipos) = -1000.0
+                                End If
+                            End While
+                        End Using
+
+                    End If
                 Next
+                For Each row As DataRow In TargetData.Rows
+                    row.Item("Mass") = TargetMass(row.Item("Pos"))
+                    row.Item("MSdC13") = IRMSdC13(row.Item("Pos"))
+                Next row
             Catch ex As Exception
                 MsgBox("Pos 2" & vbCrLf & ex.Message)
             End Try
             con.Close()
         End Using
-        If NumC13Ents < TargetData.Rows.Count - 1 Then
+        If NumC13Ents < TargetData.Rows.Count - 1 Then 'change to -2?
             MsgBox("There were " & (TargetData.Rows.Count - 1 - NumC13Ents).ToString & " missing entries in the dC13 table for this wheel" _
                     & vbCrLf & "So there will be no target weights or del13C values for those targets" & vbCrLf & "The dC13 table should be filled in ")
         End If
-        For ipos = 0 To TargetData.Rows.Count - 1
-            GetProcType(ipos)
+        For i = 0 To MAXTARGETS
+            If TargetIsPresent(i) Then
+                GetProcType(i)
+            End If
+
         Next
         Using con As New SqlConnection
             Try
-                Dim theCmd As String = "SELECT analyst1, analyst2, date_1, date_2, ro FROM dbo.snics_results WHERE wheel = '" & whlName & "';"
+                Dim theCmd As String = "SELECT analyst1, analyst2, date_1, date_2, ro FROM dbo.snics_results" & TTE & " WHERE wheel = '" & whlName & "';"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -4338,7 +4388,7 @@ Public Class SNICSrFrm
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
-                aCmd = "DELETE from dbo.snics_raw WHERE wheel = '" & WheelName & "';"
+                aCmd = "DELETE from dbo.snics_raw" & TTE & " WHERE wheel = '" & WheelName & "';"
                 com.CommandText = aCmd
                 Dim ptr As Integer = com.ExecuteNonQuery()
                 If ptr = 0 Then MsgBox("Error cleaning Raw Table in Database: no rows deleted" & vbCrLf & aCmd)
@@ -4358,7 +4408,7 @@ Public Class SNICSrFrm
                 con1.Open()
                 Dim com As IDbCommand = con1.CreateCommand
                 com.CommandType = CommandType.Text
-                aCmd = "DELETE from dbo.snics_results WHERE wheel = '" & WheelName & "';"
+                aCmd = "DELETE from dbo.snics_results" & TTE & " WHERE wheel = '" & WheelName & "';"
                 com.CommandText = aCmd
                 Dim ptr As Integer = com.ExecuteNonQuery()
                 If ptr = 0 Then MsgBox("Error cleaning Results Table in Database: no rows deleted" & vbCrLf & aCmd)
@@ -4402,7 +4452,7 @@ Public Class SNICSrFrm
         Using con As New SqlConnection
             Try
                 Dim theCmd As String = "SELECT run_num, ok_calc, sample_type, sample_type_1, sample_type_2 " _
-                    & "FROM dbo.snics_raw WHERE wheel = '" & whlname & "' AND analyst = '" & analyst & "' ORDER BY run_num;"
+                    & "FROM dbo.snics_raw" & TTE & " WHERE wheel = '" & whlname & "' AND analyst = '" & analyst & "' ORDER BY run_num;"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -4416,11 +4466,11 @@ Public Class SNICSrFrm
                         InputData(iRun).Item("Typ") = rdr.GetString(2)
                         If (analyst = FirstAuthName) And Not rdr.IsDBNull(3) Then InputData(iRun).Item("Typ") = rdr.GetString(3)
                         If (analyst = SecondAuthName) And Not rdr.IsDBNull(4) Then InputData(iRun).Item("Typ") = rdr.GetString(4)
-                        Dim npos As Integer = -1
-                        For i = 0 To TargetData.Rows.Count - 1
-                            If TargetData.Rows(i).Item("Pos") = InputData(iRun).Item("Pos") Then npos = i
-                        Next
-                        TargetData(npos).Item("Typ") = InputData(iRun).Item("Typ")
+                        'Dim npos As Integer = -1
+                        'For i = 0 To TargetData.Rows.Count - 1
+                        '    If TargetData.Rows(i).Item("Pos") = InputData(iRun).Item("Pos") Then npos = i
+                        'Next
+                        'TargetData(npos).Item("Typ") = InputData(iRun).Item("Typ")
                         TargetTypes(InputData(iRun).Item("Pos")) = InputData(iRun).Item("Typ")
                         Select Case InputData(iRun).Item("Typ")
                             Case "S"
@@ -4439,11 +4489,12 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
+
         If Not HaveRecords Then ' this must be second authorizer and new generation raw data storage
             Using con As New SqlConnection
                 Try
                     Dim theCmd As String = "SELECT  run_num, ok_calc_2, sample_type, sample_type_1, sample_type_2 " _
-                        & "FROM dbo.snics_raw WHERE wheel = '" & whlname & "' ORDER BY run_num;"
+                        & "FROM dbo.snics_raw" & TTE & " WHERE wheel = '" & whlname & "' ORDER BY run_num;"
                     con.ConnectionString = ConString
                     con.Open()
                     Dim com As IDbCommand = con.CreateCommand
@@ -4457,7 +4508,7 @@ Public Class SNICSrFrm
                             InputData(iRun).Item("Typ") = rdr.GetString(2)
                             If (analyst = FirstAuthName) And Not rdr.IsDBNull(3) Then InputData(iRun).Item("Typ") = rdr.GetString(3)
                             If (analyst = SecondAuthName) And Not rdr.IsDBNull(4) Then InputData(iRun).Item("Typ") = rdr.GetString(4)
-                            TargetData(InputData(iRun).Item("Pos")).Item("Typ") = InputData(iRun).Item("Typ")
+                            'TargetData(InputData(iRun).Item("Pos")).Item("Typ") = InputData(iRun).Item("Typ")
                             TargetTypes(InputData(iRun).Item("Pos")) = InputData(iRun).Item("Typ")
                             Select Case InputData(iRun).Item("Typ")
                                 Case "S"
@@ -4472,11 +4523,14 @@ Public Class SNICSrFrm
                         End While
                     End Using
                 Catch ex As Exception
-                    MsgBox("Pos2 " & vbCrLf & ex.Message)
+                    MsgBox("Pos2 " & iRun.ToString & " " & InputData(iRun).Item("Pos").ToString & vbCrLf & ex.Message & vbCrLf & ex.StackTrace)
                 End Try
                 con.Close()
             End Using
         End If
+        For Each row As DataRow In TargetData.Rows
+            row.Item("Typ") = TargetTypes(row.Item("Pos"))
+        Next row
         ColorizeTargets()
     End Sub
 
@@ -4487,10 +4541,10 @@ Public Class SNICSrFrm
                 Dim theCmd As String = ""
                 If IsFirstAuth Then
                     theCmd = "SELECT wheel_pos, np, ss " _
-                        & "FROM dbo.snics_results WHERE wheel = '" & whlname & "' AND analyst1 = '" & analyst & "' ORDER BY wheel_pos;"
+                        & "FROM dbo.snics_results" & TTE & " WHERE wheel = '" & whlname & "' AND analyst1 = '" & analyst & "' ORDER BY wheel_pos;"
                 Else
                     theCmd = "SELECT wheel_pos, np_2, ss_2 " _
-                        & "FROM dbo.snics_results WHERE wheel = '" & whlname & "' AND analyst2 = '" & analyst & "' ORDER BY wheel_pos;"
+                        & "FROM dbo.snics_results" & TTE & " WHERE wheel = '" & whlname & "' AND analyst2 = '" & analyst & "' ORDER BY wheel_pos;"
                 End If
                 con.ConnectionString = ConString
                 con.Open()
@@ -4656,7 +4710,7 @@ Public Class SNICSrFrm
                 com.CommandType = CommandType.Text
                 acmd = "SELECT run_num,  runtime, wheel_pos, group_num, mst_num, sample_name, sample_type, cycles, "
                 acmd &= "le12c, le13c, he12c, he13c, cnt_in, cnt_meas, cnt_14c, he13_12, he14_12, ltcorr, "
-                acmd &= "corr_14_12, sig_14_12, d13c, ok_calc, ok_calc_2, sample_type_1, sample_type_2 FROM dbo.snics_raw WHERE wheel = '" & wheelname
+                acmd &= "corr_14_12, sig_14_12, d13c, ok_calc, ok_calc_2, sample_type_1, sample_type_2 FROM dbo.snics_raw" & TTE & " WHERE wheel = '" & wheelname
                 acmd &= "' AND analyst = '" & GetWheelID(wheelname).FirstAuthName & "' ORDER BY run_num;"
                 com.CommandText = acmd
                 'MsgBox(acmd)
@@ -4745,15 +4799,15 @@ Public Class SNICSrFrm
                 com.CommandType = CommandType.Text
                 If REAUTH And FIRSTAUTH Then
                     acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro " _
-                        & " FROM dbo.snics_results WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
+                        & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 ElseIf REAUTH And SECONDAUTH Then
                     acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro " _
-                        & " FROM dbo.snics_results WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
+                        & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 Else
                     acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro " _
-                                        & " FROM dbo.snics_results WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
+                                        & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = False
                     'Exit Try
                 End If
@@ -4829,6 +4883,7 @@ Public Class SNICSrFrm
         dgvInputData.AutoResizeRows()
         UpdateDataListLabel()
         CollectRats()
+        AssignTargets()       ' find out if target exists
         PopulateTargets()
         GetWheelInfo(wheelname)
         SetUpStds()
@@ -4846,7 +4901,7 @@ Public Class SNICSrFrm
             CompareFlagsToolStripMenuItem.Visible = False
             FlagsToolStripMenuItem1.Visible = False
         End If
-        FindSmallTargets()
+        FindSmallSamples()       ' find out if target is small
         CommitGroupToDatabaseToolStripMenuItem.Enabled = False
         If Not FIRSTAUTH Then
             tspGroup.Visible = False
@@ -4868,7 +4923,7 @@ Public Class SNICSrFrm
                         con.Open()
                         Dim com As IDbCommand = con.CreateCommand
                         com.CommandType = CommandType.Text
-                        aCmd = "SELECT analyst1 FROM dbo.snics_results WHERE wheel = '" & WheelName & "';"
+                        aCmd = "SELECT analyst1 FROM dbo.snics_results" & TTE & " WHERE wheel = '" & WheelName & "';"
                         Using rdr As IDataReader = com.ExecuteReader
                             If rdr.GetString(0) <> "" Then
                                 MsgBox(rdr.GetString(0) & " Has already first analyzed this wheel")
@@ -4888,7 +4943,7 @@ Public Class SNICSrFrm
                         con.Open()
                         Dim com As IDbCommand = con.CreateCommand
                         com.CommandType = CommandType.Text
-                        aCmd = "SELECT analyst2 FROM dbo.snics_results WHERE wheel = '" & WheelName & "';"
+                        aCmd = "SELECT analyst2 FROM dbo.snics_results" & TTE & " WHERE wheel = '" & WheelName & "';"
                         Using rdr As IDataReader = com.ExecuteReader
                             If Not rdr.IsDBNull(0) <> "" Then
                                 MsgBox(rdr.GetString(0) & " Has already second analyzed this wheel")
@@ -4905,20 +4960,20 @@ Public Class SNICSrFrm
         End If
         If ISPARTIALWHEEL Then REAUTH = False ' this means we've loaded the rest of the story
         MakePatience()
-            Using con As New SqlConnection          ' first write to the raw data table (including flags)
-                Try
-                    con.ConnectionString = ConString
-                    con.Open()
-                    Dim com As IDbCommand = con.CreateCommand
-                    com.CommandType = CommandType.Text
-                    For i = 0 To InputData.Rows.Count - 1
-                        If (GroupNum = 0) Or (GroupNum = InputData.Rows(i).Item("Grp")) Then
-                            Dim theSampleName As String = InputData.Rows(i).Item("SampleName")
-                            theSampleName = theSampleName.Replace("'", "''")            ' for SQL syntax
-                            Dim ok_calc As String = "0"
-                            If InputData.Rows(i).Item("OK") Then ok_calc = "1"
+        Using con As New SqlConnection          ' first write to the raw data table (including flags)
+            Try
+                con.ConnectionString = ConString
+                con.Open()
+                Dim com As IDbCommand = con.CreateCommand
+                com.CommandType = CommandType.Text
+                For i = 0 To InputData.Rows.Count - 1
+                    If (GroupNum = 0) Or (GroupNum = InputData.Rows(i).Item("Grp")) Then
+                        Dim theSampleName As String = InputData.Rows(i).Item("SampleName")
+                        theSampleName = theSampleName.Replace("'", "''")            ' for SQL syntax
+                        Dim ok_calc As String = "0"
+                        If InputData.Rows(i).Item("OK") Then ok_calc = "1"
                         If FIRSTAUTH And (Not REAUTH) And RunNotAlreadyDone(i) Then
-                            aCmd = "INSERT INTO dbo.snics_raw (wheel, tp_num, ok_calc, run_num, runtime, wheel_pos, group_num, mst_num, " _
+                            aCmd = "INSERT INTO dbo.snics_raw" & TTE & " (wheel, tp_num, ok_calc, run_num, runtime, wheel_pos, group_num, mst_num, " _
                                         & "sample_name, sample_type_1, cycles, le12c, le13c, he12c, he13c, cnt_meas, cnt_in, cnt_14c, he13_12, he14_12, " _
                                         & "ltcorr, corr_14_12, sig_14_12, d13c, analyst, sample_type) " _
                                         & "values ( '" & WheelName & "', " & TP_Nums(i).ToString & ", " _
@@ -4933,10 +4988,10 @@ Public Class SNICSrFrm
                             Next
                             aCmd &= ", '" & UserName & "', '" & Samp_Typ(i).ToString & "');"
                         ElseIf FIRSTAUTH And REAUTH Then
-                            aCmd = "UPDATE dbo.snics_raw SET  ok_calc = " & ok_calc & ", sample_type_1 = '" & InputData(i).Item("Typ").ToString
+                            aCmd = "UPDATE dbo.snics_raw" & TTE & " SET  ok_calc = " & ok_calc & ", sample_type_1 = '" & InputData(i).Item("Typ").ToString
                             aCmd &= "' WHERE wheel = '" & WheelName & "' AND run_num = " & InputData(i).Item("Run").ToString & " AND analyst = '" & UserName & "';"
                         ElseIf SECONDAUTH Then
-                            aCmd = "UPDATE dbo.snics_raw SET  ok_calc_2 = " & ok_calc & ", sample_type_2 = '" & InputData(i).Item("Typ").ToString
+                            aCmd = "UPDATE dbo.snics_raw" & TTE & " SET  ok_calc_2 = " & ok_calc & ", sample_type_2 = '" & InputData(i).Item("Typ").ToString
                             aCmd &= "' WHERE wheel = '" & WheelName & "' AND run_num = " & InputData(i).Item("Run").ToString & " AND analyst = '" & FirstAuthName & "';"
                         End If
                         'MsgBox(aCmd)
@@ -4946,145 +5001,145 @@ Public Class SNICSrFrm
                             If ptr = 0 Then MsgBox("Error writing to Raw Table in Database: no rows saved" & vbCrLf & aCmd)
                         End If
                     End If
-                    Next
-                Catch ex As Exception
-                    MsgBox("Error writing to Raw Table in Database" & vbCrLf & aCmd & vbCrLf & ex.Message & vbCrLf & "Cleaning any raw data from database")
-                    If FIRSTAUTH And Not REAUTH Then ClearRawData()
-                    con.Close()
-                    End
-                End Try
+                Next
+            Catch ex As Exception
+                MsgBox("Error writing to Raw Table in Database" & vbCrLf & aCmd & vbCrLf & ex.Message & vbCrLf & "Cleaning any raw data from database")
+                If FIRSTAUTH And Not REAUTH Then ClearRawData()
                 con.Close()
-            End Using
-            Using con1 As New SqlConnection     ' next write to the results table
-                Try
-                    aCmd = "Connection details not entered"
-                    Dim theNormMethod As String = Trim(CalcMode)
-                    If GROUPBOUNDS Then theNormMethod &= " (GBE)"
-                    con1.ConnectionString = ConString
-                    con1.Open()
-                    Dim com As IDbCommand = con1.CreateCommand
-                    com.CommandType = CommandType.Text
-                    Dim CalcDate As String = Format(Now, "yyyy-MM-ddTHH:mm:ss")
-                    aCmd = "Entering results loop"
-                    For i = 0 To TargetData.Rows.Count - 1
-                        If (GroupNum = 0) Or (GroupNum = TargetGroups(i)) Then      ' only if doing all groups or a specified group
-                            aCmd = "Error accessing NonPerformance flags"
-                            Dim NonPerf As String = "0"
-                            If TargetNonPerf(i) Then NonPerf = "1"
-                            aCmd = "Error accessing IsSmall flags"
-                            Dim IsSmall As String = "0"
-                            If TargetIsSmall(i) Then IsSmall = "1"
-                            aCmd = "Error accessing TargetData SampleName"
-                            Dim theSampleName As String = TargetData.Rows(i).Item("SampleName")
-                            theSampleName = theSampleName.Replace("'", "''")        ' for SQL syntax
-                            FmCorr(i) = ReplNaN(FmCorr(i))      ' if it is a NaN, replace with 42
-                            SigFmCorr(i) = ReplNaN(SigFmCorr(i))
-                            LgBlkFm(i) = ReplNaN(LgBlkFm(i))
-                            SigLgBlkFm(i) = ReplNaN(SigLgBlkFm(i))
-                            FmMBCorr(i) = ReplNaN(FmMBCorr(i))
-                            SigFmMBCorr(i) = ReplNaN(SigFmMBCorr(i))
-                            MBBlkFm(i) = ReplNaN(MBBlkFm(i))
-                            SigMBBlkFm(i) = ReplNaN(SigMBBlkFm(i))
-                            MBBlkMass(i) = ReplNaN(MBBlkMass(i))
-                            SigMBBlkMass(i) = ReplNaN(SigMBBlkMass(i))
-                            NormRat(i) = ReplNaN(NormRat(i))
-                            IntErr(i) = ReplNaN(IntErr(i))
-                            ExtErr(i) = ReplNaN(ExtErr(i))
-                            If TargetComments(i) Is Nothing Then TargetComments(i) = ""
-                            Dim iPos As Integer = TargetData.Rows(i).Item("Pos")
-                            Dim RunDateTime As String = Date.FromOADate(TargetRunTimes(iPos)).ToString("yyyy-MM-ddTHH:mm:ss")
-                            If TargetIsReadOnly(iPos) Then
-                                NumNotSaved += 1
-                            Else
-                                If FIRSTAUTH Then
-                                    If Not REAUTH And TargetNotAlreadyRun(iPos) Then
-                                        If TargetIsSmall(iPos) Then
-                                            aCmd = "INSERT INTO dbo.snics_results (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
-                                                                 & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                                 & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
-                                                                 & "blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
-                                                                 & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
-                                                                 & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
-                                                                 & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
-                                                                 & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
-                                                                 & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
-                                                                 & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
-                                                                 & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
-                                                                 & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
-                                                                 & SigFmMBCorr(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
-                                                                 & MBBlkMass(iPos).ToString & ", " & SigMBBlkMass(iPos).ToString & ", '" & TargetComments(iPos).Trim _
-                                                                 & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
-                                        Else    ' need to put NULLs in the mass balance results
-                                            aCmd = "INSERT INTO dbo.snics_results (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
-                                                                & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                                & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
-                                                                & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
-                                                                & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
-                                                                & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
-                                                                & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
-                                                                & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
-                                                                & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
-                                                                & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
-                                                                & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
-                                                                & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
-                                        End If
-                                    Else
-                                        If TargetIsSmall(iPos) Then
-                                            aCmd = "UPDATE dbo.snics_results SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
-                                                                 & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
-                                                                 & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
-                                                                 & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
-                                                                 & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
-                                                                 & ", fm_corr = " & FmCorr(iPos).ToString & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", lg_blk_fm = " _
-                                                                 & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString & ", fm_mb_corr = " _
-                                                                 & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr = " & SigFmMBCorr(iPos).ToString & ", blank_fm = " _
-                                                                 & MBBlkFm(iPos).ToString & ", sig_blank_fm = " & SigMBBlkFm(iPos).ToString & ", blank_mass = " _
-                                                                 & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
-                                                                 & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
-                                                                 & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                                 & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                        Else
-                                            aCmd = "UPDATE dbo.snics_results SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
-                                                                  & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
-                                                                  & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
-                                                                  & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
-                                                                  & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
-                                                                  & ", fm_corr = " & FmCorr(iPos).ToString & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", lg_blk_fm = " _
-                                                                  & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString & ", fm_mb_corr = NULL" _
-                                                                  & ", sig_fm_mb_corr = NULL, blank_fm = NULL, sig_blank_fm = NULL, blank_mass = NULL" _
-                                                                  & ", sig_blank_mass = NULL, comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
-                                                                  & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                                  & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                        End If
-                                    End If
-                                    'MsgBox(aCmd)
-                                ElseIf SECONDAUTH Then
+                End
+            End Try
+            con.Close()
+        End Using
+        Using con1 As New SqlConnection     ' next write to the results table
+            Try
+                aCmd = "Connection details not entered"
+                Dim theNormMethod As String = Trim(CalcMode)
+                If GROUPBOUNDS Then theNormMethod &= " (GBE)"
+                con1.ConnectionString = ConString
+                con1.Open()
+                Dim com As IDbCommand = con1.CreateCommand
+                com.CommandType = CommandType.Text
+                Dim CalcDate As String = Format(Now, "yyyy-MM-ddTHH:mm:ss")
+                aCmd = "Entering results loop"
+                For i = 0 To TargetData.Rows.Count - 1
+                    If (GroupNum = 0) Or (GroupNum = TargetGroups(i)) Then      ' only if doing all groups or a specified group
+                        aCmd = "Error accessing NonPerformance flags"
+                        Dim NonPerf As String = "0"
+                        If TargetNonPerf(i) Then NonPerf = "1"
+                        aCmd = "Error accessing IsSmall flags"
+                        Dim IsSmall As String = "0"
+                        If TargetIsSmall(i) Then IsSmall = "1"
+                        aCmd = "Error accessing TargetData SampleName"
+                        Dim theSampleName As String = TargetData.Rows(i).Item("SampleName")
+                        theSampleName = theSampleName.Replace("'", "''")        ' for SQL syntax
+                        FmCorr(i) = ReplNaN(FmCorr(i))      ' if it is a NaN, replace with 42
+                        SigFmCorr(i) = ReplNaN(SigFmCorr(i))
+                        LgBlkFm(i) = ReplNaN(LgBlkFm(i))
+                        SigLgBlkFm(i) = ReplNaN(SigLgBlkFm(i))
+                        FmMBCorr(i) = ReplNaN(FmMBCorr(i))
+                        SigFmMBCorr(i) = ReplNaN(SigFmMBCorr(i))
+                        MBBlkFm(i) = ReplNaN(MBBlkFm(i))
+                        SigMBBlkFm(i) = ReplNaN(SigMBBlkFm(i))
+                        MBBlkMass(i) = ReplNaN(MBBlkMass(i))
+                        SigMBBlkMass(i) = ReplNaN(SigMBBlkMass(i))
+                        NormRat(i) = ReplNaN(NormRat(i))
+                        IntErr(i) = ReplNaN(IntErr(i))
+                        ExtErr(i) = ReplNaN(ExtErr(i))
+                        If TargetComments(i) Is Nothing Then TargetComments(i) = ""
+                        Dim iPos As Integer = TargetData.Rows(i).Item("Pos")
+                        Dim RunDateTime As String = Date.FromOADate(TargetRunTimes(iPos)).ToString("yyyy-MM-ddTHH:mm:ss")
+                        If TargetIsReadOnly(iPos) Then
+                            NumNotSaved += 1
+                        Else
+                            If FIRSTAUTH Then
+                                If Not REAUTH And TargetNotAlreadyRun(iPos) Then
                                     If TargetIsSmall(iPos) Then
-                                        aCmd = "UPDATE dbo.snics_results SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
-                                                            & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
-                                                            & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
-                                                            & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
-                                                            & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
-                                                            & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString & ", lg_blk_fm_2 = " _
-                                                            & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString & ", fm_mb_corr_2 = " _
-                                                            & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString & ", blank_fm_2 = " _
-                                                            & MBBlkFm(iPos).ToString & ", sig_blank_fm_2 = " & SigMBBlkFm(iPos).ToString & ", blank_mass_2 = " _
-                                                            & MBBlkMass(iPos).ToString & ", sig_blank_mass_2 = " & SigMBBlkMass(iPos).ToString _
-                                                            & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
-                                                            & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                            & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                    Else
-                                        aCmd = "UPDATE dbo.snics_results SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
-                                                            & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
-                                                            & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
-                                                            & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
-                                                            & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
-                                                            & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString & ", lg_blk_fm_2 = " _
-                                                            & "NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, blank_fm_2 = NULL," _
-                                                            & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
-                                                            & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                            & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
+                                                             & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
+                                                             & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
+                                                             & "blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
+                                                             & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
+                                                             & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
+                                                             & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
+                                                             & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
+                                                             & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
+                                                             & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
+                                                             & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
+                                                             & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
+                                                             & SigFmMBCorr(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
+                                                             & MBBlkMass(iPos).ToString & ", " & SigMBBlkMass(iPos).ToString & ", '" & TargetComments(iPos).Trim _
+                                                             & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
+                                    Else    ' need to put NULLs in the mass balance results
+                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
+                                                            & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
+                                                            & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
+                                                            & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
+                                                            & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
+                                                            & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
+                                                            & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
+                                                            & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
+                                                            & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
+                                                            & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
+                                                            & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
+                                                            & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
                                     End If
+                                Else
+                                    If TargetIsSmall(iPos) Then
+                                        aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
+                                                             & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
+                                                             & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
+                                                             & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
+                                                             & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
+                                                             & ", fm_corr = " & FmCorr(iPos).ToString & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", lg_blk_fm = " _
+                                                             & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString & ", fm_mb_corr = " _
+                                                             & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr = " & SigFmMBCorr(iPos).ToString & ", blank_fm = " _
+                                                             & MBBlkFm(iPos).ToString & ", sig_blank_fm = " & SigMBBlkFm(iPos).ToString & ", blank_mass = " _
+                                                             & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
+                                                             & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
+                                                             & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                             & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+                                    Else
+                                        aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
+                                                              & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
+                                                              & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
+                                                              & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
+                                                              & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
+                                                              & ", fm_corr = " & FmCorr(iPos).ToString & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", lg_blk_fm = " _
+                                                              & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString & ", fm_mb_corr = NULL" _
+                                                              & ", sig_fm_mb_corr = NULL, blank_fm = NULL, sig_blank_fm = NULL, blank_mass = NULL" _
+                                                              & ", sig_blank_mass = NULL, comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
+                                                              & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                              & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+                                    End If
+                                End If
+                                'MsgBox(aCmd)
+                            ElseIf SECONDAUTH Then
+                                If TargetIsSmall(iPos) Then
+                                    aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
+                                                        & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
+                                                        & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
+                                                        & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
+                                                        & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
+                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString & ", lg_blk_fm_2 = " _
+                                                        & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString & ", fm_mb_corr_2 = " _
+                                                        & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString & ", blank_fm_2 = " _
+                                                        & MBBlkFm(iPos).ToString & ", sig_blank_fm_2 = " & SigMBBlkFm(iPos).ToString & ", blank_mass_2 = " _
+                                                        & MBBlkMass(iPos).ToString & ", sig_blank_mass_2 = " & SigMBBlkMass(iPos).ToString _
+                                                        & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
+                                                        & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                        & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+                                Else
+                                    aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
+                                                        & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
+                                                        & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
+                                                        & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
+                                                        & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
+                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString & ", lg_blk_fm_2 = " _
+                                                        & "NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, blank_fm_2 = NULL," _
+                                                        & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
+                                                        & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                        & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+                                End If
                             End If
                             If TargetNotAlreadyRun(i) Then
                                 com.CommandText = aCmd
@@ -5092,45 +5147,45 @@ Public Class SNICSrFrm
                                 If ptr = 0 Then MsgBox("Did not update any rows")
                             End If
                         End If
-                        End If
-                    Next
-                    If NumNotSaved <> 0 Then
-                        MsgBox("WARNING: " & NumNotSaved.ToString & " RESULTS WERE NOT SAVED TO DATABASE (ReadOnly)")
-                    Else
-                        MsgBox("Your results have been saved to the database" & vbCrLf & "Thank you for using SNICSer!")
                     End If
-                Catch ex As Exception
-                    MsgBox("Error writing to Results Table in Database" & vbCrLf & ex.Message & vbCrLf & ex.StackTrace & vbCrLf & aCmd & vbCrLf & "Cleaning all data from database")
-                    If FIRSTAUTH And Not REAUTH Then
-                        ClearRawData()
-                        ClearResults()
-                    End If
-                End Try
-                con1.Close()
-            End Using
-            SAVEDTODATABASE = True
+                Next
+                If NumNotSaved <> 0 Then
+                    MsgBox("WARNING: " & NumNotSaved.ToString & " RESULTS WERE NOT SAVED TO DATABASE (ReadOnly)")
+                Else
+                    MsgBox("Your results have been saved to the database" & vbCrLf & "Thank you for using SNICSer!")
+                End If
+            Catch ex As Exception
+                MsgBox("Error writing to Results Table in Database" & vbCrLf & ex.Message & vbCrLf & ex.StackTrace & vbCrLf & aCmd & vbCrLf & "Cleaning all data from database")
+                If FIRSTAUTH And Not REAUTH Then
+                    ClearRawData()
+                    ClearResults()
+                End If
+            End Try
+            con1.Close()
+        End Using
+        SAVEDTODATABASE = True
         'PrintDatabaseImportFile(GroupNum) 'Don't need db files anymore
-            tspPrint.Visible = True
-            If FIRSTAUTH Then
-                With FrmNotify2ndAuth
-                    .lblNotify.Text = "Do you wish to (email) notify the 2nd Analyst?"
-                    .lbx2ndAuth.Text = ""
-                    .ShowDialog() ' present them with the option to send an automatic email
-                End With
-            End If
-            If SECONDAUTH Then
-                With FrmNotify2ndAuth
-                    .lblNotify.Text = "Do you wish to (email) notify the 1st Analyst?"
-                    .lbx2ndAuth.Text = TheWheel.FirstAuthName
-                    .ShowDialog()
-                End With
-            End If
+        frmPatience.Visible = False         ' disappear the Snickers
+        Me.Enabled = True
+        tspPrint.Visible = True
+        If FIRSTAUTH Then
+            With FrmNotify2ndAuth
+                .lblNotify.Text = "Do you wish to (email) notify the 2nd Analyst?"
+                .lbx2ndAuth.Text = ""
+                .ShowDialog() ' present them with the option to send an automatic email
+            End With
+        End If
+        If SECONDAUTH Then
+            With FrmNotify2ndAuth
+                .lblNotify.Text = "Do you wish to (email) notify the 1st Analyst?"
+                .lbx2ndAuth.Text = TheWheel.FirstAuthName
+                .ShowDialog()
+            End With
+        End If
         ISPARTIALWHEEL = False
         ' clear this in case you've just updated a partial wheel
         REAUTH = True
         ' Set reauth to prevent first write issue if wheel is not reloaded
-        'doLoad()
-        'End
     End Sub    ' Save data to database
 
     Private Function RunNotAlreadyDone(iRun As Integer) As Boolean
@@ -5181,13 +5236,13 @@ Public Class SNICSrFrm
         Dim nRow As Integer = 0
         Using con As New SqlConnection
             Try
-                Dim theCmd As String = "SELECT dbo.snics_results.wheel_pos,  dbo.snics_results.sample_type, " _
-                    & "dbo.snics_results.num_runs, " _
-                    & "dbo.snics_results.norm_ratio, dbo.snics_results.int_err, dbo.snics_results.ext_err, " _
-                    & "dbo.snics_results.del_13C, dbo.snics_results.sig_13c, dbo.snics_results.comment, dbo.snics_results.np, " _
-                    & "dbo.snics_results.sample_type_1, dbo.snics_results.norm_method, dbo.snics_results.norm_method_2" _
-                    & " FROM dbo.snics_results  WHERE dbo.snics_results.wheel = '" & WheelName _
-                    & "' ORDER BY dbo.snics_results.wheel_pos;"
+                Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  dbo.snics_results" & TTE & ".sample_type, " _
+                    & "dbo.snics_results" & TTE & ".num_runs, " _
+                    & "dbo.snics_results" & TTE & ".norm_ratio, dbo.snics_results" & TTE & ".int_err, dbo.snics_results" & TTE & ".ext_err, " _
+                    & "dbo.snics_results" & TTE & ".del_13C, dbo.snics_results" & TTE & ".sig_13c, dbo.snics_results" & TTE & ".comment, dbo.snics_results" & TTE & ".np, " _
+                    & "dbo.snics_results" & TTE & ".sample_type_1, dbo.snics_results" & TTE & ".norm_method, dbo.snics_results" & TTE & ".norm_method_2" _
+                    & " FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
+                    & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -5285,9 +5340,9 @@ Public Class SNICSrFrm
         Using con As New SqlConnection
             Try
                 If (SECONDAUTH And Not REAUTH) Or (Not FIRSTAUTH And Not SECONDAUTH) Then       ' need to compare current results with first analyst
-                    Dim theCmd As String = "SELECT dbo.snics_results.wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr, comment, ss " _
-                        & "FROM dbo.snics_results  WHERE dbo.snics_results.wheel = '" & WheelName _
-                        & "' ORDER BY dbo.snics_results.wheel_pos;"
+                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr, comment, ss " _
+                        & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
+                        & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                     con.ConnectionString = ConString
                     con.Open()
                     Dim com As IDbCommand = con.CreateCommand
@@ -5331,10 +5386,10 @@ Public Class SNICSrFrm
                         End While
                     End Using
                 ElseIf (FIRSTAUTH And REAUTH) Or (SECONDAUTH And REAUTH) Then     ' need to work from database only
-                    Dim theCmd As String = "SELECT dbo.snics_results.wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr," _
+                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr," _
                                             & "fm_corr_2, sig_fm_corr_2, fm_mb_corr_2, sig_fm_mb_corr_2, comment, ss, ss_2 " _
-                                            & "FROM dbo.snics_results  WHERE dbo.snics_results.wheel = '" & WheelName _
-                                            & "' ORDER BY dbo.snics_results.wheel_pos;"
+                                            & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
+                                            & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                     con.ConnectionString = ConString
                     con.Open()
                     Dim com As IDbCommand = con.CreateCommand
@@ -5421,15 +5476,19 @@ Public Class SNICSrFrm
                 .dgvFlags.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
             Next
             .dgvFlags.Columns(1).AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-            For i = 0 To TargetData.Rows.Count - 1
-                FlagTable.Rows.Add(TargetData.Rows(i).Item("Pos"), TargetData.Rows(i).Item("SampleName"))
-                .dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
+            For i = 0 To MAXTARGETS
+                'If TargetIsPresent(i) Then
+                'Dim ipos As Integer = TargetData(i).Item("Pos")
+                FlagTable.Rows.Add(i, TargetNames(i))
+                '.dgvFlags.Rows(i).DefaultCellStyle.BackColor = dgvTargets.Rows(i).DefaultCellStyle.BackColor
+                'End If
+
             Next
         End With
         Using con As New SqlConnection
             Try
                 theCmd = "SELECT DISTINCT run_num, ok_calc, ok_calc_2, wheel_pos" _
-                    & " FROM dbo.snics_raw WHERE wheel = '" & WheelName & "' ORDER BY run_num;"
+                    & " FROM dbo.snics_raw" & TTE & " WHERE wheel = '" & WheelName & "' ORDER BY run_num;"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -5440,6 +5499,7 @@ Public Class SNICSrFrm
                         If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
                             iPos = rdr.GetByte(3)
                             RunNums(iPos) += 1              ' increment the run count
+
                             FlagTable(iPos).Item(RunNums(iPos).ToString) = "X"
                             iFirst = rdr.GetByte(1)
                             iSecond = rdr.GetByte(2)
@@ -5463,6 +5523,12 @@ Public Class SNICSrFrm
             End Try
             con.Close()
         End Using
+        For i = 0 To CompareFlags.dgvFlags.Rows.Count - 1
+            If RunNums(i) <= 0 Then
+                CompareFlags.dgvFlags.Rows.Item(i).Visible = False
+            End If
+        Next
+
     End Sub
 
 
@@ -5803,7 +5869,7 @@ Public Class SNICSrFrm
                     PopRuns(TargetData(e.RowIndex).Item("Pos"))
                 End If
             Else        ' must be designating/clearing a non performer!
-                TargetNonPerf(TargetData(e.RowIndex).Item("Pos")) = Not TargetNonPerf(e.RowIndex)
+                TargetNonPerf(TargetData(e.RowIndex).Item("Pos")) = Not TargetNonPerf(TargetData(e.RowIndex).Item("Pos"))
                 TargetData(e.RowIndex).Item("NP") = TargetNonPerf(TargetData(e.RowIndex).Item("Pos"))
                 ColorizeTargets()
                 DeBlankCorr()             ' make sure you have to blank correct again
@@ -5818,6 +5884,12 @@ Public Class SNICSrFrm
 
     Private Sub dgvTargets_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgvTargets.ColumnHeaderMouseClick
         If TargetData.Columns.Count - e.ColumnIndex < 4 Then PlotDelC13s()
+    End Sub
+
+    Private Sub chkTargets_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkStandards.CheckedChanged, _
+                    chkBlanks.CheckedChanged, chkSecondaries.CheckedChanged, chkUnknowns.CheckedChanged
+        DeBlankCorr()             ' make sure you have to blank correct again
+        If Not FirstTimeThrough And Not IamBatching Then RePopulateTargets()
     End Sub
 
     Private Sub dgvRuns_CurrentCellDirtyStateChanged(sender As System.Object, e As System.EventArgs) Handles dgvRuns.CurrentCellDirtyStateChanged
@@ -5900,11 +5972,6 @@ Public Class SNICSrFrm
         PopRuns(posn)
     End Sub
 
-    Private Sub chkTargets_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkStandards.CheckedChanged, _
-                    chkBlanks.CheckedChanged, chkSecondaries.CheckedChanged, chkUnknowns.CheckedChanged
-        DeBlankCorr()             ' make sure you have to blank correct again
-        If Not FirstTimeThrough And Not IamBatching Then RePopulateTargets()
-    End Sub
 
 
 #End Region
@@ -6503,9 +6570,11 @@ Public Class SNICSrFrm
         chkSecondaries.Checked = True
         chkUnknowns.Checked = True
         MakeMeSmall()
+        ofdLoadFile.CheckFileExists = True
+        ofdLoadFile.CheckPathExists = True
         ofdLoadFile.ShowDialog()
         FileName = ofdLoadFile.FileName
-        LoadRawDataFromFile(FileName)
+        If FileName <> "" Then LoadRawDataFromFile(FileName)
     End Sub
 
     Private Sub tspWriteDatabaseImportFile_Click(sender As Object, e As EventArgs) Handles tspWriteDatabaseImportFile.Click
@@ -6540,11 +6609,6 @@ Public Class SNICSrFrm
         FillInC13Table()
     End Sub
 
-#End Region  ' respond to menu selections
-
-#End Region ' respond to use clicks and selections
-
-
     Private Sub CommitGroupToDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CommitGroupToDatabaseToolStripMenuItem.Click
         If FIRSTAUTH And Not REAUTH Then
             With frmGroupCommit
@@ -6556,7 +6620,6 @@ Public Class SNICSrFrm
             End With
         End If
     End Sub
-
 
     Private Sub LoadRestOfRawDataFromFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadRestOfRawDataFromFileToolStripMenuItem.Click
         Dim ires As MsgBoxResult = MsgBox("This will load the rest of the raw data from file but keep already promoted data/runs", MsgBoxStyle.OkCancel)
@@ -6586,5 +6649,8 @@ Public Class SNICSrFrm
         End If
     End Sub
 
+#End Region  ' respond to menu selections
+
+#End Region ' respond to use clicks and selections
 
 End Class
