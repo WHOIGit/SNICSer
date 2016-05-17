@@ -6653,4 +6653,10 @@ Public Class SNICSrFrm
 
 #End Region ' respond to use clicks and selections
 
+    Function calcTotErr(Fm, RepErr, ResErr) As Integer
+        ' calculate total error for a target, given reported and residual error
+        Return Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
+    End Function
+
+
 End Class
