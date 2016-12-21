@@ -2856,10 +2856,13 @@ Public Class SNICSrFrm
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If GroupAvgStdFm(iGrp) <> 0 Then
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = 0.0026 '.tbResErr.Text()
                     .tblGroup(iGrp)(iRow).Item("Fm_Corr") = LargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp), .tblGroup(iGrp)(iRow).Item("Max_Err"), .tblGroup(iGrp)(iRow).Item("SigFmBgnd"))
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = calcTotErr(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
+                                                                                                 .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
                     SigFmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
                     .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
@@ -2892,6 +2895,8 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = calcTotErr(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
+                                                                                                 .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
                     SigFmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
                     MBBlkFm(iPos) = MBCFm(iPos)
@@ -2979,14 +2984,17 @@ Public Class SNICSrFrm
             .Columns.Add("SigFmBgnd", GetType(Double))
             .Columns.Add("Fm_Corr", GetType(Double))
             .Columns.Add("Sig_Fm_Corr", GetType(Double))
+            .Columns.Add("Res_Err", GetType(Double))
             If isGrpTbl Then
                 .Columns.Add("Fm_MBC", GetType(Double))
                 .Columns.Add("Sig_Fm_MBC", GetType(Double))
+                .Columns.Add("Sig_Fm_MBC_RE", GetType(Double))
                 .Columns.Add("Mass_MBC", GetType(Double))
                 .Columns.Add("Sig_Mass_MBC", GetType(Double))
             End If
             .Columns.Add("Fm_Blk_Corr", GetType(Double))
             .Columns.Add("Sig_Fm_Blk_Corr", GetType(Double))
+            .Columns.Add("Sig_Fm_Blk_Corr_RE", GetType(Double))
             .Columns.Add("Libby_Age", GetType(String))
             .Columns.Add("Sig_Libby_Age", GetType(Double))
             .Columns.Add("Fm_Expected", GetType(Double))
@@ -6658,5 +6666,12 @@ Public Class SNICSrFrm
         Return Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
     End Function
 
-
+    'Public Sub doResErrCorr(iGrp As Integer, iRow As Integer)
+    '    With frmBlankCorr
+    '        Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
+    '        If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
+    '            .tblGroup(iGrp)(iRow).Item("Sig_Fm_Res_Err_Corr") = calcTotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Res_Err"))
+    '        End If
+    '    End With
+    'End Sub
 End Class
