@@ -5360,7 +5360,7 @@ Public Class SNICSrFrm
                                     NewRow("1stFmCorr") = rdr.GetDouble(1)
                                     NewRow("1stSigFmCorr") = rdr.GetDouble(2)
                                     If TargetIsSmall(nPos) Then
-                                        If Not IsDBNull(rdr.GetDouble(3)) And Not IsDBNull(rdr.GetDouble(4)) Then
+                                        If rdr.GetByte(6) = 1 Then
                                             NewRow("1stFmCorr") = rdr.GetDouble(3)
                                             NewRow("1stSigFmCorr") = rdr.GetDouble(4)
                                         End If
