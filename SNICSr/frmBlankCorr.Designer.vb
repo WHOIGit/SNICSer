@@ -41,7 +41,6 @@ Partial Class frmBlankCorr
         Me.dgvWatson = New System.Windows.Forms.DataGridView()
         Me.chkLockAll = New System.Windows.Forms.CheckBox()
         Me.tbResErr = New System.Windows.Forms.TextBox()
-        Me.cbApplyResErr = New System.Windows.Forms.CheckBox()
         Me.lblResErr = New System.Windows.Forms.Label()
         CType(Me.dgvStandards, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tbcGroups.SuspendLayout()
@@ -257,20 +256,10 @@ Partial Class frmBlankCorr
         Me.tbResErr.TabIndex = 13
         Me.tbResErr.Text = "0.0026"
         '
-        'cbApplyResErr
-        '
-        Me.cbApplyResErr.AutoSize = True
-        Me.cbApplyResErr.Location = New System.Drawing.Point(12, 76)
-        Me.cbApplyResErr.Name = "cbApplyResErr"
-        Me.cbApplyResErr.Size = New System.Drawing.Size(87, 17)
-        Me.cbApplyResErr.TabIndex = 14
-        Me.cbApplyResErr.Text = "Apply ResErr"
-        Me.cbApplyResErr.UseVisualStyleBackColor = True
-        '
         'lblResErr
         '
         Me.lblResErr.AutoSize = True
-        Me.lblResErr.Location = New System.Drawing.Point(9, 40)
+        Me.lblResErr.Location = New System.Drawing.Point(12, 40)
         Me.lblResErr.Name = "lblResErr"
         Me.lblResErr.Size = New System.Drawing.Size(73, 13)
         Me.lblResErr.TabIndex = 15
@@ -283,7 +272,6 @@ Partial Class frmBlankCorr
         Me.ClientSize = New System.Drawing.Size(1814, 1039)
         Me.ControlBox = False
         Me.Controls.Add(Me.lblResErr)
-        Me.Controls.Add(Me.cbApplyResErr)
         Me.Controls.Add(Me.tbResErr)
         Me.Controls.Add(Me.chkLockAll)
         Me.Controls.Add(Me.dgvWatson)
@@ -320,6 +308,5 @@ Partial Class frmBlankCorr
     Friend WithEvents dgvWatson As System.Windows.Forms.DataGridView
     Friend WithEvents chkLockAll As System.Windows.Forms.CheckBox
     Friend WithEvents tbResErr As System.Windows.Forms.TextBox
-    Friend WithEvents cbApplyResErr As System.Windows.Forms.CheckBox
     Friend WithEvents lblResErr As System.Windows.Forms.Label
 End Class

@@ -2861,7 +2861,7 @@ Public Class SNICSrFrm
                                                                             GroupAvgStdFm(iGrp))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp), .tblGroup(iGrp)(iRow).Item("Max_Err"), .tblGroup(iGrp)(iRow).Item("SigFmBgnd"))
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = calcTotErr(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
                     SigFmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
@@ -2895,7 +2895,7 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = calcTotErr(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"), _
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
                     SigFmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
@@ -2938,6 +2938,7 @@ Public Class SNICSrFrm
                 SigFmMBCorr(iPos) = -99
                 .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = DBNull.Value
+                .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                 .tblGroup(iGrp)(iRow).Item("Sig_Libby_Age") = SigLibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                 .tblGroup(iGrp)(iRow).Item("Fm_MBC") = DBNull.Value
@@ -2984,11 +2985,11 @@ Public Class SNICSrFrm
             .Columns.Add("SigFmBgnd", GetType(Double))
             .Columns.Add("Fm_Corr", GetType(Double))
             .Columns.Add("Sig_Fm_Corr", GetType(Double))
+            .Columns.Add("Sig_Fm_Corr_RE", GetType(Double))
             .Columns.Add("Res_Err", GetType(Double))
             If isGrpTbl Then
                 .Columns.Add("Fm_MBC", GetType(Double))
                 .Columns.Add("Sig_Fm_MBC", GetType(Double))
-                .Columns.Add("Sig_Fm_MBC_RE", GetType(Double))
                 .Columns.Add("Mass_MBC", GetType(Double))
                 .Columns.Add("Sig_Mass_MBC", GetType(Double))
             End If
@@ -3002,6 +3003,7 @@ Public Class SNICSrFrm
             .Columns.Add("Sigma_Val", GetType(Double))
             .Columns("Fm_Blk_Corr").AllowDBNull = True
             .Columns("Sig_Fm_Blk_Corr").AllowDBNull = True
+            .Columns("Sig_Fm_Blk_Corr_RE").AllowDBNull = True
             If isGrpTbl Then
                 .Columns("Fm_MBC").AllowDBNull = True
                 .Columns("Mass_MBC").AllowDBNull = True
@@ -3116,6 +3118,11 @@ Public Class SNICSrFrm
         SigFmMassBal = SigFmC ^ 2 * (1 + Mb / M) ^ 2 + SigMass ^ 2 * ((FmC - FmB) * Mb / M ^ 2) ^ 2 _
                         + SigFmB ^ 2 * (Mb / M) ^ 2 + SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
         If SigFmMassBal > 0 Then SigFmMassBal = SigFmMassBal ^ 0.5
+    End Function
+
+    Public Function TotErr(Fm As Double, RepErr As Double, ResErr As Double) As Integer
+        ' calculate total error for a target, given reported and residual error
+        TotErr = Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
     End Function
 
     Private Sub AssignGroupsToTargets()
@@ -6661,17 +6668,4 @@ Public Class SNICSrFrm
 
 #End Region ' respond to use clicks and selections
 
-    Function calcTotErr(Fm, RepErr, ResErr) As Integer
-        ' calculate total error for a target, given reported and residual error
-        Return Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
-    End Function
-
-    'Public Sub doResErrCorr(iGrp As Integer, iRow As Integer)
-    '    With frmBlankCorr
-    '        Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
-    '        If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
-    '            .tblGroup(iGrp)(iRow).Item("Sig_Fm_Res_Err_Corr") = calcTotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Res_Err"))
-    '        End If
-    '    End With
-    'End Sub
 End Class
