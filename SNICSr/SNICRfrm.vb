@@ -2860,7 +2860,7 @@ Public Class SNICSrFrm
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If GroupAvgStdFm(iGrp) <> 0 Then
-                    .tblGroup(iGrp)(iRow).Item("Res_Err") = 0.0026 '.tbResErr.Text()
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = CDbl(.tbResErr.Text)
                     .tblGroup(iGrp)(iRow).Item("Fm_Corr") = LargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
@@ -3128,7 +3128,7 @@ Public Class SNICSrFrm
         If SigFmMassBal > 0 Then SigFmMassBal = SigFmMassBal ^ 0.5
     End Function
 
-    Public Function TotErr(Fm As Double, RepErr As Double, ResErr As Double) As Integer
+    Public Function TotErr(Fm As Double, RepErr As Double, ResErr As Double) As Double
         ' calculate total error for a target, given reported and residual error
         TotErr = Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
     End Function
