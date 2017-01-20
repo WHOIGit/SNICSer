@@ -242,10 +242,12 @@ Public Class SNICSrFrm
 #Region "Blank Corrections"
     Public FmCorr(MAXTARGETS) As Double                ' fraction modern large blank corrected
     Public SigFmCorr(MAXTARGETS) As Double             ' uncertainty in above
+    Public SigFmCorrRE(MAXTARGETS) As Double           ' uncertainty in above with residual error
     Public LgBlkFm(MAXTARGETS) As Double               ' large blank Fm applied
     Public SigLgBlkFm(MAXTARGETS) As Double            ' uncertainty in above
     Public FmMBCorr(MAXTARGETS) As Double              ' fraction modern corrected for mass balance blank
     Public SigFmMBCorr(MAXTARGETS) As Double           ' uncertainty in above
+    Public SigFmMBCorrRE(MAXTARGETS) As Double         ' uncertainty in above with residual error
     Public MBBlkFm(MAXTARGETS) As Double               ' mass balance blank Fm applied
     Public SigMBBlkFm(MAXTARGETS) As Double            ' uncertainty in above
     Public MBBlkMass(MAXTARGETS) As Double             ' mass balance blank mass applied
@@ -917,12 +919,14 @@ Public Class SNICSrFrm
         For i = 0 To FmCorr.Length - 1
             FmCorr(i) = 0
             SigFmCorr(i) = 0
+            SigFmCorrRE(i) = 0
             LgBlkFm(i) = 0
             SigLgBlkFm(i) = 0
             FmMBCorr(i) = -99
             SigFmMBCorr(i) = -99
             MBBlkFm(i) = 0
             SigFmMBCorr(i) = 0
+            SigFmMBCorrRE(i) = 0
             MBBlkMass(i) = 0
             SigMBBlkMass(i) = 0
             SigTargetMass(i) = 0
@@ -2865,6 +2869,7 @@ Public Class SNICSrFrm
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
                     SigFmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
+                    SigFmCorrRE(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE")
                     .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Libby_Age") = SigLibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                     LgBlkFm(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Bgnd")
@@ -2900,6 +2905,7 @@ Public Class SNICSrFrm
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
                     SigFmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
+                    SigFmMBCorrRE(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE")
                     MBBlkFm(iPos) = MBCFm(iPos)
                     SigMBBlkFm(iPos) = MBCFmSig(iPos)
                     MBBlkMass(iPos) = MBCMass(iPos)
@@ -2937,6 +2943,7 @@ Public Class SNICSrFrm
                 TargetIsSmall(iPos) = False
                 FmMBCorr(iPos) = -99
                 SigFmMBCorr(iPos) = -99
+                SigFmMBCorrRE(iPos) = -99
                 .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = DBNull.Value
@@ -6309,12 +6316,14 @@ Public Class SNICSrFrm
                                         If .Item("Pos") = iPos Then
                                             .Item("Fm_Corr") = FmCorr(iPos)
                                             .Item("Sig_Fm_Corr") = SigFmCorr(iPos)
+                                            .Item("Sig_Fm_Corr_RE") = SigFmCorrRE(iPos)
                                             .Item("Fm_Bgnd") = LgBlkFm(iPos)
                                             .Item("SigFmBgnd") = SigLgBlkFm(iPos)
                                             If TargetIsSmall(iPos) Then
                                                 .Item("Sm") = True
                                                 .Item("Fm_Blk_Corr") = FmMBCorr(iPos)
                                                 .Item("Sig_Fm_Blk_Corr") = SigFmMBCorr(iPos)
+                                                .Item("Sig_Fm_Blk_Corr_RE") = SigFmMBCorrRE(iPos)
                                             End If
                                         End If
                                     End With
