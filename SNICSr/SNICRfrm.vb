@@ -2892,6 +2892,7 @@ Public Class SNICSrFrm
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
                     'TargetIsSmall(iPos) = True
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = 0.0026 '.tbResErr.Text()
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
@@ -3021,7 +3022,7 @@ Public Class SNICSrFrm
             .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
             .RowHeadersVisible = False
             .Anchor = AnchorStyles.Right + AnchorStyles.Top + AnchorStyles.Left
-            .Columns(3).DefaultCellStyle.Format = "0"
+            .Columns(3).DefaultCellStyle.Format = "0.00000"
             For iCol = 4 To 7
                 .Columns(iCol).DefaultCellStyle.Format = "0.0000"
             Next
@@ -3031,14 +3032,14 @@ Public Class SNICSrFrm
             For iCol = 10 To 11
                 .Columns(iCol).DefaultCellStyle.Format = "0"
             Next
-            For iCol = 13 To 18
+            For iCol = 13 To 21
                 .Columns(iCol).DefaultCellStyle.Format = "0.00000"
             Next
-            .Columns(19).DefaultCellStyle.Format = "0"
-            .Columns(20).DefaultCellStyle.Format = "0"
-            .Columns(21).DefaultCellStyle.Format = "0.00000"
-            .Columns(22).DefaultCellStyle.Format = "0.00000"
-            .Columns(23).DefaultCellStyle.Format = "0.00"
+            .Columns(22).DefaultCellStyle.Format = "0"
+            .Columns(23).DefaultCellStyle.Format = "0"
+            .Columns(24).DefaultCellStyle.Format = "0.00000"
+            .Columns(25).DefaultCellStyle.Format = "0.00000"
+            .Columns(26).DefaultCellStyle.Format = "0.000"
             If isGrpTbl Then
                 .Columns(4).DefaultCellStyle.Format = "0"
                 For iCol = 5 To 8
@@ -3050,20 +3051,20 @@ Public Class SNICSrFrm
                 For iCol = 11 To 12
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 14 To 17
+                For iCol = 14 To 20
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                For iCol = 18 To 21
+                For iCol = 21 To 24
                     .Columns(iCol).DefaultCellStyle.Format = "0.000"
                 Next
-                For iCol = 22 To 23
+                For iCol = 25 To 26
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(24).DefaultCellStyle.Format = "0"
-                .Columns(25).DefaultCellStyle.Format = "0"
-                .Columns(26).DefaultCellStyle.Format = "0.00000"
-                .Columns(27).DefaultCellStyle.Format = "0.00000"
-                .Columns(28).DefaultCellStyle.Format = "0.00"
+                .Columns(27).DefaultCellStyle.Format = "0"
+                .Columns(28).DefaultCellStyle.Format = "0"
+                .Columns(29).DefaultCellStyle.Format = "0.00000"
+                .Columns(30).DefaultCellStyle.Format = "0.00000"
+                .Columns(31).DefaultCellStyle.Format = "0.00"
             End If
             If theTbl Is frmBlankCorr.tblBlanks Then
                 .Columns(4).DefaultCellStyle.Format = "0"
@@ -3076,14 +3077,14 @@ Public Class SNICSrFrm
                 For iCol = 11 To 12
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 14 To 19
+                For iCol = 14 To 21
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(20).DefaultCellStyle.Format = "0"
-                .Columns(21).DefaultCellStyle.Format = "0"
-                .Columns(22).DefaultCellStyle.Format = "0.00000"
-                .Columns(23).DefaultCellStyle.Format = "0.00000"
-                .Columns(24).DefaultCellStyle.Format = "0.00"
+                .Columns(22).DefaultCellStyle.Format = "0"
+                .Columns(23).DefaultCellStyle.Format = "0"
+                .Columns(24).DefaultCellStyle.Format = "0.00000"
+                .Columns(25).DefaultCellStyle.Format = "0.00000"
+                .Columns(26).DefaultCellStyle.Format = "0.000"
 
             End If
             For i = 0 To theDGV.Columns.Count - 1
