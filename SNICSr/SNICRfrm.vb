@@ -2666,7 +2666,7 @@ Public Class SNICSrFrm
                         .tblInorganic(0).Item(2) /= (SumErrInorg - 1) ^ 0.5        ' to convert to stdev
                     End If
                 End If
-                If .tblInorganic(0).Item(2) < SumInorg / 3.0 Then .tblInorganic(0).Item(2) = SumInorg / 3.0 ' an error floor
+                If .tblInorganic(0).Item(2) < SumInorg / 2.0 Then .tblInorganic(0).Item(2) = SumInorg / 2.0 ' an error floor
             End If
             If SumErrOrg > 0 Then
                 SumOrg /= SumErrOrg
@@ -2679,7 +2679,7 @@ Public Class SNICSrFrm
                         .tblOrganic(0).Item(2) /= (SumErrOrg - 1) ^ 0.5         ' to convert to stdev
                     End If
                 End If
-                If .tblOrganic(0).Item(2) < SumOrg / 3.0 Then .tblOrganic(0).Item(2) = SumOrg / 3.0 ' an error floor
+                If .tblOrganic(0).Item(2) < SumOrg / 2.0 Then .tblOrganic(0).Item(2) = SumOrg / 2.0 ' an error floor
             End If
             If SumErrWat > 0 Then
                 SumWat /= SumErrWat
@@ -2692,7 +2692,7 @@ Public Class SNICSrFrm
                         .tblWatson(0).Item(2) /= (SumErrWat - 1) ^ 0.5
                     End If
                 End If
-                If .tblWatson(0).Item(2) < SumWat / 3.0 Then .tblWatson(0).Item(2) = SumWat / 3.0 'an error floor
+                If .tblWatson(0).Item(2) < SumWat / 2.0 Then .tblWatson(0).Item(2) = SumWat / 2.0 'an error floor
             End If
             For i = 0 To .tblBlanks.Rows.Count - 1
                 Dim iPos As Integer = .tblBlanks(i).Item("Pos")
