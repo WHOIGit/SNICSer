@@ -242,10 +242,12 @@ Public Class SNICSrFrm
 #Region "Blank Corrections"
     Public FmCorr(MAXTARGETS) As Double                ' fraction modern large blank corrected
     Public SigFmCorr(MAXTARGETS) As Double             ' uncertainty in above
+    Public SigFmCorrRE(MAXTARGETS) As Double           ' uncertainty in above with residual error
     Public LgBlkFm(MAXTARGETS) As Double               ' large blank Fm applied
     Public SigLgBlkFm(MAXTARGETS) As Double            ' uncertainty in above
     Public FmMBCorr(MAXTARGETS) As Double              ' fraction modern corrected for mass balance blank
     Public SigFmMBCorr(MAXTARGETS) As Double           ' uncertainty in above
+    Public SigFmMBCorrRE(MAXTARGETS) As Double         ' uncertainty in above with residual error
     Public MBBlkFm(MAXTARGETS) As Double               ' mass balance blank Fm applied
     Public SigMBBlkFm(MAXTARGETS) As Double            ' uncertainty in above
     Public MBBlkMass(MAXTARGETS) As Double             ' mass balance blank mass applied
@@ -917,12 +919,14 @@ Public Class SNICSrFrm
         For i = 0 To FmCorr.Length - 1
             FmCorr(i) = 0
             SigFmCorr(i) = 0
+            SigFmCorrRE(i) = 0
             LgBlkFm(i) = 0
             SigLgBlkFm(i) = 0
             FmMBCorr(i) = -99
             SigFmMBCorr(i) = -99
             MBBlkFm(i) = 0
             SigFmMBCorr(i) = 0
+            SigFmMBCorrRE(i) = 0
             MBBlkMass(i) = 0
             SigMBBlkMass(i) = 0
             SigTargetMass(i) = 0
@@ -2856,12 +2860,16 @@ Public Class SNICSrFrm
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If GroupAvgStdFm(iGrp) <> 0 Then
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = CDbl(.tbResErr.Text)
                     .tblGroup(iGrp)(iRow).Item("Fm_Corr") = LargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp), .tblGroup(iGrp)(iRow).Item("Max_Err"), .tblGroup(iGrp)(iRow).Item("SigFmBgnd"))
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
+                                                                                                 .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
                     SigFmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
+                    SigFmCorrRE(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE")
                     .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Libby_Age") = SigLibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                     LgBlkFm(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Bgnd")
@@ -2889,11 +2897,15 @@ Public Class SNICSrFrm
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
                     'TargetIsSmall(iPos) = True
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = 0.0026 '.tbResErr.Text()
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"), _
+                                                                                                 .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
                     SigFmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
+                    SigFmMBCorrRE(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE")
                     MBBlkFm(iPos) = MBCFm(iPos)
                     SigMBBlkFm(iPos) = MBCFmSig(iPos)
                     MBBlkMass(iPos) = MBCMass(iPos)
@@ -2931,8 +2943,10 @@ Public Class SNICSrFrm
                 TargetIsSmall(iPos) = False
                 FmMBCorr(iPos) = -99
                 SigFmMBCorr(iPos) = -99
+                SigFmMBCorrRE(iPos) = -99
                 .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = DBNull.Value
+                .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = DBNull.Value
                 .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                 .tblGroup(iGrp)(iRow).Item("Sig_Libby_Age") = SigLibbyAge(FmCorr(iPos), SigFmCorr(iPos))
                 .tblGroup(iGrp)(iRow).Item("Fm_MBC") = DBNull.Value
@@ -2979,6 +2993,8 @@ Public Class SNICSrFrm
             .Columns.Add("SigFmBgnd", GetType(Double))
             .Columns.Add("Fm_Corr", GetType(Double))
             .Columns.Add("Sig_Fm_Corr", GetType(Double))
+            .Columns.Add("Sig_Fm_Corr_RE", GetType(Double))
+            .Columns.Add("Res_Err", GetType(Double))
             If isGrpTbl Then
                 .Columns.Add("Fm_MBC", GetType(Double))
                 .Columns.Add("Sig_Fm_MBC", GetType(Double))
@@ -2987,6 +3003,7 @@ Public Class SNICSrFrm
             End If
             .Columns.Add("Fm_Blk_Corr", GetType(Double))
             .Columns.Add("Sig_Fm_Blk_Corr", GetType(Double))
+            .Columns.Add("Sig_Fm_Blk_Corr_RE", GetType(Double))
             .Columns.Add("Libby_Age", GetType(String))
             .Columns.Add("Sig_Libby_Age", GetType(Double))
             .Columns.Add("Fm_Expected", GetType(Double))
@@ -2994,6 +3011,7 @@ Public Class SNICSrFrm
             .Columns.Add("Sigma_Val", GetType(Double))
             .Columns("Fm_Blk_Corr").AllowDBNull = True
             .Columns("Sig_Fm_Blk_Corr").AllowDBNull = True
+            .Columns("Sig_Fm_Blk_Corr_RE").AllowDBNull = True
             If isGrpTbl Then
                 .Columns("Fm_MBC").AllowDBNull = True
                 .Columns("Mass_MBC").AllowDBNull = True
@@ -3011,7 +3029,7 @@ Public Class SNICSrFrm
             .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
             .RowHeadersVisible = False
             .Anchor = AnchorStyles.Right + AnchorStyles.Top + AnchorStyles.Left
-            .Columns(3).DefaultCellStyle.Format = "0"
+            .Columns(3).DefaultCellStyle.Format = "0.00000"
             For iCol = 4 To 7
                 .Columns(iCol).DefaultCellStyle.Format = "0.0000"
             Next
@@ -3021,14 +3039,14 @@ Public Class SNICSrFrm
             For iCol = 10 To 11
                 .Columns(iCol).DefaultCellStyle.Format = "0"
             Next
-            For iCol = 13 To 18
+            For iCol = 13 To 21
                 .Columns(iCol).DefaultCellStyle.Format = "0.00000"
             Next
-            .Columns(19).DefaultCellStyle.Format = "0"
-            .Columns(20).DefaultCellStyle.Format = "0"
-            .Columns(21).DefaultCellStyle.Format = "0.00000"
-            .Columns(22).DefaultCellStyle.Format = "0.00000"
-            .Columns(23).DefaultCellStyle.Format = "0.00"
+            .Columns(22).DefaultCellStyle.Format = "0"
+            .Columns(23).DefaultCellStyle.Format = "0"
+            .Columns(24).DefaultCellStyle.Format = "0.00000"
+            .Columns(25).DefaultCellStyle.Format = "0.00000"
+            .Columns(26).DefaultCellStyle.Format = "0.000"
             If isGrpTbl Then
                 .Columns(4).DefaultCellStyle.Format = "0"
                 For iCol = 5 To 8
@@ -3040,20 +3058,20 @@ Public Class SNICSrFrm
                 For iCol = 11 To 12
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 14 To 17
+                For iCol = 14 To 20
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                For iCol = 18 To 21
+                For iCol = 21 To 24
                     .Columns(iCol).DefaultCellStyle.Format = "0.000"
                 Next
-                For iCol = 22 To 23
+                For iCol = 25 To 26
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(24).DefaultCellStyle.Format = "0"
-                .Columns(25).DefaultCellStyle.Format = "0"
-                .Columns(26).DefaultCellStyle.Format = "0.00000"
-                .Columns(27).DefaultCellStyle.Format = "0.00000"
-                .Columns(28).DefaultCellStyle.Format = "0.00"
+                .Columns(27).DefaultCellStyle.Format = "0"
+                .Columns(28).DefaultCellStyle.Format = "0"
+                .Columns(29).DefaultCellStyle.Format = "0.00000"
+                .Columns(30).DefaultCellStyle.Format = "0.00000"
+                .Columns(31).DefaultCellStyle.Format = "0.00"
             End If
             If theTbl Is frmBlankCorr.tblBlanks Then
                 .Columns(4).DefaultCellStyle.Format = "0"
@@ -3066,14 +3084,14 @@ Public Class SNICSrFrm
                 For iCol = 11 To 12
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 14 To 19
+                For iCol = 14 To 21
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(20).DefaultCellStyle.Format = "0"
-                .Columns(21).DefaultCellStyle.Format = "0"
-                .Columns(22).DefaultCellStyle.Format = "0.00000"
-                .Columns(23).DefaultCellStyle.Format = "0.00000"
-                .Columns(24).DefaultCellStyle.Format = "0.00"
+                .Columns(22).DefaultCellStyle.Format = "0"
+                .Columns(23).DefaultCellStyle.Format = "0"
+                .Columns(24).DefaultCellStyle.Format = "0.00000"
+                .Columns(25).DefaultCellStyle.Format = "0.00000"
+                .Columns(26).DefaultCellStyle.Format = "0.000"
 
             End If
             For i = 0 To theDGV.Columns.Count - 1
@@ -3108,6 +3126,11 @@ Public Class SNICSrFrm
         SigFmMassBal = SigFmC ^ 2 * (1 + Mb / M) ^ 2 + SigMass ^ 2 * ((FmC - FmB) * Mb / M ^ 2) ^ 2 _
                         + SigFmB ^ 2 * (Mb / M) ^ 2 + SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
         If SigFmMassBal > 0 Then SigFmMassBal = SigFmMassBal ^ 0.5
+    End Function
+
+    Public Function TotErr(Fm As Double, RepErr As Double, ResErr As Double) As Double
+        ' calculate total error for a target, given reported and residual error
+        TotErr = Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
     End Function
 
     Private Sub AssignGroupsToTargets()
@@ -6293,12 +6316,14 @@ Public Class SNICSrFrm
                                         If .Item("Pos") = iPos Then
                                             .Item("Fm_Corr") = FmCorr(iPos)
                                             .Item("Sig_Fm_Corr") = SigFmCorr(iPos)
+                                            .Item("Sig_Fm_Corr_RE") = SigFmCorrRE(iPos)
                                             .Item("Fm_Bgnd") = LgBlkFm(iPos)
                                             .Item("SigFmBgnd") = SigLgBlkFm(iPos)
                                             If TargetIsSmall(iPos) Then
                                                 .Item("Sm") = True
                                                 .Item("Fm_Blk_Corr") = FmMBCorr(iPos)
                                                 .Item("Sig_Fm_Blk_Corr") = SigFmMBCorr(iPos)
+                                                .Item("Sig_Fm_Blk_Corr_RE") = SigFmMBCorrRE(iPos)
                                             End If
                                         End If
                                     End With

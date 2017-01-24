@@ -159,6 +159,7 @@
                 '.TargetIsSmall(iPos) = False
                 .RemoveMassBalanceBlankCorr(iGrp, iRow)  ' remove mass balance correction
             End If
+
         End With
     End Sub
 
@@ -173,11 +174,12 @@
         End If
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs)
 
-    End Sub
 
-    Private Sub Label1_Click(sender As Object, e As EventArgs)
-
-    End Sub
+   
+ 
+    'Private Sub tbResErr_TextChanged(sender As Object, e As EventArgs) Handles tbResErr.TextChanged
+    '    'update blank correction
+    '    UpDateBlankTables()
+    'End Sub
 End Class

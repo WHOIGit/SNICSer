@@ -40,6 +40,8 @@ Partial Class frmBlankCorr
         Me.sfdSaveBCResults = New System.Windows.Forms.SaveFileDialog()
         Me.dgvWatson = New System.Windows.Forms.DataGridView()
         Me.chkLockAll = New System.Windows.Forms.CheckBox()
+        Me.tbResErr = New System.Windows.Forms.TextBox()
+        Me.lblResErr = New System.Windows.Forms.Label()
         CType(Me.dgvStandards, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tbcGroups.SuspendLayout()
         CType(Me.dgvInorganic, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -239,12 +241,29 @@ Partial Class frmBlankCorr
         '
         Me.chkLockAll.AutoSize = True
         Me.chkLockAll.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkLockAll.Location = New System.Drawing.Point(12, 12)
+        Me.chkLockAll.Location = New System.Drawing.Point(12, 5)
         Me.chkLockAll.Name = "chkLockAll"
         Me.chkLockAll.Size = New System.Drawing.Size(103, 28)
         Me.chkLockAll.TabIndex = 12
         Me.chkLockAll.Text = "Lock All"
         Me.chkLockAll.UseVisualStyleBackColor = True
+        '
+        'tbResErr
+        '
+        Me.tbResErr.Location = New System.Drawing.Point(12, 56)
+        Me.tbResErr.Name = "tbResErr"
+        Me.tbResErr.Size = New System.Drawing.Size(90, 20)
+        Me.tbResErr.TabIndex = 13
+        Me.tbResErr.Text = "0.0026"
+        '
+        'lblResErr
+        '
+        Me.lblResErr.AutoSize = True
+        Me.lblResErr.Location = New System.Drawing.Point(12, 40)
+        Me.lblResErr.Name = "lblResErr"
+        Me.lblResErr.Size = New System.Drawing.Size(73, 13)
+        Me.lblResErr.TabIndex = 15
+        Me.lblResErr.Text = "Residual Error"
         '
         'frmBlankCorr
         '
@@ -252,6 +271,8 @@ Partial Class frmBlankCorr
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1814, 1039)
         Me.ControlBox = False
+        Me.Controls.Add(Me.lblResErr)
+        Me.Controls.Add(Me.tbResErr)
         Me.Controls.Add(Me.chkLockAll)
         Me.Controls.Add(Me.dgvWatson)
         Me.Controls.Add(Me.dgvBlanks)
@@ -286,4 +307,6 @@ Partial Class frmBlankCorr
     Friend WithEvents sfdSaveBCResults As System.Windows.Forms.SaveFileDialog
     Friend WithEvents dgvWatson As System.Windows.Forms.DataGridView
     Friend WithEvents chkLockAll As System.Windows.Forms.CheckBox
+    Friend WithEvents tbResErr As System.Windows.Forms.TextBox
+    Friend WithEvents lblResErr As System.Windows.Forms.Label
 End Class
