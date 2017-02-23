@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.71     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.72     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False         ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -5057,10 +5057,12 @@ Public Class SNICSrFrm
                         theSampleName = theSampleName.Replace("'", "''")        ' for SQL syntax
                         FmCorr(i) = ReplNaN(FmCorr(i))      ' if it is a NaN, replace with 42
                         SigFmCorr(i) = ReplNaN(SigFmCorr(i))
+                        SigFmCorrRE(i) = ReplNaN(SigFmCorrRE(i))
                         LgBlkFm(i) = ReplNaN(LgBlkFm(i))
                         SigLgBlkFm(i) = ReplNaN(SigLgBlkFm(i))
                         FmMBCorr(i) = ReplNaN(FmMBCorr(i))
                         SigFmMBCorr(i) = ReplNaN(SigFmMBCorr(i))
+                        SigFmMBCorrRE(i) = ReplNaN(SigFmMBCorrRE(i))
                         MBBlkFm(i) = ReplNaN(MBBlkFm(i))
                         SigMBBlkFm(i) = ReplNaN(SigMBBlkFm(i))
                         MBBlkMass(i) = ReplNaN(MBBlkMass(i))
@@ -5079,23 +5081,23 @@ Public Class SNICSrFrm
                                     If TargetIsSmall(iPos) Then
                                         aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
                                                              & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                             & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
-                                                             & "blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
+                                                             & "del_13c, sig_13c, fm_corr, res_err, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
+                                                             & "sig_fm_mb_corr_re, blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
                                                              & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
                                                              & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
                                                              & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
                                                              & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
                                                              & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
                                                              & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
-                                                             & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
-                                                             & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
-                                                             & SigFmMBCorr(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
+                                                             & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & ResErr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
+                                                             & SigFmCorrRE(iPos).ToString & ", " & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
+                                                             & SigFmMBCorr(iPos).ToString & ", " & SigFmMBCorrRE(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
                                                              & MBBlkMass(iPos).ToString & ", " & SigMBBlkMass(iPos).ToString & ", '" & TargetComments(iPos).Trim _
                                                              & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
                                     Else    ' need to put NULLs in the mass balance results
                                         aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
                                                             & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                            & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
+                                                            & "del_13c, sig_13c, fm_corr, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
                                                             & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
                                                             & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
                                                             & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
@@ -5103,7 +5105,7 @@ Public Class SNICSrFrm
                                                             & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
                                                             & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
                                                             & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
-                                                            & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
+                                                            & SigFmCorrRE(iPos).ToString & ", " & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
                                                             & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
                                     End If
                                 Else
