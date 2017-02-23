@@ -241,6 +241,7 @@ Public Class SNICSrFrm
 
 #Region "Blank Corrections"
     Public FmCorr(MAXTARGETS) As Double                ' fraction modern large blank corrected
+    Public ResErr(MAXTARGETS) As Double                ' Residual error / added variance
     Public SigFmCorr(MAXTARGETS) As Double             ' uncertainty in above
     Public SigFmCorrRE(MAXTARGETS) As Double           ' uncertainty in above with residual error
     Public LgBlkFm(MAXTARGETS) As Double               ' large blank Fm applied
@@ -918,6 +919,7 @@ Public Class SNICSrFrm
     Public Sub ClearBlankCorr()
         For i = 0 To FmCorr.Length - 1
             FmCorr(i) = 0
+            ResErr(i) = 0
             SigFmCorr(i) = 0
             SigFmCorrRE(i) = 0
             LgBlkFm(i) = 0
@@ -2868,6 +2870,7 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
+                    ResErr(iPos) = .tblGroup(iGrp)(iRow).Item("Res_Err")
                     SigFmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
                     SigFmCorrRE(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE")
                     .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
@@ -5056,6 +5059,7 @@ Public Class SNICSrFrm
                         Dim theSampleName As String = TargetData.Rows(i).Item("SampleName")
                         theSampleName = theSampleName.Replace("'", "''")        ' for SQL syntax
                         FmCorr(i) = ReplNaN(FmCorr(i))      ' if it is a NaN, replace with 42
+                        ResErr(i) = ReplNaN(ResErr(i))
                         SigFmCorr(i) = ReplNaN(SigFmCorr(i))
                         SigFmCorrRE(i) = ReplNaN(SigFmCorrRE(i))
                         LgBlkFm(i) = ReplNaN(LgBlkFm(i))
@@ -5097,14 +5101,14 @@ Public Class SNICSrFrm
                                     Else    ' need to put NULLs in the mass balance results
                                         aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
                                                             & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                            & "del_13c, sig_13c, fm_corr, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
+                                                            & "del_13c, sig_13c, fm_corr, res_err, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
                                                             & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
                                                             & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
                                                             & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
                                                             & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
                                                             & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
                                                             & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
-                                                            & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
+                                                            & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & ResErr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
                                                             & SigFmCorrRE(iPos).ToString & ", " & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
                                                             & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
                                     End If
@@ -5115,10 +5119,12 @@ Public Class SNICSrFrm
                                                              & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
                                                              & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
                                                              & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
-                                                             & ", fm_corr = " & FmCorr(iPos).ToString & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", lg_blk_fm = " _
-                                                             & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString & ", fm_mb_corr = " _
-                                                             & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr = " & SigFmMBCorr(iPos).ToString & ", blank_fm = " _
-                                                             & MBBlkFm(iPos).ToString & ", sig_blank_fm = " & SigMBBlkFm(iPos).ToString & ", blank_mass = " _
+                                                             & ", fm_corr = " & FmCorr(iPos).ToString & ", res_err = " & ResErr(iPos).ToString _
+                                                             & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", sig_fm_corr_re = " & SigFmCorrRE(iPos).ToString _
+                                                             & ", lg_blk_fm = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString _
+                                                             & ", fm_mb_corr = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr = " & SigFmMBCorr(iPos).ToString _
+                                                             & ", sig_fm_mb_corr_re = " & SigFmMBCorrRE(iPos).ToString & ", blank_fm = " & MBBlkFm(iPos).ToString _
+                                                             & ", sig_blank_fm = " & SigMBBlkFm(iPos).ToString & ", blank_mass = " _
                                                              & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
                                                              & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
                                                              & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
@@ -5129,10 +5135,12 @@ Public Class SNICSrFrm
                                                               & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
                                                               & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
                                                               & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
-                                                              & ", fm_corr = " & FmCorr(iPos).ToString & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", lg_blk_fm = " _
-                                                              & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString & ", fm_mb_corr = NULL" _
-                                                              & ", sig_fm_mb_corr = NULL, blank_fm = NULL, sig_blank_fm = NULL, blank_mass = NULL" _
-                                                              & ", sig_blank_mass = NULL, comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
+                                                              & ", fm_corr = " & FmCorr(iPos).ToString & ", res_err = " & ResErr(iPos).ToString _
+                                                              & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", sig_fm_corr_re = " & SigFmCorrRE(iPos).ToString _
+                                                              & ", lg_blk_fm = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString _
+                                                              & ", fm_mb_corr = NULL, sig_fm_mb_corr = NULL, sig_fm_mb_corr_re = NULL, blank_fm = NULL" _
+                                                              & ", sig_blank_fm = NULL, blank_mass = NULL, sig_blank_mass = NULL" _
+                                                              & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
                                                               & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
                                                               & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                     End If
@@ -5145,9 +5153,11 @@ Public Class SNICSrFrm
                                                         & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
                                                         & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
                                                         & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
-                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString & ", lg_blk_fm_2 = " _
-                                                        & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString & ", fm_mb_corr_2 = " _
-                                                        & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString & ", blank_fm_2 = " _
+                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
+                                                        & ", sig_fm_corr_re_2 = " & SigFmCorrRE(iPos).ToString _
+                                                        & ", lg_blk_fm_2 = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString _
+                                                        & ", fm_mb_corr_2 = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString _
+                                                        & ", sig_fm_mb_corr_re_2 = " & SigFmMBCorrRE(iPos).ToString & ", blank_fm_2 = " _
                                                         & MBBlkFm(iPos).ToString & ", sig_blank_fm_2 = " & SigMBBlkFm(iPos).ToString & ", blank_mass_2 = " _
                                                         & MBBlkMass(iPos).ToString & ", sig_blank_mass_2 = " & SigMBBlkMass(iPos).ToString _
                                                         & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
@@ -5159,8 +5169,9 @@ Public Class SNICSrFrm
                                                         & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
                                                         & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
                                                         & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
-                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString & ", lg_blk_fm_2 = " _
-                                                        & "NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, blank_fm_2 = NULL," _
+                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
+                                                        & ", sig_fm_corr_re_2 = " & SigFmCorrRE(iPos).ToString _
+                                                        & ", lg_blk_fm_2 = NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, sig_fm_mb_corr_re_2 = NULL, blank_fm_2 = NULL," _
                                                         & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
                                                         & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
                                                         & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
@@ -6317,6 +6328,7 @@ Public Class SNICSrFrm
                                     With .Rows(i)
                                         If .Item("Pos") = iPos Then
                                             .Item("Fm_Corr") = FmCorr(iPos)
+                                            .Item("Res_Err") = ResErr(iPos)
                                             .Item("Sig_Fm_Corr") = SigFmCorr(iPos)
                                             .Item("Sig_Fm_Corr_RE") = SigFmCorrRE(iPos)
                                             .Item("Fm_Bgnd") = LgBlkFm(iPos)
