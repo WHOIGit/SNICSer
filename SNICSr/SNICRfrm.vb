@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 Public Class SNICSrFrm
 
     Public VERSION As Double = 2.72     ' this is the version number. Increment in units of 0.01 when updating 
-    Public Const TEST As Boolean = False         ' TRUE triggers test environment behavior, FALSE for production
+    Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
@@ -2520,15 +2520,22 @@ Public Class SNICSrFrm
             For i = 0 To .tblStandards.Rows.Count - 1
                 Dim nPos As Integer = .tblStandards(i).Item("Pos")
                 If Not .chkLockAll.Checked Then
+                    .tblStandards(i).Item("Res_Err") = CDbl(.tbResErr.Text)
                     .tblStandards(i).Item("Fm_Corr") = LargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"), _
                                                                            AsmRat(.tblStandards(i).Item("Pos")))
                     .tblStandards(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"), _
                                              AsmRat(.tblStandards(i).Item("Pos")), .tblStandards(i).Item("Max_Err"), .tblStandards(i).Item("SigFmBgnd"))
+                    .tblStandards(i).Item("Sig_Fm_Corr_RE") = TotErr(.tblStandards(i).Item("Fm_Corr"), .tblStandards(i).Item("Sig_Fm_Corr"), _
+                                                                                                 .tblStandards(i).Item("Res_Err"))
                     FmCorr(nPos) = .tblStandards(i).Item("Fm_Corr")
+                    ResErr(nPos) = .tblStandards(i).Item("Res_Err")
                     SigFmCorr(nPos) = .tblStandards(i).Item("Sig_Fm_Corr")
+                    SigFmCorrRE(nPos) = .tblStandards(i).Item("Sig_Fm_Corr_RE")
                 Else
+                    .tblStandards(i).Item("Res_Err") = ResErr(nPos)
                     .tblStandards(i).Item("Fm_Corr") = FmCorr(nPos)
                     .tblStandards(i).Item("Sig_Fm_Corr") = SigFmCorr(nPos)
+                    .tblStandards(i).Item("Sig_Fm_Corr_RE") = SigFmCorrRE(nPos)
                 End If
                 .tblStandards(i).Item("Libby_Age") = LibbyAge(FmCorr(nPos), SigFmCorr(nPos))
                 .tblStandards(i).Item("Sig_Libby_Age") = SigLibbyAge(FmCorr(nPos), SigFmCorr(nPos))
