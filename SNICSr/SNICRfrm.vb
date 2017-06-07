@@ -919,7 +919,7 @@ Public Class SNICSrFrm
     Public Sub ClearBlankCorr()
         For i = 0 To FmCorr.Length - 1
             FmCorr(i) = 0
-            ResErr(i) = 0
+            'ResErr(i) = 0
             SigFmCorr(i) = 0
             SigFmCorrRE(i) = 0
             LgBlkFm(i) = 0
@@ -2877,7 +2877,7 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
-                    ResErr(iPos) = .tblGroup(iGrp)(iRow).Item("Res_Err")
+                    'ResErr(iPos) = .tblGroup(iGrp)(iRow).Item("Res_Err")
                     SigFmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr")
                     SigFmCorrRE(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE")
                     .tblGroup(iGrp)(iRow).Item("Libby_Age") = LibbyAge(FmCorr(iPos), SigFmCorr(iPos))
@@ -4271,7 +4271,7 @@ Public Class SNICSrFrm
                                 If Not rdr.IsDBNull(9) Then
                                     ResErr(ipos) = rdr.GetDouble(9)
                                 Else
-                                    ResErr(ipos) = 0.0
+                                    ResErr(ipos) = 0
                                 End If
                             End While
                         End Using
