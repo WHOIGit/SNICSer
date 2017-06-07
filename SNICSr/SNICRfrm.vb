@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.72     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.73     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -2520,7 +2520,7 @@ Public Class SNICSrFrm
             For i = 0 To .tblStandards.Rows.Count - 1
                 Dim nPos As Integer = .tblStandards(i).Item("Pos")
                 If Not .chkLockAll.Checked Then
-                    .tblStandards(i).Item("Res_Err") = CDbl(.tbResErr.Text)
+                    .tblStandards(i).Item("Res_Err") = ResErr(nPos)
                     .tblStandards(i).Item("Fm_Corr") = LargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"), _
                                                                            AsmRat(.tblStandards(i).Item("Pos")))
                     .tblStandards(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"), _
@@ -2869,7 +2869,7 @@ Public Class SNICSrFrm
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If GroupAvgStdFm(iGrp) <> 0 Then
-                    .tblGroup(iGrp)(iRow).Item("Res_Err") = CDbl(.tbResErr.Text)
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
                     .tblGroup(iGrp)(iRow).Item("Fm_Corr") = LargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
                                                                             GroupAvgStdFm(iGrp))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
@@ -2907,7 +2907,7 @@ Public Class SNICSrFrm
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
                     'TargetIsSmall(iPos) = True
-                    .tblGroup(iGrp)(iRow).Item("Res_Err") = 0.0026 '.tbResErr.Text()
+                    .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
@@ -4213,7 +4213,7 @@ Public Class SNICSrFrm
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
 
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
-                                               & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13" _
+                                               & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13, added_var" _
                                                & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
@@ -4267,6 +4267,11 @@ Public Class SNICSrFrm
                                     IRMSdC13(ipos) = rdr.GetDouble(8)
                                 Else
                                     IRMSdC13(ipos) = -1000.0
+                                End If
+                                If Not rdr.IsDBNull(9) Then
+                                    ResErr(ipos) = rdr.GetDouble(9)
+                                Else
+                                    ResErr(ipos) = 0.0
                                 End If
                             End While
                         End Using
