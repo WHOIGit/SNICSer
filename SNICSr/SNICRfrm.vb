@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.73     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.74     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -2504,7 +2504,7 @@ Public Class SNICSrFrm
                         Case "OC"
                             .tblStandards(i).Item("Fm_Bgnd") = .tblOrganic(0).Item("Value_Used")
                             .tblStandards(i).Item("SigFmBgnd") = .tblOrganic(0).Item("Uncertainty")
-                        Case "WC"
+                        Case "WC", "WG"
                             .tblStandards(i).Item("Fm_Bgnd") = .tblWatson(0).Item("Value_Used")
                             .tblStandards(i).Item("SigFmBgnd") = .tblWatson(0).Item("Uncertainty")
                         Case Else
@@ -2656,7 +2656,7 @@ Public Class SNICSrFrm
                                 SumErrOrg += 1
                             End If
                             SumSqOrg += .tblBlanks(i).Item("Fm_Meas") ^ 2
-                        Case "WC"
+                        Case "WC", "WG"
                             If WTDBLANK Then
                                 SumWat += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
                                 SumErrWat += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2717,7 +2717,7 @@ Public Class SNICSrFrm
                         Case "OC"
                             .tblBlanks(i).Item("Fm_Bgnd") = .tblOrganic(0).Item(1)
                             .tblBlanks(i).Item("SigFmBgnd") = .tblOrganic(0).Item(2)
-                        Case "WC"
+                        Case "WC", "WG"
                             .tblBlanks(i).Item("Fm_Bgnd") = .tblWatson(0).Item(1)
                             .tblBlanks(i).Item("SigFmBgnd") = .tblWatson(0).Item(2)
                         Case Else
@@ -2848,7 +2848,7 @@ Public Class SNICSrFrm
                             Case "OC", "DOC"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
-                            Case "WC"
+                            Case "WC", "WG"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblWatson(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblWatson(0).Item("Uncertainty")
                             Case Else
