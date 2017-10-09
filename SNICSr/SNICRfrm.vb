@@ -2488,7 +2488,7 @@ Public Class SNICSrFrm
                         .tblStandards.Rows.Add(npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
-                                               TotalMass(npos), 0.1 * TotalMass(npos), TargetProcs(npos))
+                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' do nothing if error
@@ -2579,7 +2579,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(False, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
-                                               TotalMass(npos), 0.1 * TotalMass(npos), TargetProcs(npos))
+                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' do nothing if error
@@ -2594,7 +2594,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
-                                               TotalMass(npos), 0.1 * TotalMass(npos), TargetProcs(npos))
+                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' do nothing if error
@@ -2608,7 +2608,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
-                                               TotalMass(npos), 0.1 * TotalMass(npos), TargetProcs(npos))
+                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' do nothing if error
