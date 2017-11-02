@@ -32,7 +32,7 @@ Public Class SNICSrFrm
 #Region "Array Sizes"
     Public Const MAXRUNS As Integer = 4000          ' maximum number of runs on a wheel
     Public Const MAXGROUPS As Integer = 100         ' maximum number of groups on a wheel
-    Public Const MAXBURNS As Integer = 100          ' maximum number of times a target is burnt
+    Public Const MAXBURNS As Integer = 200          ' maximum number of times a target is burnt
     Public Const MAXTARGETS As Integer = 133        ' maximum number of targets on a wheel
 #End Region
 
