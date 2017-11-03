@@ -1176,7 +1176,7 @@ Public Class SNICSrFrm
         Me.Height = dgvRuns.Bottom + 50
         IamLoading = False
         If Not REAUTH Then ClearBlankCorr()
-        Me.Text = "SNICSer V" & VERSION.ToString("0.00") & WheelName
+        Me.Text = "SNICSer V" & VERSION.ToString("0.00") & " " & WheelName
         If GROUPBOUNDS Then
             Me.Text &= " GROUP BOUNDS ENFORCED"
         Else
