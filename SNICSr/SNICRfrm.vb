@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.76     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.77     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -4209,6 +4209,7 @@ Public Class SNICSrFrm
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
+                Dim MissMass As String = ""
                 For ipos = 0 To MAXTARGETS
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
 
@@ -4217,6 +4218,7 @@ Public Class SNICSrFrm
                                                & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
+
                             While rdr.Read
                                 NumC13Ents += 1         ' increment count of entries in dC13 table
                                 If Not rdr.IsDBNull(0) Then
@@ -4224,8 +4226,7 @@ Public Class SNICSrFrm
                                 Else
                                     TotalMass(ipos) = 0
                                     If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 32491) Then
-                                        MsgBox("Cannot find target " & ipos.ToString & " total mass in DC13 Table, please contact Al!")
-                                        'Exit For
+                                        MissMass = MissMass & ipos.ToString & " "
                                     End If
                                 End If
                                 If Not rdr.IsDBNull(1) Then
@@ -4274,6 +4275,7 @@ Public Class SNICSrFrm
                                     ResErr(ipos) = 0
                                 End If
                             End While
+
                         End Using
 
                     End If
@@ -4282,6 +4284,9 @@ Public Class SNICSrFrm
                     row.Item("Mass") = TargetMass(row.Item("Pos"))
                     row.Item("MSdC13") = IRMSdC13(row.Item("Pos"))
                 Next row
+                If String.IsNullOrEmpty(MissMass) = False Then
+                    MsgBox("Cannot find total mass for these targets in DC13 Table: " & MissMass)
+                End If
             Catch ex As Exception
                 MsgBox("Pos 2" & vbCrLf & ex.Message)
             End Try
