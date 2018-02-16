@@ -4225,7 +4225,7 @@ Public Class SNICSrFrm
                                     TotalMass(ipos) = 12.015 * rdr.GetDouble(0)
                                 Else
                                     TotalMass(ipos) = 0
-                                    If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 32491) Then
+                                    If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 148820) Then
                                         MissMass = MissMass & ipos.ToString & " "
                                     End If
                                 End If
