@@ -4334,7 +4334,8 @@ Public Class SNICSrFrm
         If ISREADONLY Then
             'MsgBox("THIS WHEEL IS NOW CLASSED AS READ-ONLY (IT HAS BEEN REPORTED)" & vbCrLf & " YOU WILL NOT BE ABLE TO SAVE AN EDITED VERSION TO THE DATABASE")
         End If
-        If FirstAuthName.Trim <> "" Then         ' this means someone has done this before
+        If FirstAuthName.Trim <> "" And IAMINSPECTING = False Then
+            ' this means someone has done this before
             If FirstAuthName = UserName Then
                 MsgBox("The wheel has already been first authorized by you" & vbCrLf _
                        & "At " & FirstAuthDate.ToShortTimeString & " on " & FirstAuthDate.ToLongDateString & vbCrLf _
