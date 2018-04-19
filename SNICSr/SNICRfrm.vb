@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.77     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.79     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -4406,7 +4406,7 @@ Public Class SNICSrFrm
             If (Not ISACQUIFILE) And (Not ISREADONLY) Then tsmCommit.Text = "First Authorize"
             tspCompare.Visible = False
         End If
-        If FIRSTAUTH And REAUTH Then        ' only visible for the first authorizer on second go round
+        If FIRSTAUTH And REAUTH And (Not ISREADONLY) Then        ' only visible for the first authorizer on second go round
             tspNukeDatabase.Visible = True
             tspNukeDatabase.Text = "Clean " & WheelName & " From Database"
         End If
@@ -5047,10 +5047,9 @@ Public Class SNICSrFrm
                     End If
                 Next
             Catch ex As Exception
-                MsgBox("Error writing to Raw Table in Database" & vbCrLf & aCmd & vbCrLf & ex.Message & vbCrLf & "Cleaning any raw data from database")
+                MsgBox("Error writing to Raw Table in Database" & vbCrLf & aCmd & vbCrLf & ex.Message & vbCrLf & "Cleaning any raw data from database" & vbCrLf & "Please save your work and restart SNICSer before continuing")
                 If FIRSTAUTH And Not REAUTH Then ClearRawData()
                 con.Close()
-                End
             End Try
             con.Close()
         End Using
