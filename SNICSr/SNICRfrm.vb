@@ -6630,6 +6630,9 @@ Public Class SNICSrFrm
         ofdLoadFile.CheckPathExists = True
         ofdLoadFile.ShowDialog()
         FileName = ofdLoadFile.FileName
+        CommitGroupToDatabaseToolStripMenuItem.Enabled = False
+        tsmCommit.Enabled = False
+        tspNukeDatabase.Enabled = False
         If FileName <> "" Then LoadRawDataFromFile(FileName)
     End Sub
 
