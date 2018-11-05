@@ -46,6 +46,7 @@ Partial Class StdsAndBlks
         Me.dgvBlanks.Name = "dgvBlanks"
         Me.dgvBlanks.RowHeadersWidth = 20
         Me.dgvBlanks.Size = New System.Drawing.Size(565, 288)
+        Me.dgvBlanks.StandardTab = True
         Me.dgvBlanks.TabIndex = 22
         '
         'dgvStandards
@@ -61,6 +62,7 @@ Partial Class StdsAndBlks
         Me.dgvStandards.ReadOnly = True
         Me.dgvStandards.RowHeadersWidth = 20
         Me.dgvStandards.Size = New System.Drawing.Size(565, 202)
+        Me.dgvStandards.StandardTab = True
         Me.dgvStandards.TabIndex = 21
         '
         'lblBlks
@@ -129,6 +131,7 @@ Partial Class StdsAndBlks
         '
         'StdsAndBlks
         '
+        Me.AcceptButton = Me.btnDone
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(583, 548)

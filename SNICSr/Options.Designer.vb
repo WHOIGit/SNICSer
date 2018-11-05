@@ -847,6 +847,7 @@ Partial Class Options
         'btnCancel
         '
         Me.btnCancel.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCancel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCancel.Location = New System.Drawing.Point(228, 323)
         Me.btnCancel.Name = "btnCancel"
@@ -857,9 +858,12 @@ Partial Class Options
         '
         'Options
         '
+        Me.AcceptButton = Me.btnSave
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange
         Me.BackColor = System.Drawing.Color.AntiqueWhite
+        Me.CancelButton = Me.btnCancel
         Me.ClientSize = New System.Drawing.Size(434, 412)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnCancel)
@@ -867,6 +871,7 @@ Partial Class Options
         Me.Controls.Add(Me.tbcOpt)
         Me.Controls.Add(Me.bntQuit)
         Me.Controls.Add(Me.btnSave)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "Options"
         Me.Text = "SNICSer Options"
