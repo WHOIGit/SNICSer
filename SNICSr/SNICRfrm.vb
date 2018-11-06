@@ -2437,8 +2437,12 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
                     .Rows.Add("Large_Blank", 0.002, 0.0015)
+                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
+                    .Rows.Add("Cont Fm", 0.75, 0.25)
                 Else
                     .Rows.Add("Large_Blank", 0.0008, 0.0004)
+                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
+                    .Rows.Add("Cont Fm", 0.75, 0.25)
                 End If
             End With
             .dgvInorganic.Width = .dgvInorganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
@@ -2451,8 +2455,12 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
                     .Rows.Add("Large_Blank", 0.0045, 0.0022)
+                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
+                    .Rows.Add("Cont Fm", 0.5, 0.25)
                 Else
                     .Rows.Add("Large_Blank", 0.002, 0.001)
+                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
+                    .Rows.Add("Cont Fm", 0.5, 0.25)
                 End If
             End With
             With .tblWatson
