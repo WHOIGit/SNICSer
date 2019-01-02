@@ -2603,7 +2603,7 @@ Public Class SNICSrFrm
             For ipos = 0 To dgvTargets.Rows.Count - 1
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC") Or (TargetProcs(npos) = "WC")) And (TargetMass(ipos) > 150) Then
+                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC") Or (TargetProcs(npos) = "WC") Or (TargetProcs(npos) = "WG")) And (TargetMass(ipos) > 150) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
@@ -2726,7 +2726,7 @@ Public Class SNICSrFrm
                     End Select
                     If Not .chkLockAll.Checked Then
                         If .tblBlanks(i).Item("Proc") = "HY" Or .tblBlanks(i).Item("Proc") = "GS" Or .tblBlanks(i).Item("Proc") = "OC" _
-                                        Or .tblBlanks(i).Item("Proc") = "WS" Or .tblBlanks(i).Item("Proc") = "WC" Then
+                                        Or .tblBlanks(i).Item("Proc") = "WS" Or .tblBlanks(i).Item("Proc") = "WC" Or .tblBlanks(i).Item("Proc") = "WG" Then
                             .tblBlanks(i).Item("Fm_Corr") = LargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"), 1.0398)
                             .tblBlanks(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"), _
                                                                                1.0398, .tblBlanks(i).Item("Max_Err"), .tblBlanks(i).Item("SigFmBgnd"))
