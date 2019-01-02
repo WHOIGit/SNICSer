@@ -2628,6 +2628,12 @@ Public Class SNICSrFrm
                     ' do nothing if error
                 End Try
             Next
+            For i = 0 To .tblBlanks.Rows.Count - 1
+                .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
+                .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
+                If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
+                If .tblBlanks(i).Item("Mass(ug)") < 150 Then .tblBlanks(i).Item("OK") = False
+            Next
             ComputeBlanks()
         End With
     End Sub
@@ -2649,8 +2655,6 @@ Public Class SNICSrFrm
             For i = 0 To .tblBlanks.Rows.Count - 1
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
-                If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
-                If .tblBlanks(i).Item("Mass(ug)") < 150 Then .tblBlanks(i).Item("OK") = False
                 If Not IsDBNull(.tblBlanks(i).Item("Proc")) AndAlso .tblBlanks(i).Item("OK") Then
                     Select Case .tblBlanks(i).Item("Proc")
                         Case "HY", "GS", "WS"
