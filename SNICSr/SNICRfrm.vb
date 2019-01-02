@@ -2603,7 +2603,21 @@ Public Class SNICSrFrm
             For ipos = 0 To dgvTargets.Rows.Count - 1
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC") Or (TargetProcs(npos) = "WC") Or (TargetProcs(npos) = "WG")) And (TargetMass(ipos) > 150) Then
+                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC")) And (TargetMass(ipos) > 150) Then
+                        Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
+                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
+                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
+                    End If
+                Catch ex As Exception
+                    ' do nothing if error
+                End Try
+            Next
+            For ipos = 0 To dgvTargets.Rows.Count - 1
+                Try
+                    Dim npos As Integer = dgvTargets("Pos", ipos).Value
+                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "WC") Or (TargetProcs(npos) = "WG")) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
@@ -2636,6 +2650,7 @@ Public Class SNICSrFrm
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
                 If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
+                If .tblBlanks(i).Item("Mass(ug)") < 150 Then .tblBlanks(i).Item("OK") = False
                 If Not IsDBNull(.tblBlanks(i).Item("Proc")) AndAlso .tblBlanks(i).Item("OK") Then
                     Select Case .tblBlanks(i).Item("Proc")
                         Case "HY", "GS", "WS"
