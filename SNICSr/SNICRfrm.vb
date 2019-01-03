@@ -254,6 +254,7 @@ Public Class SNICSrFrm
     Public MBBlkMass(MAXTARGETS) As Double             ' mass balance blank mass applied
     Public SigMBBlkMass(MAXTARGETS) As Double          ' uncertainty in above
     Public SigTargetMass(MAXTARGETS) As Double         ' uncertainty in target mass
+    Public SigTotalMass(MAXTARGETS) As Double         ' uncertainty in total mass
 #End Region
 
 #End Region ' variable and storage declarations
@@ -932,6 +933,7 @@ Public Class SNICSrFrm
             MBBlkMass(i) = 0
             SigMBBlkMass(i) = 0
             SigTargetMass(i) = 0
+            SigTotalMass(i) = 0
         Next
     End Sub      ' Clear blank correction arrays
 
@@ -2818,7 +2820,7 @@ Public Class SNICSrFrm
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
                             dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
                             dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value, _
-                            TotalMass(npos), (0.01 * TotalMass(npos) ^ 2 + 4) ^ 0.5, TargetProcs(npos))            ' Use TotalMass for DOC
+                            TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))            ' Use TotalMass for DOC and sigma from dc13
                         Else
                             .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
@@ -4241,9 +4243,10 @@ Public Class SNICSrFrm
                 For ipos = 0 To MAXTARGETS
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
 
-                        Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, fm_blank_err," _
-                                               & " fm_cont, fm_cont_err, mass_cont, mass_cont_err, dc13, added_var" _
-                                               & " FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
+		Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, " _
+			             & "fm_blank_err, fm_cont, fm_cont_err, mass_cont, " _
+				     & "mass_cont_err, dc13, added_var, sig_tot_umols " _
+				     & "FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
 
@@ -4301,6 +4304,11 @@ Public Class SNICSrFrm
                                     ResErr(ipos) = rdr.GetDouble(9)
                                 Else
                                     ResErr(ipos) = 0
+                                End If
+                                If Not rdr.IsDBNull(10) Then
+                                    SigTotalMass(ipos) = 12.015 * rdr.GetDouble(10)
+                                Else
+                                    SigTotalMass(ipos) = 0.0
                                 End If
                             End While
 
