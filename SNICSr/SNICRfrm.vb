@@ -2813,7 +2813,7 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", iPos).Value
                     If TargetGroups(npos) = iGrp + 1 And dgvTargets("Typ", iPos).Value <> "S" Then          ' And dgvTargets("Typ", iPos).Value <> "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value)
-                        If dgvTargets("Typ", iPos).Value = "DOC" Then
+                        If dgvTargets("Proc", iPos).Value = "DOC" Then
                             .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
                             dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
