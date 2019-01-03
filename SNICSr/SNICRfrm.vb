@@ -2865,7 +2865,7 @@ Public Class SNICSrFrm
     Public Sub SetLgBlkCorr(iGrp As Integer, iRow As Integer)
         With frmBlankCorr.tblGroup(iGrp).Rows(iRow)
             If (Not frmBlankCorr.chkLock(iGrp).Checked) And (Not frmBlankCorr.chkLockAll.Checked) Then
-                If .Item("Sm") Then
+                If .Item("Sm") And .Item("Proc") <> "DOC" Then
                     Dim iPos As Integer = .Item("Pos")
                     .Item("Fm_Bgnd") = MBCLgFm(iPos)
                     .Item("SigFMBgnd") = MBCLgFmSig(iPos)
