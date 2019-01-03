@@ -2813,10 +2813,19 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", iPos).Value
                     If TargetGroups(npos) = iGrp + 1 And dgvTargets("Typ", iPos).Value <> "S" Then          ' And dgvTargets("Typ", iPos).Value <> "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value)
-                        .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
-                                           dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
-                                           dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value, _
-                                           TargetMass(npos), (0.01 * TargetMass(npos) ^ 2 + 4) ^ 0.5, TargetProcs(npos))            ' Targetmass changed from TotalMass 11/17/14
+			If dgvTargets("Typ", iPos).Value = "DOC" Then
+				.tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
+				dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
+				dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
+				dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value, _
+				TotalMass(npos), (0.01 * TotalMass(npos) ^ 2 + 4) ^ 0.5, TargetProcs(npos))            ' Use TotalMass for DOC
+			Else
+				.tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
+				dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
+				dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
+				dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value, _
+				TargetMass(npos), (0.01 * TargetMass(npos) ^ 2 + 4) ^ 0.5, TargetProcs(npos))            ' Targetmass changed from TotalMass 11/17/14
+			End If
                         If TargetIsReadOnly(iPos) Then
                             GroupIsReadOnly = True
                             .dgvGroup(iGrp).Rows(.dgvGroup(iGrp).Rows.Count - 1).DefaultCellStyle.ForeColor = Color.Gray
@@ -2861,10 +2870,10 @@ Public Class SNICSrFrm
                 Else
                     If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
                         Select Case .Item("Proc")
-                            Case "GS", "HY", "WS"
+		    Case "GS", "HY", "WS", "DOC"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblInorganic(0).Item("Uncertainty")
-                            Case "OC", "DOC"
+                            Case "OC"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
                             Case "WC", "WG"
