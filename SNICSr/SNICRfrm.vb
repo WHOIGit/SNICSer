@@ -2878,7 +2878,7 @@ Public Class SNICSrFrm
                             Case "OC"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
-                            Case "WC", "WG"
+                            Case "WC", "WG", "SW"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblWatson(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblWatson(0).Item("Uncertainty")
                             Case Else
