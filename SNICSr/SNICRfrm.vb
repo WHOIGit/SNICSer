@@ -2872,10 +2872,10 @@ Public Class SNICSrFrm
                 Else
                     If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
                         Select Case .Item("Proc")
-                            Case "GS", "HY", "WS", "DOC"
+                            Case "GS", "HY", "WS"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblInorganic(0).Item("Uncertainty")
-                            Case "OC"
+                            Case "OC", "DOC"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
                                 .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
                             Case "WC", "WG"
