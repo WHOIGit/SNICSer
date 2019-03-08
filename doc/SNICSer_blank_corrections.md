@@ -1,6 +1,6 @@
 % Blank corrections in SNICSer
 % Brett Longworth
-% January 7, 2019
+% March 7, 2019
 
 Snicser performs blank corrections for all samples routinely processed at
 NOSAMS. Two different corrections are performed, a large blank correction
@@ -15,12 +15,17 @@ the large blank should be corrected to 0 and that samples with Fm the same
 as the OX-I standard need no correction since they are normalized to
 a standard that (presumably contains the same blank.
 
-For large samples the value of FmB is determined by averaging the blanks
-on the wheel. For small samples, the value is taken from a historical
-average. Currently, we use three types of large blanks: acetanalide, C-1
-or TIRI-F, and a watson blank. The acetanalide blank is used to correct
-organic samples, the C-1 or TIRI-F to correct HY, WS, GS, and DOC process
-types, and watson blank to correct watson samples.
+For large samples the value of FmB is determined by averaging the blanks on the
+wheel. For small samples, the value is taken from a historical average. We
+typically use three types of large blanks: acetanalide, C-1 or TIRI-F, and
+a watson blank. The acetanalide blank is used to correct organic samples and
+DOC, the C-1 or TIRI-F to correct HY, WS, and GS process types, and the Watson
+blank to correct Watson samples. 
+
+SNICSer will include all samples marked B in the blank table, so alternative
+samples may be used for LBC. Checked samples are used for the correction, and
+samples flagged "B" larger than 150ug and with a DB consensus value < 0.002
+will be checked by default.
 
 The large blank correction is performed for all samples. When applying
 a mass balance correction, the large-blank-corrected value is used for the
