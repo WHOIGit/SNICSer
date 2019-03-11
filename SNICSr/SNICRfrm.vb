@@ -3102,7 +3102,7 @@ Public Class SNICSrFrm
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
                 For iCol = 21 To 24
-                    .Columns(iCol).DefaultCellStyle.Format = "0.000"
+                    .Columns(iCol).DefaultCellStyle.Format = "0.0000"
                 Next
                 For iCol = 25 To 26
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
