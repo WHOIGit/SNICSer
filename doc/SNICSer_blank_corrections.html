@@ -13,12 +13,13 @@
 <div id="header">
 <h1 class="title">Blank corrections in SNICSer</h1>
 <h2 class="author">Brett Longworth</h2>
-<h3 class="date">January 7, 2019</h3>
+<h3 class="date">March 7, 2019</h3>
 </div>
 <p>Snicser performs blank corrections for all samples routinely processed at NOSAMS. Two different corrections are performed, a large blank correction for all samples and a mass balance correction for samples under 100 ug and all DOC samples.</p>
 <h1 id="large-blank">Large Blank</h1>
 <p>The large blank correction subtracts a single blank value from all samples proportional to their fraction modern. It assumes that samples with Fm of the large blank should be corrected to 0 and that samples with Fm the same as the OX-I standard need no correction since they are normalized to a standard that (presumably contains the same blank.</p>
-<p>For large samples the value of FmB is determined by averaging the blanks on the wheel. For small samples, the value is taken from a historical average. Currently, we use three types of large blanks: acetanalide, C-1 or TIRI-F, and a watson blank. The acetanalide blank is used to correct organic samples, the C-1 or TIRI-F to correct HY, WS, GS, and DOC process types, and watson blank to correct watson samples.</p>
+<p>For large samples the value of FmB is determined by averaging the blanks on the wheel. For small samples, the value is taken from a historical average. We typically use three types of large blanks: acetanalide, C-1 or TIRI-F, and a watson blank. The acetanalide blank is used to correct organic samples and DOC, the C-1 or TIRI-F to correct HY, WS, and GS process types, and the Watson blank to correct Watson samples.</p>
+<p>SNICSer will include all samples marked B in the blank table, so alternative samples may be used for LBC. Checked samples are used for the correction, and samples flagged &quot;B&quot; larger than 150ug and with a DB consensus value &lt; 0.002 will be checked by default.</p>
 <p>The large blank correction is performed for all samples. When applying a mass balance correction, the large-blank-corrected value is used for the measured fraction modern in the mass-balance equation.</p>
 <p>The correction uses this equation:</p>
 <p><span class="math display">\[ R_s = R_m - \frac{R_b(R_{ox}-R_m)}{R_{ox}} \]</span></p>
