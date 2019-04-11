@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.81     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.82     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -2941,6 +2941,11 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
+                    If TargetProcs(iPos) = "DOC" Then
+                        .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
+                        .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
+                                                                                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
+                    End If
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"), _
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
@@ -3163,11 +3168,30 @@ Public Class SNICSrFrm
     Public Function SigFmMassBal(FmC As Double, FmB As Double, M As Double, Mb As Double, _
                                  SigFmC As Double, SigFmB As Double, SigMass As Double, SigMassB As Double) As Double
         If M <= Mb Then Return 42 ' flag anomalous situation
-        SigFmMassBal = SigFmC ^ 2 * (1 + Mb / M) ^ 2 + SigMass ^ 2 * ((FmC - FmB) * Mb / M ^ 2) ^ 2 _
-                        + SigFmB ^ 2 * (Mb / M) ^ 2 + SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
+        SigFmMassBal = SigFmC ^ 2 * (1 + Mb / M) ^ 2 + _
+                       SigMass ^ 2 * ((FmC - FmB) * Mb / M ^ 2) ^ 2 + _
+                       SigFmB ^ 2 * (Mb / M) ^ 2 + _
+                       SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
         If SigFmMassBal > 0 Then SigFmMassBal = SigFmMassBal ^ 0.5
     End Function
 
+    Public Function FmMassBalmc(FmC As Double, FmB As Double, Mass As Double, MassB As Double) As Double
+        '   FmC is the large blank corrected Fm, FmB is the blank Fm, Mass is sample mass, MassB is the blank mass
+        '   This version subtracts the contaminant mass to use the mass of the unknown instead of total mass
+        If Mass <= MassB Then Return 42 ' flag anomalous situation
+        FmMassBalmc = FmC + (FmC - FmB) * MassB / (Mass - MassB)
+    End Function
+
+    Public Function SigFmMassBalmc(FmC As Double, FmB As Double, M As Double, Mb As Double, _
+                                 SigFmC As Double, SigFmB As Double, SigMass As Double, SigMassB As Double) As Double
+        '   This version is the propogation when using M - Mb as sample mass
+        If M <= Mb Then Return 42 ' flag anomalous situation
+        SigFmMassBalmc = SigFmC ^ 2 * ((M + Mb) / M) ^ 2 + _
+                       SigMass ^ 2 * ((FmB - FmC) * Mb / M ^ 2) ^ 2 + _
+                       SigFmB ^ 2 * (Mb / M) ^ 2 + _
+                       SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
+        If SigFmMassBalmc > 0 Then SigFmMassBalmc = SigFmMassBalmc ^ 0.5
+    End Function
     Public Function TotErr(Fm As Double, RepErr As Double, ResErr As Double) As Double
         ' calculate total error for a target, given reported and residual error
         TotErr = Math.Sqrt(RepErr ^ 2 + (ResErr * Fm) ^ 2)
