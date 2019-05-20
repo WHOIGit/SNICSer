@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.82     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.83     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -3186,10 +3186,10 @@ Public Class SNICSrFrm
                                  SigFmC As Double, SigFmB As Double, SigMass As Double, SigMassB As Double) As Double
         '   This version is the propogation when using M - Mb as sample mass
         If M <= Mb Then Return 42 ' flag anomalous situation
-        SigFmMassBalmc = SigFmC ^ 2 * ((M + Mb) / M) ^ 2 + _
-                       SigMass ^ 2 * ((FmB - FmC) * Mb / M ^ 2) ^ 2 + _
-                       SigFmB ^ 2 * (Mb / M) ^ 2 + _
-                       SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
+        SigFmMassBalmc = SigFmC ^ 2 * (M / (M - Mb)) ^ 2 + _
+                       SigMass ^ 2 * ((FmB - FmC) * Mb / (M - Mb) ^ 2) ^ 2 + _
+                       SigFmB ^ 2 * (Mb / (M - Mb) ) ^ 2 + _
+                       SigMassB ^ 2 * ((FmC - FmB) / (M - Mb)) ^ 2
         If SigFmMassBalmc > 0 Then SigFmMassBalmc = SigFmMassBalmc ^ 0.5
     End Function
     Public Function TotErr(Fm As Double, RepErr As Double, ResErr As Double) As Double
