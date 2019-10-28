@@ -4154,7 +4154,7 @@ Public Class SNICSrFrm
                     com.CommandText = theCmd
                     com.ExecuteNonQuery()
                 Catch ex As Exception
-                    'do nothing
+                    MsgBox("Error populating dc13 table" & vbCrLf & theName & vbCrLf & ex.Message)
                 End Try
                 con.Close()
             End Using
