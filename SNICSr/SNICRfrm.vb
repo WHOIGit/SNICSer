@@ -3081,7 +3081,7 @@ Public Class SNICSrFrm
             For iCol = 8 To 9
                 .Columns(iCol).DefaultCellStyle.Format = "0.00"
             Next
-            For iCol = 10 To 11
+            For iCol = 10 To 12
                 .Columns(iCol).DefaultCellStyle.Format = "0"
             Next
             For iCol = 13 To 21
