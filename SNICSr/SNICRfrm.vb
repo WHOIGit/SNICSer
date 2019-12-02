@@ -2634,7 +2634,7 @@ Public Class SNICSrFrm
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
                 If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
-                If .tblBlanks(i).Item("Mass(ug)") < 150 Then .tblBlanks(i).Item("OK") = False
+                If (.tblBlanks(i).Item("Mass(ug)") < 150) And (.tblBlanks(i).Item("Proc") <> "WG") Then .tblBlanks(i).Item("OK") = False
             Next
             ComputeBlanks()
         End With
@@ -2802,7 +2802,7 @@ Public Class SNICSrFrm
                 .chkLock(iGrp).Top = .chkSmall(iGrp).Top
                 .chkLock(iGrp).Text = "Locked"
                 .chkLock(iGrp).Checked = False
-                .lblGroup(iGrp).Text = "THIS GROUP IS READ ONLY!"
+                .lblGroup(iGrp).Text = "THIS GROUP Is READ ONLY!"
                 .lblGroup(iGrp).Left = .chkLock(iGrp).Right + 30
                 .lblGroup(iGrp).Top = .chkLock(iGrp).Top
                 .lblGroup(iGrp).Font = New Font("Arial Bold", 14)
@@ -2938,7 +2938,7 @@ Public Class SNICSrFrm
                 If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
                     'TargetIsSmall(iPos) = True
                     .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
-                    .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
+                    .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug) Then"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
                     If TargetProcs(iPos) = "DOC" Then
@@ -3206,10 +3206,10 @@ Public Class SNICSrFrm
     Public Sub CommitBlankCorr()
         If FIRSTAUTH Then
             CommitToDatabase()
-            MsgBox("Blank Corrected Data Committed to Database")
+            MsgBox("Blank Corrected Data Committed To Database")
         Else
             CommitToDatabase()
-            MsgBox("You are not first authorizer" & vbCrLf * "Only uncorrected data committed to database")
+            MsgBox("You are Not first authorizer" & vbCrLf * "Only uncorrected data committed To database")
         End If
     End Sub
 
