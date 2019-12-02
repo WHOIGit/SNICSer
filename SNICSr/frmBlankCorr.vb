@@ -116,7 +116,11 @@
     Private Sub AppendDGV(dgv As DataGridView, fname As String)
         dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText
         dgv.SelectAll()
-        IO.File.AppendAllText(fname, dgv.GetClipboardContent().GetText.TrimEnd)
+        Try
+            IO.File.AppendAllText(fname, dgv.GetClipboardContent().GetText.TrimEnd)
+        Catch ex As Exception
+            ' do nothing
+        End Try
         dgv.ClearSelection()
     End Sub
 
