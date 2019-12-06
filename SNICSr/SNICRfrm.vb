@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.84     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.85     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -2865,7 +2865,7 @@ Public Class SNICSrFrm
     Public Sub SetLgBlkCorr(iGrp As Integer, iRow As Integer)
         With frmBlankCorr.tblGroup(iGrp).Rows(iRow)
             If (Not frmBlankCorr.chkLock(iGrp).Checked) And (Not frmBlankCorr.chkLockAll.Checked) Then
-                If .Item("Sm") And .Item("Proc") <> "DOC" Then
+                If .Item("Sm") And Not (.Item("Proc") = "DOC" Or .Item("Proc") = "GS") Then
                     Dim iPos As Integer = .Item("Pos")
                     .Item("Fm_Bgnd") = MBCLgFm(iPos)
                     .Item("SigFMBgnd") = MBCLgFmSig(iPos)
