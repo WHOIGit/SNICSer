@@ -88,9 +88,13 @@ Partial Class Options
         Me.btn2 = New System.Windows.Forms.Button()
         Me.btn1 = New System.Windows.Forms.Button()
         Me.btn0 = New System.Windows.Forms.Button()
+        Me.tbPaths = New System.Windows.Forms.TabPage()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.txtShareDrivePath = New System.Windows.Forms.TextBox()
         Me.btnHelp = New System.Windows.Forms.Button()
         Me.ColorDialog1 = New System.Windows.Forms.ColorDialog()
         Me.btnCancel = New System.Windows.Forms.Button()
+        Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.gpbAnalyst.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.nudNumStds, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -106,6 +110,7 @@ Partial Class Options
         Me.tbcColor.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
+        Me.tbPaths.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnSave
@@ -578,6 +583,7 @@ Partial Class Options
         Me.tbcOpt.Controls.Add(Me.tpCalc)
         Me.tbcOpt.Controls.Add(Me.tbAppear)
         Me.tbcOpt.Controls.Add(Me.tbcColor)
+        Me.tbcOpt.Controls.Add(Me.tbPaths)
         Me.tbcOpt.Location = New System.Drawing.Point(-3, 0)
         Me.tbcOpt.Name = "tbcOpt"
         Me.tbcOpt.SelectedIndex = 0
@@ -834,6 +840,35 @@ Partial Class Options
         Me.btn0.Text = "0"
         Me.btn0.UseVisualStyleBackColor = True
         '
+        'tbPaths
+        '
+        Me.tbPaths.Controls.Add(Me.Label15)
+        Me.tbPaths.Controls.Add(Me.txtShareDrivePath)
+        Me.tbPaths.Location = New System.Drawing.Point(4, 22)
+        Me.tbPaths.Name = "tbPaths"
+        Me.tbPaths.Padding = New System.Windows.Forms.Padding(3)
+        Me.tbPaths.Size = New System.Drawing.Size(418, 291)
+        Me.tbPaths.TabIndex = 3
+        Me.tbPaths.Text = "Paths"
+        Me.tbPaths.UseVisualStyleBackColor = True
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label15.Location = New System.Drawing.Point(26, 24)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(125, 16)
+        Me.Label15.TabIndex = 26
+        Me.Label15.Text = "Share Drive Path"
+        '
+        'txtShareDrivePath
+        '
+        Me.txtShareDrivePath.Location = New System.Drawing.Point(29, 43)
+        Me.txtShareDrivePath.Name = "txtShareDrivePath"
+        Me.txtShareDrivePath.Size = New System.Drawing.Size(337, 20)
+        Me.txtShareDrivePath.TabIndex = 0
+        '
         'btnHelp
         '
         Me.btnHelp.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
@@ -894,6 +929,8 @@ Partial Class Options
         Me.tbcColor.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox4.ResumeLayout(False)
+        Me.tbPaths.ResumeLayout(False)
+        Me.tbPaths.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -965,4 +1002,8 @@ Partial Class Options
     Friend WithEvents chkAllowSelfNorm As System.Windows.Forms.CheckBox
     Friend WithEvents btnCancel As System.Windows.Forms.Button
     Friend WithEvents chkShowStdsBlanks As System.Windows.Forms.CheckBox
+    Friend WithEvents tbPaths As TabPage
+    Friend WithEvents txtShareDrivePath As TextBox
+    Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
+    Friend WithEvents Label15 As Label
 End Class

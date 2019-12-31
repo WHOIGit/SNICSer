@@ -707,6 +707,7 @@ Public Class SNICSrFrm
             Input(1, TopPlot)
             Input(1, ClassicView)
             Input(1, GROUPBOUNDS)
+            ShareDrivePath = LineInput(1)
             FileClose(1)
         Catch ex As Exception       ' cannot find options file so force them to fill it in 
             Try
@@ -743,6 +744,7 @@ Public Class SNICSrFrm
             .nudRunSigFig.Value = NumRawFigs
             .txtAnalyst.Text = Trim(UserName)
             .txtPwd.Text = thePWD
+            .txtShareDrivePath.Text = ShareDrivePath
             .cmbFitType.Text = Trim(CalcMode)
             '.txtPwd.Text = ""
             .txtPwd.Focus()

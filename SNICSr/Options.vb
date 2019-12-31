@@ -24,6 +24,7 @@ Public Class Options
             Exit Sub
         End If
         With SNICSrFrm
+            .ShareDrivePath = Trim(txtShareDrivePath.Text)
             .NumRawFigs = nudRunSigFig.Value
             .NumResFigs = nudResSigFig.Value
             .TableFontSize = nudFontSize.Value
@@ -75,6 +76,7 @@ Public Class Options
             PrintLine(1, chkTopPlot.Checked.ToString)
             PrintLine(1, chkClassic.Checked.ToString)
             PrintLine(1, chkGroup.Checked.ToString)
+            PrintLine(1, .ShareDrivePath)
             FileClose(1)
             .Enabled = True
             .Visible = True
@@ -279,4 +281,6 @@ Public Class Options
     Private Sub chkShowStdsBlanks_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowStdsBlanks.CheckedChanged
         SNICSrFrm.ShowStdsBlanks = chkShowStdsBlanks.Checked
     End Sub
+
+
 End Class
