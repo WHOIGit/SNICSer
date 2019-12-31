@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.85     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.86     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -223,6 +223,7 @@ Public Class SNICSrFrm
     Public SymbSize As Integer = 6
     Public TopPlot As Boolean = False
     Public ClassicView As Boolean = False
+    Public ShareDrivePath As String = "\\sharenosams.whoi.edu\shared"
 
 #Region "Colors"
     Public PlotColsOrig() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange, _
@@ -1082,15 +1083,15 @@ Public Class SNICSrFrm
         If TheWheel.Year <> iyr Then subDir = "20" & TheWheel.Year.ToString & " Results\"
         If TEST Then
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
-                FileName = "\\sharenosams.whoi.edu\shared\SNICSer\ResultsTest\CFAMSResults\" & subDir & TheWheel.Name & "R.xls"
+                FileName = ShareDrivePath & "\SNICSer\ResultsTest\CFAMSResults\" & subDir & TheWheel.Name & "R.xls"
             Else
-                FileName = "\\sharenosams.whoi.edu\shared\SNICSer\ResultsTest\USAMSResults\" & subDir & TheWheel.Name & "R.txt"
+                FileName = ShareDrivePath & "\SNICSer\ResultsTest\USAMSResults\" & subDir & TheWheel.Name & "R.txt"
             End If
         Else
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
-                FileName = "\\sharenosams.whoi.edu\shared\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
+                FileName = ShareDrivePath & "\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
             Else
-                FileName = "\\sharenosams.whoi.edu\shared\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
+                FileName = ShareDrivePath & "\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
             End If
         End If
         If TheWheel.Year <> iyr Then subDir = "20" & TheWheel.Year.ToString & " Results\"
