@@ -1100,6 +1100,7 @@ Public Class SNICSrFrm
         If TheWheel.Analyzed = 0 Then
             Dim fn As New FileInfo(FileName)
             If Not fn.Exists Then
+                MsgBox(FileName & "Not found. Trying V: drive")
                 If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
                     FileName = "V:\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
                 Else
