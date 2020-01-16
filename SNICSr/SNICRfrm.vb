@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.86     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.87     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -2588,36 +2588,36 @@ Public Class SNICSrFrm
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
-                    ' do nothing if error
+                    ' ignore exception
                 End Try
             Next
             For ipos = 0 To dgvTargets.Rows.Count - 1
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
                     If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "HY") Or (TargetProcs(npos) = "GS") _
-                                            Or (TargetProcs(npos) = "WS")) And (TargetMass(ipos) > 150) Then
+                                            Or (TargetProcs(npos) = "WS")) And (TargetMass(npos) > 150) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
+                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
-                    ' do nothing if error
+                    ' ignore exception
                 End Try
             Next
             For ipos = 0 To dgvTargets.Rows.Count - 1
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC")) And (TargetMass(ipos) > 150) Then
+                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC")) And (TargetMass(npos) > 150) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
+                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
-                    ' do nothing if error
+                    ' ignore exception
                 End Try
             Next
             For ipos = 0 To dgvTargets.Rows.Count - 1
@@ -2631,7 +2631,7 @@ Public Class SNICSrFrm
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
-                    ' do nothing if error
+                    ' ignore exception
                 End Try
             Next
             For i = 0 To .tblBlanks.Rows.Count - 1
