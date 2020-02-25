@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.87     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.88     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -4800,8 +4800,11 @@ Public Class SNICSrFrm
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
-                        TargetProcs(iTarg) = rdr.GetString(0)
-                        'MsgBox(TargetProcs(iTarg))
+                         If Not rdr.IsDBNull(0) Then
+                             TargetProcs(iTarg) = rdr.GetString(0)
+                         Else
+                             TargetProcs(iTarg) =  ""
+                         End If
                     End While
                 End Using
             Catch ex As Exception
