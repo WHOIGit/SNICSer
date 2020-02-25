@@ -2637,8 +2637,12 @@ Public Class SNICSrFrm
             For i = 0 To .tblBlanks.Rows.Count - 1
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
-                If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
-                If (.tblBlanks(i).Item("Mass(ug)") < 150) And (.tblBlanks(i).Item("Proc") <> "WG") Then .tblBlanks(i).Item("OK") = False
+                 If IsDBNull(.tblBlanks(i).Item("Proc")) Then
+                    .tblBlanks(i).Item("OK") = False
+                 Else
+                    If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
+                    If (.tblBlanks(i).Item("Mass(ug)") < 150) And (.tblBlanks(i).Item("Proc") <> "WG") Then .tblBlanks(i).Item("OK") = False
+                End If
             Next
             ComputeBlanks()
         End With
@@ -2819,7 +2823,7 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", iPos).Value
                     If TargetGroups(npos) = iGrp + 1 And dgvTargets("Typ", iPos).Value <> "S" Then          ' And dgvTargets("Typ", iPos).Value <> "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value)
-                        If dgvTargets("Proc", iPos).Value = "DOC" Then
+                        If Not IsDBNull(dgvTargets("Proc", iPos).Value) AndAlso dgvTargets("Proc", iPos).Value = "DOC" Then
                             .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
                             dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
@@ -2869,12 +2873,12 @@ Public Class SNICSrFrm
     Public Sub SetLgBlkCorr(iGrp As Integer, iRow As Integer)
         With frmBlankCorr.tblGroup(iGrp).Rows(iRow)
             If (Not frmBlankCorr.chkLock(iGrp).Checked) And (Not frmBlankCorr.chkLockAll.Checked) Then
-                If .Item("Sm") And Not (.Item("Proc") = "DOC" Or .Item("Proc") = "GS") Then
-                    Dim iPos As Integer = .Item("Pos")
-                    .Item("Fm_Bgnd") = MBCLgFm(iPos)
-                    .Item("SigFMBgnd") = MBCLgFmSig(iPos)
-                Else
-                    If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
+                If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
+                    If .Item("Sm") And Not (.Item("Proc") = "DOC" Or .Item("Proc") = "GS") Then
+                        Dim iPos As Integer = .Item("Pos")
+                        .Item("Fm_Bgnd") = MBCLgFm(iPos)
+                        .Item("SigFMBgnd") = MBCLgFmSig(iPos)
+                    Else
                         Select Case .Item("Proc")
                             Case "GS", "HY", "WS"
                                 .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
@@ -2889,10 +2893,11 @@ Public Class SNICSrFrm
                                 .Item("Fm_Bgnd") = 0.0
                                 .Item("SigFmBgnd") = 0.0
                         End Select
-                    Else
-                        .Item("Fm_Bgnd") = 0.0
-                        .Item("SigFmBgnd") = 0.0
                     End If
+                Else
+                    .Item("Fm_Bgnd") = 0.0
+                    .Item("SigFmBgnd") = 0.0
+                    
                 End If
             End If
         End With
