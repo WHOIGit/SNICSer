@@ -956,10 +956,11 @@ Public Class SNICSrFrm
                    & "Otherwise, please contact system adminstrator")
             FileClose(22)
             With FrmNotify2ndAuth
-                .lbx2ndAuth.Items.Add("amcnichol")
+                .lbx2ndAuth.Items.Add("rhansman")
+                .lbx2ndAuth.Items.Add("jhlavenka")
+                .lbx2ndAuth.Items.Add("mkurz")
                 .lbx2ndAuth.Items.Add("blongworth")
                 .lbx2ndAuth.Items.Add("kelder")
-                .lbx2ndAuth.Items.Add("kvonreden")
                 .lbx2ndAuth.Items.Add("mroberts")
                 .lbx2ndAuth.Items.Add("agagnon")
                 .lbx2ndAuth.Items.Add("shandwork")
