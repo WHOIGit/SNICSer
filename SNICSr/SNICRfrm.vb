@@ -2869,26 +2869,20 @@ Public Class SNICSrFrm
         With frmBlankCorr.tblGroup(iGrp).Rows(iRow)
             If (Not frmBlankCorr.chkLock(iGrp).Checked) And (Not frmBlankCorr.chkLockAll.Checked) Then
                 If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
-                    If .Item("Sm") And Not (.Item("Proc") = "DOC" Or .Item("Proc") = "GS") Then
-                        Dim iPos As Integer = .Item("Pos")
-                        .Item("Fm_Bgnd") = MBCLgFm(iPos)
-                        .Item("SigFMBgnd") = MBCLgFmSig(iPos)
-                    Else
-                        Select Case .Item("Proc")
-                            Case "GS", "HY", "WS"
-                                .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
-                                .Item("SigFmBgnd") = frmBlankCorr.tblInorganic(0).Item("Uncertainty")
-                            Case "OC", "DOC"
-                                .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
-                                .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
-                            Case "WC", "WG", "SW"
-                                .Item("Fm_Bgnd") = frmBlankCorr.tblWatson(0).Item("Value_Used")
-                                .Item("SigFmBgnd") = frmBlankCorr.tblWatson(0).Item("Uncertainty")
-                            Case Else
-                                .Item("Fm_Bgnd") = 0.0
-                                .Item("SigFmBgnd") = 0.0
-                        End Select
-                    End If
+                    Select Case .Item("Proc")
+                        Case "GS", "HY", "WS"
+                            .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
+                            .Item("SigFmBgnd") = frmBlankCorr.tblInorganic(0).Item("Uncertainty")
+                        Case "OC", "DOC"
+                            .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
+                            .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
+                        Case "WC", "WG", "SW"
+                            .Item("Fm_Bgnd") = frmBlankCorr.tblWatson(0).Item("Value_Used")
+                            .Item("SigFmBgnd") = frmBlankCorr.tblWatson(0).Item("Uncertainty")
+                        Case Else
+                            .Item("Fm_Bgnd") = 0.0
+                            .Item("SigFmBgnd") = 0.0
+                    End Select
                 Else
                     .Item("Fm_Bgnd") = 0.0
                     .Item("SigFmBgnd") = 0.0
