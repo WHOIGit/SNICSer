@@ -2865,7 +2865,7 @@ Public Class SNICSrFrm
                 If .tblGroup(iGrp).Rows.Count = 0 Then .tbcGroups.TabPages(iGrp).Text = "None"
                 For iRow = 0 To .tblGroup(iGrp).Rows.Count - 1
                     DoLgBlkCorr(iGrp, iRow)
-                    If .tblGroup(iGrp).Rows(iRow).Item(0) Then DoMBCorr(iGrp, iRow)
+                    DoMBCorr(iGrp, iRow)
                 Next
             Next        ' for each group
         End With
