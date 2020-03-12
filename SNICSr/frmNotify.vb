@@ -58,7 +58,7 @@ Public Class FrmNotify2ndAuth
                 post &= "\n Using V" & SNICSrFrm.VERSION.ToString("0.000") & " and  " & SNICSrFrm.CalcMode & " of " & SNICSrFrm.CalcNum
                 If SNICSrFrm.GROUPBOUNDS Then post &= "  Group Bounds Enforced"
                 If txtMessage.Text.Trim <> "" Then post &= "\n" & txtMessage.Text.Trim
-                slackPost(post)
+                ' slackPost(post) disabled until TLS1.2 is implemented
             End Using
             Me.Height = MyHeight
             Me.Visible = False
