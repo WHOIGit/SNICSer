@@ -2824,19 +2824,13 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", iPos).Value
                     If TargetGroups(npos) = iGrp + 1 And dgvTargets("Typ", iPos).Value <> "S" Then          ' And dgvTargets("Typ", iPos).Value <> "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value)
-                        If Not IsDBNull(dgvTargets("Proc", iPos).Value) AndAlso dgvTargets("Proc", iPos).Value = "DOC" Then
-                            .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
-                            dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
-                            dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
-                            dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value, _
-                            TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))            ' Use TotalMass for DOC and sigma from dc13
-                        Else
-                            .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos), _
-                            dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value, _
-                            dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr, _
-                            dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value, _
-                            TargetMass(npos), (0.01 * TargetMass(npos) ^ 2 + 4) ^ 0.5, TargetProcs(npos))            ' Targetmass changed from TotalMass 11/17/14
-                        End If
+
+                        .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos),
+                            dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value,
+                            dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr,
+                            dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value,
+                            TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))            ' Use TotalMass and mass error from dc13
+
                         If TargetIsReadOnly(iPos) Then
                             GroupIsReadOnly = True
                             .dgvGroup(iGrp).Rows(.dgvGroup(iGrp).Rows.Count - 1).DefaultCellStyle.ForeColor = Color.Gray
@@ -4342,7 +4336,7 @@ Public Class SNICSrFrm
                                 If Not rdr.IsDBNull(10) Then
                                     SigTotalMass(ipos) = 12.015 * rdr.GetDouble(10)
                                 Else
-                                    SigTotalMass(ipos) = 0.0
+                                    SigTotalMass(ipos) = 0.1 * TotalMass(ipos)
                                 End If
                             End While
 
