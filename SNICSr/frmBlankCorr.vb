@@ -72,7 +72,7 @@
                 For iRow = 0 To tblGroup(iGrp).Rows.Count - 1
                     .SetLgBlkCorr(iGrp, iRow)
                     .DoLgBlkCorr(iGrp, iRow)
-                    If tblGroup(iGrp).Rows(iRow).Item(0) Then
+                    If tblGroup(iGrp).Rows(iRow).Item(1) Then
                         .DoMBCorr(iGrp, iRow)
                     Else
                         .RemoveMassBalanceBlankCorr(iGrp, iRow)  ' remove mass balance correction
@@ -143,9 +143,9 @@
         Dim dgv As DataGridView = DirectCast(sender, DataGridView)
         Dim iGrp As Integer = dgv.Tag
         Dim iRow As Integer = e.RowIndex
-        If e.ColumnIndex = 0 And iRow > -1 Then
+        If e.ColumnIndex = 1 And iRow > -1 Then
             If Not chkLock(iGrp).Checked Then
-                tblGroup(iGrp).Rows(iRow).Item(0) = Not tblGroup(iGrp).Rows(iRow).Item(0)
+                tblGroup(iGrp).Rows(iRow).Item(1) = Not tblGroup(iGrp).Rows(iRow).Item(1)
                 UpDateBlkCorr(iGrp, iRow)
             End If
         End If
@@ -156,7 +156,7 @@
         With SNICSrFrm
             .SetLgBlkCorr(iGrp, iRow)           ' first update the large blank correction accordingly
             .DoLgBlkCorr(iGrp, iRow)
-            If tblGroup(iGrp).Rows(iRow).Item(0) Then            ' code to add or remove mass balance correction 
+            If tblGroup(iGrp).Rows(iRow).Item(1) Then            ' code to add or remove mass balance correction 
                 '.TargetIsSmall(iPos) = True
                 .DoMBCorr(iGrp, iRow)
             Else
@@ -172,16 +172,13 @@
         Dim iGrp As Integer = chk.Tag
         If Not chkLock(iGrp).Checked Then
             For iRow = 0 To tblGroup(iGrp).Rows.Count - 1
-                tblGroup(iGrp).Rows(iRow).Item(0) = chk.Checked
+                tblGroup(iGrp).Rows(iRow).Item(1) = chk.Checked
                 UpDateBlkCorr(iGrp, iRow)
             Next
         End If
     End Sub
 
 
-
-   
- 
     'Private Sub tbResErr_TextChanged(sender As Object, e As EventArgs) Handles tbResErr.TextChanged
     '    'update blank correction
     '    UpDateBlankTables()

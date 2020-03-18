@@ -226,11 +226,11 @@ Public Class SNICSrFrm
     Public ShareDrivePath As String = "\\sharenosams.whoi.edu\shared"
 
 #Region "Colors"
-    Public PlotColsOrig() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange, _
+    Public PlotColsOrig() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange,
                                   Color.DarkOliveGreen, Color.Green, Color.DarkCyan, Color.Blue, Color.Black}
-    Public PlotColsCB() As Color = {Color.Cyan, Color.Blue, Color.OliveDrab, Color.Green, Color.Pink, _
+    Public PlotColsCB() As Color = {Color.Cyan, Color.Blue, Color.OliveDrab, Color.Green, Color.Pink,
                                   Color.Red, Color.Yellow, Color.Orange, Color.MediumPurple, Color.Purple}
-    Public PlotCols() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange, _
+    Public PlotCols() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange,
                                   Color.DarkOliveGreen, Color.Green, Color.DarkCyan, Color.Blue, Color.Black}
     Public StdCol As Color = Color.LightSteelBlue
     Public SecCol As Color = Color.Wheat
@@ -285,7 +285,7 @@ Public Class SNICSrFrm
         TurnOnNumLock()           ' turn num lock on if off (mainly for Macs)
         SetupTreeImages()             ' for the wheel browser window
         GetNotifyRecipients()         ' for email notification
-        setupbailbutton()
+        SetUpBailButton()
     End Sub             ' this executes on startup
 
 #Region "Initialization"
@@ -978,7 +978,7 @@ Public Class SNICSrFrm
         End Try
     End Sub
 
-    Private Declare Sub keybd_event Lib "user32" (ByVal bVk As Byte, ByVal bScan As Byte, _
+    Private Declare Sub keybd_event Lib "user32" (ByVal bVk As Byte, ByVal bScan As Byte,
             ByVal dwFlags As Integer, ByVal dwExtraInfo As Integer)         ' this is needed for the next subroutine
 
     Private Sub TurnOnNumLock()
@@ -1034,7 +1034,7 @@ Public Class SNICSrFrm
     End Sub
 
     Private Sub DoTree(AMS As List(Of WheelID), node As Integer)
-        Dim Months As String() = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", _
+        Dim Months As String() = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
         With BrowseWheel
             Dim thisYear As Integer = CInt(Now.ToString("yy"))
@@ -2336,8 +2336,8 @@ Public Class SNICSrFrm
         End If
     End Sub
 
-    Public Sub LinFit(ByVal x() As Double, ByVal y() As Double, ByVal n As Integer, ByRef m As Double, _
-                           ByRef b As Double, ByRef sigb As Double, ByRef sigm As Double, _
+    Public Sub LinFit(ByVal x() As Double, ByVal y() As Double, ByVal n As Integer, ByRef m As Double,
+                           ByRef b As Double, ByRef sigb As Double, ByRef sigm As Double,
                            ByRef sigma As Double, ByRef MeanVal As Double)
         ' given an input matrix of length n, returns the intercept b, the slope m, and the uncertainties in both
         Dim SumX As Double = 0.0, SumX2 As Double = 0.0, SumY As Double = 0.0, SumXY As Double = 0.0, SumY2 As Double = 0.0
@@ -2492,9 +2492,9 @@ Public Class SNICSrFrm
                 Try
                     If dgvTargets("Typ", ipos).Value = "S" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblStandards.Rows.Add(npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
+                        .tblStandards.Rows.Add(npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
@@ -2528,11 +2528,11 @@ Public Class SNICSrFrm
                 Dim nPos As Integer = .tblStandards(i).Item("Pos")
                 If Not .chkLockAll.Checked Then
                     .tblStandards(i).Item("Res_Err") = ResErr(nPos)
-                    .tblStandards(i).Item("Fm_Corr") = LargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"), _
+                    .tblStandards(i).Item("Fm_Corr") = LargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"),
                                                                            AsmRat(.tblStandards(i).Item("Pos")))
-                    .tblStandards(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"), _
+                    .tblStandards(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblStandards(i).Item("Fm_Meas"), .tblStandards(i).Item("Fm_Bgnd"),
                                              AsmRat(.tblStandards(i).Item("Pos")), .tblStandards(i).Item("Max_Err"), .tblStandards(i).Item("SigFmBgnd"))
-                    .tblStandards(i).Item("Sig_Fm_Corr_RE") = TotErr(.tblStandards(i).Item("Fm_Corr"), .tblStandards(i).Item("Sig_Fm_Corr"), _
+                    .tblStandards(i).Item("Sig_Fm_Corr_RE") = TotErr(.tblStandards(i).Item("Fm_Corr"), .tblStandards(i).Item("Sig_Fm_Corr"),
                                                                                                  .tblStandards(i).Item("Res_Err"))
                     FmCorr(nPos) = .tblStandards(i).Item("Fm_Corr")
                     ResErr(nPos) = .tblStandards(i).Item("Res_Err")
@@ -2583,9 +2583,9 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
                     If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "")) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(False, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
+                        .tblBlanks.Rows.Add(False, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
@@ -2626,9 +2626,9 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
                     If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "WC") Or (TargetProcs(npos) = "WG")) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value, _
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr, _
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value, _
+                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
                                                TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
@@ -2638,9 +2638,9 @@ Public Class SNICSrFrm
             For i = 0 To .tblBlanks.Rows.Count - 1
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
-                 If IsDBNull(.tblBlanks(i).Item("Proc")) Then
+                If IsDBNull(.tblBlanks(i).Item("Proc")) Then
                     .tblBlanks(i).Item("OK") = False
-                 Else
+                Else
                     If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
                     If (.tblBlanks(i).Item("Mass(ug)") < 150) And (.tblBlanks(i).Item("Proc") <> "WG") Then .tblBlanks(i).Item("OK") = False
                 End If
@@ -2758,7 +2758,7 @@ Public Class SNICSrFrm
                         If .tblBlanks(i).Item("Proc") = "HY" Or .tblBlanks(i).Item("Proc") = "GS" Or .tblBlanks(i).Item("Proc") = "OC" _
                                         Or .tblBlanks(i).Item("Proc") = "WS" Or .tblBlanks(i).Item("Proc") = "WC" Or .tblBlanks(i).Item("Proc") = "WG" Then
                             .tblBlanks(i).Item("Fm_Corr") = LargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"), 1.0398)
-                            .tblBlanks(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"), _
+                            .tblBlanks(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"),
                                                                                1.0398, .tblBlanks(i).Item("Max_Err"), .tblBlanks(i).Item("SigFmBgnd"))
                             FmCorr(iPos) = .tblBlanks(i).Item("Fm_Corr")
                             SigFmCorr(iPos) = .tblBlanks(i).Item("Sig_Fm_Corr")
@@ -2804,8 +2804,8 @@ Public Class SNICSrFrm
                 .tbcGroups.TabPages(iGrp).Controls.Add(.chkSmall(iGrp))
                 .tbcGroups.TabPages(iGrp).Controls.Add(.chkLock(iGrp))
                 .tbcGroups.TabPages(iGrp).Controls.Add(.lblGroup(iGrp))
-                .chkSmall(iGrp).Text = "Small"
-                .chkSmall(iGrp).Checked = False
+                .chkSmall(iGrp).Text = "MBC"
+                .chkSmall(iGrp).Checked = True
                 .chkSmall(iGrp).Tag = iGrp
                 .chkLock(iGrp).Left = .chkSmall(iGrp).Right + 30
                 .chkLock(iGrp).Top = .chkSmall(iGrp).Top
@@ -2825,7 +2825,7 @@ Public Class SNICSrFrm
                     If TargetGroups(npos) = iGrp + 1 And dgvTargets("Typ", iPos).Value <> "S" Then          ' And dgvTargets("Typ", iPos).Value <> "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value)
 
-                        .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), npos, TargetNames(npos),
+                        .tblGroup(iGrp).Rows.Add(TargetIsSmall(npos), True, npos, TargetNames(npos),
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value,
                             dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr,
                             dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value,
@@ -2859,7 +2859,7 @@ Public Class SNICSrFrm
                 If .tblGroup(iGrp).Rows.Count = 0 Then .tbcGroups.TabPages(iGrp).Text = "None"
                 For iRow = 0 To .tblGroup(iGrp).Rows.Count - 1
                     DoLgBlkCorr(iGrp, iRow)
-                    DoMBCorr(iGrp, iRow)
+                    If .tblGroup(iGrp).Rows(iRow).Item(1) Then DoMBCorr(iGrp, iRow)
                 Next
             Next        ' for each group
         End With
@@ -2886,7 +2886,7 @@ Public Class SNICSrFrm
                 Else
                     .Item("Fm_Bgnd") = 0.0
                     .Item("SigFmBgnd") = 0.0
-                    
+
                 End If
             End If
         End With
@@ -2898,11 +2898,11 @@ Public Class SNICSrFrm
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If GroupAvgStdFm(iGrp) <> 0 Then
                     .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
-                    .tblGroup(iGrp)(iRow).Item("Fm_Corr") = LargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
+                    .tblGroup(iGrp)(iRow).Item("Fm_Corr") = LargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"),
                                                                             GroupAvgStdFm(iGrp))
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"), _
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblGroup(iGrp)(iRow).Item("Fm_Meas"), .tblGroup(iGrp)(iRow).Item("Fm_Bgnd"),
                                                                             GroupAvgStdFm(iGrp), .tblGroup(iGrp)(iRow).Item("Max_Err"), .tblGroup(iGrp)(iRow).Item("SigFmBgnd"))
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), _
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"),
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Corr")
                     'ResErr(iPos) = .tblGroup(iGrp)(iRow).Item("Res_Err")
@@ -2937,14 +2937,14 @@ Public Class SNICSrFrm
                     'TargetIsSmall(iPos) = True
                     .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
                     If TargetProcs(iPos) = "DOC" Then
                         .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
-                        .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos), _
+                        .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
                                                                                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
                     End If
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"), _
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr_RE") = TotErr(.tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr"), .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr"),
                                                                                                  .tblGroup(iGrp)(iRow).Item("Res_Err"))
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
                     SigFmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
@@ -3018,7 +3018,10 @@ Public Class SNICSrFrm
         With theTbl
             .Columns.Clear()
             If theTbl Is frmBlankCorr.tblBlanks Then .Columns.Add("OK", GetType(Boolean))
-            If isGrpTbl Then .Columns.Add("Sm", GetType(Boolean))
+            If isGrpTbl Then
+                .Columns.Add("Sm", GetType(Boolean))
+                .Columns.Add("MBC", GetType(Boolean))
+            End If
             .Columns.Add("Pos", GetType(Integer))
             .Columns.Add("SampleName____________", GetType(String))
             .Columns.Add("Typ", GetType(String))
@@ -3163,12 +3166,12 @@ Public Class SNICSrFrm
         FmMassBal = FmC + (FmC - FmB) * MassB / Mass
     End Function
 
-    Public Function SigFmMassBal(FmC As Double, FmB As Double, M As Double, Mb As Double, _
+    Public Function SigFmMassBal(FmC As Double, FmB As Double, M As Double, Mb As Double,
                                  SigFmC As Double, SigFmB As Double, SigMass As Double, SigMassB As Double) As Double
         If M <= Mb Then Return 42 ' flag anomalous situation
-        SigFmMassBal = SigFmC ^ 2 * (1 + Mb / M) ^ 2 + _
-                       SigMass ^ 2 * ((FmC - FmB) * Mb / M ^ 2) ^ 2 + _
-                       SigFmB ^ 2 * (Mb / M) ^ 2 + _
+        SigFmMassBal = SigFmC ^ 2 * (1 + Mb / M) ^ 2 +
+                       SigMass ^ 2 * ((FmC - FmB) * Mb / M ^ 2) ^ 2 +
+                       SigFmB ^ 2 * (Mb / M) ^ 2 +
                        SigMassB ^ 2 * ((FmC - FmB) / M) ^ 2
         If SigFmMassBal > 0 Then SigFmMassBal = SigFmMassBal ^ 0.5
     End Function
@@ -3180,13 +3183,13 @@ Public Class SNICSrFrm
         FmMassBalmc = FmC + (FmC - FmB) * MassB / (Mass - MassB)
     End Function
 
-    Public Function SigFmMassBalmc(FmC As Double, FmB As Double, M As Double, Mb As Double, _
+    Public Function SigFmMassBalmc(FmC As Double, FmB As Double, M As Double, Mb As Double,
                                  SigFmC As Double, SigFmB As Double, SigMass As Double, SigMassB As Double) As Double
         '   This version is the propogation when using M - Mb as sample mass
         If M <= Mb Then Return 42 ' flag anomalous situation
-        SigFmMassBalmc = SigFmC ^ 2 * (M / (M - Mb)) ^ 2 + _
-                       SigMass ^ 2 * ((FmB - FmC) * Mb / (M - Mb) ^ 2) ^ 2 + _
-                       SigFmB ^ 2 * (Mb / (M - Mb) ) ^ 2 + _
+        SigFmMassBalmc = SigFmC ^ 2 * (M / (M - Mb)) ^ 2 +
+                       SigMass ^ 2 * ((FmB - FmC) * Mb / (M - Mb) ^ 2) ^ 2 +
+                       SigFmB ^ 2 * (Mb / (M - Mb)) ^ 2 +
                        SigMassB ^ 2 * ((FmC - FmB) / (M - Mb)) ^ 2
         If SigFmMassBalmc > 0 Then SigFmMassBalmc = SigFmMassBalmc ^ 0.5
     End Function
@@ -3888,7 +3891,7 @@ Public Class SNICSrFrm
                 myPane.Title.Text = ""
             End If
             myPane.Title.Text &= "Mean = " & ybar.ToString(dFnt(NumResFigs - 2)) & " +- " _
-                    & (ysig / numy ^ 0.5).ToString(dFnt(NumResFigs - 2)) & "  (StdDev = " & _
+                    & (ysig / numy ^ 0.5).ToString(dFnt(NumResFigs - 2)) & "  (StdDev = " &
                     ysig.ToString(dFnt(NumResFigs - 3)) & "  N = " & numy.ToString & " )"
             If SumCnts > 0 Then
                 myPane.Title.Text &= " (IntErr = " & IntErr(PlotList(0)).ToString(dFnt(NumResFigs - 2)) & ")"
