@@ -1563,7 +1563,7 @@ Public Class SNICSrFrm
 
     Public Sub FindSmallSamples()      ' find out if target exists and/or if small
         For iPos = 0 To MAXTARGETS
-            TargetIsSmall(iPos) = ((TargetMass(iPos) > 0) And (TargetMass(iPos) < MaxSmallSampleMass)) Or TargetProcs(iPos) = "DOC"
+            TargetIsSmall(iPos) = (TargetMass(iPos) > 0) And (TargetMass(iPos) < MaxSmallSampleMass)
         Next
         'ListSmallTargets()     ' optional listing for debugging purposes
     End Sub
