@@ -3065,6 +3065,7 @@ Public Class SNICSrFrm
                 .Columns("Sig_Mass_MBC").AllowDBNull = True
             End If
         End With
+
         With theDGV
             .DataSource = theTbl
             .AllowUserToAddRows = False
@@ -3075,7 +3076,7 @@ Public Class SNICSrFrm
             .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
             .RowHeadersVisible = False
             .Anchor = AnchorStyles.Right + AnchorStyles.Top + AnchorStyles.Left
-            .Columns(3).DefaultCellStyle.Format = "0.00000"
+            .Columns(3).DefaultCellStyle.Format = "0"
             For iCol = 4 To 7
                 .Columns(iCol).DefaultCellStyle.Format = "0.0000"
             Next
@@ -3094,30 +3095,30 @@ Public Class SNICSrFrm
             .Columns(25).DefaultCellStyle.Format = "0.00000"
             .Columns(26).DefaultCellStyle.Format = "0.000"
             If isGrpTbl Then
-                .Columns(4).DefaultCellStyle.Format = "0"
-                For iCol = 5 To 8
+                .Columns(5).DefaultCellStyle.Format = "0"
+                For iCol = 6 To 9
                     .Columns(iCol).DefaultCellStyle.Format = "0.0000"
                 Next
-                For iCol = 9 To 10
+                For iCol = 10 To 11
                     .Columns(iCol).DefaultCellStyle.Format = "0.00"
                 Next
-                For iCol = 11 To 12
+                For iCol = 12 To 13
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 14 To 20
+                For iCol = 15 To 21
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                For iCol = 21 To 24
+                For iCol = 22 To 25
                     .Columns(iCol).DefaultCellStyle.Format = "0.0000"
                 Next
-                For iCol = 25 To 26
+                For iCol = 26 To 27
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(27).DefaultCellStyle.Format = "0"
                 .Columns(28).DefaultCellStyle.Format = "0"
-                .Columns(29).DefaultCellStyle.Format = "0.00000"
+                .Columns(29).DefaultCellStyle.Format = "0"
                 .Columns(30).DefaultCellStyle.Format = "0.00000"
-                .Columns(31).DefaultCellStyle.Format = "0.00"
+                .Columns(31).DefaultCellStyle.Format = "0.00000"
+                .Columns(32).DefaultCellStyle.Format = "0.00"
             End If
             If theTbl Is frmBlankCorr.tblBlanks Then
                 .Columns(4).DefaultCellStyle.Format = "0"
