@@ -2933,7 +2933,7 @@ Public Class SNICSrFrm
         With frmBlankCorr
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
-                If TargetProcs(iPos) <> "" And TargetMass(iPos) > 0 Then
+                If TargetProcs(iPos) <> "" And TotalMass(iPos) > 0 Then
                     'TargetIsSmall(iPos) = True
                     .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
