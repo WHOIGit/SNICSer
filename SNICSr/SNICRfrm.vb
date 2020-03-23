@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 Public Class SNICSrFrm
 
     Public VERSION As Double = 2.9     ' this is the version number. Increment in units of 0.01 when updating 
-    Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
+    Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
@@ -4272,7 +4272,7 @@ Public Class SNICSrFrm
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, " _
                                          & "fm_blank_err, fm_cont, fm_cont_err, mass_cont, " _
                                      & "mass_cont_err, dc13, added_var, sig_tot_umols " _
-                                     & "FROM dbo.dc13 WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
+                                     & "FROM dbo.dc13" & TTE & " WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
 
