@@ -2934,7 +2934,6 @@ Public Class SNICSrFrm
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If TargetProcs(iPos) <> "" And TotalMass(iPos) > 0 Then
-                    'TargetIsSmall(iPos) = True
                     .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
@@ -2983,7 +2982,7 @@ Public Class SNICSrFrm
         With frmBlankCorr
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
-                TargetIsSmall(iPos) = False
+                'TargetIsSmall(iPos) = False
                 FmMBCorr(iPos) = -99
                 SigFmMBCorr(iPos) = -99
                 SigFmMBCorrRE(iPos) = -99
@@ -5164,100 +5163,58 @@ Public Class SNICSrFrm
                         Else
                             If FIRSTAUTH Then
                                 If Not REAUTH And TargetNotAlreadyRun(iPos) Then
-                                    If TargetIsSmall(iPos) Then
-                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
-                                                             & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                             & "del_13c, sig_13c, fm_corr, res_err, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
-                                                             & "sig_fm_mb_corr_re, blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
-                                                             & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
-                                                             & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
-                                                             & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
-                                                             & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
-                                                             & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
-                                                             & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
-                                                             & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & ResErr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
-                                                             & SigFmCorrRE(iPos).ToString & ", " & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
-                                                             & SigFmMBCorr(iPos).ToString & ", " & SigFmMBCorrRE(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
-                                                             & MBBlkMass(iPos).ToString & ", " & SigMBBlkMass(iPos).ToString & ", '" & TargetComments(iPos).Trim _
-                                                             & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
-                                    Else    ' need to put NULLs in the mass balance results
-                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
-                                                            & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
-                                                            & "del_13c, sig_13c, fm_corr, res_err, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
-                                                            & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
-                                                            & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
-                                                            & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
-                                                            & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
-                                                            & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
-                                                            & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
-                                                            & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & ResErr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
-                                                            & SigFmCorrRE(iPos).ToString & ", " & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
-                                                            & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
-                                    End If
+                                    aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
+                                                         & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
+                                                         & "del_13c, sig_13c, fm_corr, res_err, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
+                                                         & "sig_fm_mb_corr_re, blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
+                                                         & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
+                                                         & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
+                                                         & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
+                                                         & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
+                                                         & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & CalcNum.ToString _
+                                                         & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
+                                                         & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & ResErr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
+                                                         & SigFmCorrRE(iPos).ToString & ", " & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
+                                                         & SigFmMBCorr(iPos).ToString & ", " & SigFmMBCorrRE(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
+                                                         & MBBlkMass(iPos).ToString & ", " & SigMBBlkMass(iPos).ToString & ", '" & TargetComments(iPos).Trim _
+                                                         & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
+
                                 Else
-                                    If TargetIsSmall(iPos) Then
-                                        aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
-                                                             & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
-                                                             & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
-                                                             & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
-                                                             & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
-                                                             & ", fm_corr = " & FmCorr(iPos).ToString & ", res_err = " & ResErr(iPos).ToString _
-                                                             & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", sig_fm_corr_re = " & SigFmCorrRE(iPos).ToString _
-                                                             & ", lg_blk_fm = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString _
-                                                             & ", fm_mb_corr = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr = " & SigFmMBCorr(iPos).ToString _
-                                                             & ", sig_fm_mb_corr_re = " & SigFmMBCorrRE(iPos).ToString & ", blank_fm = " & MBBlkFm(iPos).ToString _
-                                                             & ", sig_blank_fm = " & SigMBBlkFm(iPos).ToString & ", blank_mass = " _
-                                                             & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
-                                                             & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
-                                                             & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                             & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                    Else
-                                        aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
-                                                              & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
-                                                              & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
-                                                              & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
-                                                              & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
-                                                              & ", fm_corr = " & FmCorr(iPos).ToString & ", res_err = " & ResErr(iPos).ToString _
-                                                              & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", sig_fm_corr_re = " & SigFmCorrRE(iPos).ToString _
-                                                              & ", lg_blk_fm = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString _
-                                                              & ", fm_mb_corr = NULL, sig_fm_mb_corr = NULL, sig_fm_mb_corr_re = NULL, blank_fm = NULL" _
-                                                              & ", sig_blank_fm = NULL, blank_mass = NULL, sig_blank_mass = NULL" _
-                                                              & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
-                                                              & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                              & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                    End If
+                                    aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
+                                                         & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
+                                                         & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
+                                                         & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
+                                                         & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
+                                                         & ", fm_corr = " & FmCorr(iPos).ToString & ", res_err = " & ResErr(iPos).ToString _
+                                                         & ", sig_fm_corr = " & SigFmCorr(iPos).ToString & ", sig_fm_corr_re = " & SigFmCorrRE(iPos).ToString _
+                                                         & ", lg_blk_fm = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm = " & SigLgBlkFm(iPos).ToString _
+                                                         & ", fm_mb_corr = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr = " & SigFmMBCorr(iPos).ToString _
+                                                         & ", sig_fm_mb_corr_re = " & SigFmMBCorrRE(iPos).ToString & ", blank_fm = " & MBBlkFm(iPos).ToString _
+                                                         & ", sig_blank_fm = " & SigMBBlkFm(iPos).ToString & ", blank_mass = " _
+                                                         & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
+                                                         & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
+                                                         & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                         & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+
                                 End If
                                 'MsgBox(aCmd)
                             ElseIf SECONDAUTH Then
-                                If TargetIsSmall(iPos) Then
-                                    aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
-                                                        & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
-                                                        & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
-                                                        & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
-                                                        & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
-                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
-                                                        & ", sig_fm_corr_re_2 = " & SigFmCorrRE(iPos).ToString _
-                                                        & ", lg_blk_fm_2 = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString _
-                                                        & ", fm_mb_corr_2 = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString _
-                                                        & ", sig_fm_mb_corr_re_2 = " & SigFmMBCorrRE(iPos).ToString & ", blank_fm_2 = " _
-                                                        & MBBlkFm(iPos).ToString & ", sig_blank_fm_2 = " & SigMBBlkFm(iPos).ToString & ", blank_mass_2 = " _
-                                                        & MBBlkMass(iPos).ToString & ", sig_blank_mass_2 = " & SigMBBlkMass(iPos).ToString _
-                                                        & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
-                                                        & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                        & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                Else
-                                    aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
-                                                        & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
-                                                        & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
-                                                        & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
-                                                        & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
-                                                        & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
-                                                        & ", sig_fm_corr_re_2 = " & SigFmCorrRE(iPos).ToString _
-                                                        & ", lg_blk_fm_2 = NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, sig_fm_mb_corr_re_2 = NULL, blank_fm_2 = NULL," _
-                                                        & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
-                                                        & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
-                                                        & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
-                                End If
+                                aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
+                                                    & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
+                                                    & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
+                                                    & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
+                                                    & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
+                                                    & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
+                                                    & ", sig_fm_corr_re_2 = " & SigFmCorrRE(iPos).ToString _
+                                                    & ", lg_blk_fm_2 = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString _
+                                                    & ", fm_mb_corr_2 = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString _
+                                                    & ", sig_fm_mb_corr_re_2 = " & SigFmMBCorrRE(iPos).ToString & ", blank_fm_2 = " _
+                                                    & MBBlkFm(iPos).ToString & ", sig_blank_fm_2 = " & SigMBBlkFm(iPos).ToString & ", blank_mass_2 = " _
+                                                    & MBBlkMass(iPos).ToString & ", sig_blank_mass_2 = " & SigMBBlkMass(iPos).ToString _
+                                                    & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
+                                                    & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall & ", norm_method_2 = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                    & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
+
                             End If
                             If TargetNotAlreadyRun(i) Then
                                 com.CommandText = aCmd
