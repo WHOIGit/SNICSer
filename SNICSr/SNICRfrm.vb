@@ -2495,7 +2495,7 @@ Public Class SNICSrFrm
                         .tblStandards.Rows.Add(npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' do nothing if error
@@ -2586,7 +2586,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(False, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' ignore exception
@@ -2601,7 +2601,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' ignore exception
@@ -2615,7 +2615,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' ignore exception
@@ -2629,7 +2629,7 @@ Public Class SNICSrFrm
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TargetMass(npos), 0.1 * TargetMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' ignore exception
@@ -2933,7 +2933,7 @@ Public Class SNICSrFrm
         With frmBlankCorr
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
-                If TargetProcs(iPos) <> "" And TotalMass(iPos) > 0 Then
+                If TargetProcs(iPos) <> "" And TotalMass(iPos) > 0 And MBCFm(iPos) > 0 And MBCMass(iPos) > 0 And MBCFmSig(iPos) > 0 And MBCMassSig(iPos) > 0 Then
                     .tblGroup(iGrp)(iRow).Item("Res_Err") = ResErr(iPos)
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
