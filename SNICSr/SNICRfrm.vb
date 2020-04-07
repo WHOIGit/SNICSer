@@ -5163,7 +5163,7 @@ Public Class SNICSrFrm
                         Else
                             If FIRSTAUTH Then
                                 If Not REAUTH And TargetNotAlreadyRun(iPos) Then
-                                    If TargetIsSmall(iPos) Then
+                                    If FmMBCorr(iPos) <> -99 Then
                                         aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
                                                              & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
                                                              & "del_13c, sig_13c, fm_corr, res_err, sig_fm_corr, sig_fm_corr_re, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
@@ -5194,7 +5194,7 @@ Public Class SNICSrFrm
                                                             & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
                                     End If
                                 Else
-                                    If TargetIsSmall(iPos) Then
+                                    If FmMBCorr(iPos) <> -99 Then
                                         aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
                                                              & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
                                                              & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
@@ -5228,7 +5228,7 @@ Public Class SNICSrFrm
                                 End If
                                 'MsgBox(aCmd)
                             ElseIf SECONDAUTH Then
-                                If TargetIsSmall(iPos) Then
+                                If FmMBCorr(iPos) <> -99 Then
                                     aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
                                                         & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
                                                         & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
