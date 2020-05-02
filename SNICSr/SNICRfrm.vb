@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.91     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.92     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""                   ' modifier for Database Test Table Extension
 
@@ -152,6 +152,7 @@ Public Class SNICSrFrm
     Public TargetRuns(MAXTARGETS) As Integer           ' number of unflagged target runs
     Public TargetGroups(MAXTARGETS) As Integer         ' nominal group name for targets
     Public TargetProcs(MAXTARGETS) As String           ' process type for target sample
+    Public TargetProcDescs(MAXTARGETS) As String       ' process type description for target sample
     Public TargetProcNums(MAXTARGETS) As Integer       ' target process numbers
     Public TotalRuns(MAXTARGETS) As Integer            ' total number of target runs (initially)
     Public TargetMass(MAXTARGETS) As Double            ' target mass
@@ -2816,7 +2817,7 @@ Public Class SNICSrFrm
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value,
                             dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr,
                             dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value,
-                            TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))            ' Use TotalMass and mass error from dc13
+                            TotalMass(npos), SigTotalMass(npos), TargetProcs(npos), TargetProcDescs(npos))            ' Use TotalMass and mass error from dc13
 
                         If TargetIsReadOnly(iPos) Then
                             GroupIsReadOnly = True
@@ -3010,6 +3011,7 @@ Public Class SNICSrFrm
             .Columns.Add("Mass(ug)", GetType(Double))
             .Columns.Add("SigMass", GetType(Double))
             .Columns.Add("Proc", GetType(String))
+            .Columns.Add("ProcDesc", GetType(String))
             .Columns.Add("Fm_Bgnd", GetType(Double))
             .Columns.Add("SigFmBgnd", GetType(Double))
             .Columns.Add("Fm_Corr", GetType(Double))
@@ -3057,14 +3059,14 @@ Public Class SNICSrFrm
             For iCol = 10 To 11 'mass, mass err
                 .Columns(iCol).DefaultCellStyle.Format = "0"
             Next
-            For iCol = 13 To 18
+            For iCol = 14 To 19
                 .Columns(iCol).DefaultCellStyle.Format = "0.00000"
             Next
-            .Columns(19).DefaultCellStyle.Format = "0"
             .Columns(20).DefaultCellStyle.Format = "0"
-            .Columns(21).DefaultCellStyle.Format = "0.00000"
+            .Columns(21).DefaultCellStyle.Format = "0"
             .Columns(22).DefaultCellStyle.Format = "0.00000"
-            .Columns(23).DefaultCellStyle.Format = "0.000"
+            .Columns(23).DefaultCellStyle.Format = "0.00000"
+            .Columns(24).DefaultCellStyle.Format = "0.000"
             If isGrpTbl Then
                 .Columns(5).DefaultCellStyle.Format = "0"
                 For iCol = 6 To 9
@@ -3076,20 +3078,20 @@ Public Class SNICSrFrm
                 For iCol = 12 To 13 'mass, mass err
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 15 To 18
+                For iCol = 16 To 19
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                For iCol = 19 To 22
+                For iCol = 20 To 23
                     .Columns(iCol).DefaultCellStyle.Format = "0.0000"
                 Next
-                For iCol = 23 To 24
+                For iCol = 24 To 25
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(25).DefaultCellStyle.Format = "0"
                 .Columns(26).DefaultCellStyle.Format = "0"
-                .Columns(27).DefaultCellStyle.Format = "0.00000"
+                .Columns(27).DefaultCellStyle.Format = "0"
                 .Columns(28).DefaultCellStyle.Format = "0.00000"
-                .Columns(29).DefaultCellStyle.Format = "0.00"
+                .Columns(29).DefaultCellStyle.Format = "0.00000"
+                .Columns(30).DefaultCellStyle.Format = "0.00"
             End If
             If theTbl Is frmBlankCorr.tblBlanks Then
                 .Columns(4).DefaultCellStyle.Format = "0"
@@ -3102,14 +3104,14 @@ Public Class SNICSrFrm
                 For iCol = 11 To 12
                     .Columns(iCol).DefaultCellStyle.Format = "0" 'mass, mass err
                 Next
-                For iCol = 14 To 17
+                For iCol = 15 To 18
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(20).DefaultCellStyle.Format = "0"
                 .Columns(21).DefaultCellStyle.Format = "0"
-                .Columns(22).DefaultCellStyle.Format = "0.00000"
+                .Columns(22).DefaultCellStyle.Format = "0"
                 .Columns(23).DefaultCellStyle.Format = "0.00000"
-                .Columns(24).DefaultCellStyle.Format = "0.000"
+                .Columns(24).DefaultCellStyle.Format = "0.00000"
+                .Columns(25).DefaultCellStyle.Format = "0.000"
 
             End If
             For i = 0 To theDGV.Columns.Count - 1
@@ -4747,6 +4749,7 @@ Public Class SNICSrFrm
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
+                'get process code
                 Dim aCmd As String = "SELECT [amsprod].[dbo].[fn_get_process_code] (" & Tp_Num(iTarg).ToString & ");"
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
@@ -4754,6 +4757,19 @@ Public Class SNICSrFrm
                         TargetProcNums(iTarg) = rdr.GetInt16(0)
                     End While
                 End Using
+                ' get process description
+                aCmd = "SELECT [amsprod].[dbo].[fn_get_method_desc_tp] (" & Tp_Num(iTarg).ToString & ");"
+                com.CommandText = aCmd
+                Using rdr As IDataReader = com.ExecuteReader
+                    While rdr.Read
+                        If Not rdr.IsDBNull(0) Then
+                            TargetProcDescs(iTarg) = rdr.GetString(0)
+                        Else
+                            TargetProcDescs(iTarg) = ""
+                        End If
+                    End While
+                End Using
+                ' get process type
                 aCmd = "SELECT key_short_desc FROM dbo.alxrefnd WHERE (key_name = 'PROCESS_TYPE') AND (key_cd = " & TargetProcNums(iTarg).ToString & ");"
                 'MsgBox(aCmd)
                 com.CommandText = aCmd
