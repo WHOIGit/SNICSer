@@ -2917,8 +2917,8 @@ Public Class SNICSrFrm
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
                 If TargetProcs(iPos) <> "" And TotalMass(iPos) > 0 And MBCFm(iPos) > 0 And MBCMass(iPos) > 0 And MBCFmSig(iPos) > 0 And MBCMassSig(iPos) > 0 Then
-                    .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
-                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBal(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
+                    .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
+                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
                     If TargetProcs(iPos) = "DOC" Then
                         .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
