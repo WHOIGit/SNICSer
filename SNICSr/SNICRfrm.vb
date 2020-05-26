@@ -223,7 +223,7 @@ Public Class SNICSrFrm
     Public SymbSize As Integer = 6
     Public TopPlot As Boolean = False
     Public ClassicView As Boolean = False
-    Public ShareDrivePath As String = "\\sharenosams.whoi.edu\shared"
+    Public ShareDrivePath As String = "\\fileshare.whoi.edu\whoi\dept\gg\nosams\"
 
 #Region "Colors"
     Public PlotColsOrig() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange,
