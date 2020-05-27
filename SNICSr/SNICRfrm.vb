@@ -224,7 +224,7 @@ Public Class SNICSrFrm
     Public SymbSize As Integer = 6
     Public TopPlot As Boolean = False
     Public ClassicView As Boolean = False
-    Public ShareDrivePath As String = "\\sharenosams.whoi.edu\shared"
+    Public ShareDrivePath As String = "\\fileshare.whoi.edu\whoi\dept\gg\nosams\"
 
 #Region "Colors"
     Public PlotColsOrig() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange,
@@ -4775,11 +4775,11 @@ Public Class SNICSrFrm
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
-                         If Not rdr.IsDBNull(0) Then
-                             TargetProcs(iTarg) = rdr.GetString(0)
-                         Else
-                             TargetProcs(iTarg) =  ""
-                         End If
+                        If Not rdr.IsDBNull(0) Then
+                            TargetProcs(iTarg) = rdr.GetString(0)
+                        Else
+                            TargetProcs(iTarg) = ""
+                        End If
                     End While
                 End Using
             Catch ex As Exception
@@ -5273,7 +5273,17 @@ Public Class SNICSrFrm
         If SECONDAUTH Then
             With FrmNotify2ndAuth
                 .lblNotify.Text = "Do you wish to (email) notify the 1st Analyst?"
-                .lbx2ndAuth.Text = TheWheel.FirstAuthName
+                ' convert username to email address
+                Select Case TheWheel.FirstAuthName
+                    Case "mr"
+                        .lbx2ndAuth.Text = "mroberts"
+                    Case "jh"
+                        .lbx2ndAuth.Text = "jhlavenka"
+                    Case "brettl"
+                        .lbx2ndAuth.Text = "blongworth"
+                    Case Else
+                        .lbx2ndAuth.Text = ""
+                End Select
                 .ShowDialog()
             End With
         End If
@@ -5981,7 +5991,7 @@ Public Class SNICSrFrm
         If TargetData.Columns.Count - e.ColumnIndex < 4 Then PlotDelC13s()
     End Sub
 
-    Private Sub chkTargets_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkStandards.CheckedChanged, _
+    Private Sub chkTargets_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkStandards.CheckedChanged,
                     chkBlanks.CheckedChanged, chkSecondaries.CheckedChanged, chkUnknowns.CheckedChanged
         DeBlankCorr()             ' make sure you have to blank correct again
         If Not FirstTimeThrough And Not IamBatching Then RePopulateTargets()
@@ -6018,7 +6028,7 @@ Public Class SNICSrFrm
             .Columns.Add("DelRun", GetType(Integer))
             .Columns.Add("DelTime", GetType(String))
             For i = 0 To CalcNum + 1
-                .Rows.Add(theList(i), InputData.Rows(theList(i)).Item("Pos"), InputData.Rows(theList(i)).Item("SampleName"), _
+                .Rows.Add(theList(i), InputData.Rows(theList(i)).Item("Pos"), InputData.Rows(theList(i)).Item("SampleName"),
                           InputData.Rows(theList(i)).Item("Corr14/12"), theList(i) - iRun, (CDbl((iRunTimes(theList(i)) - iRunTimes(iRun))) / 60).ToString("0.00"))
             Next
         End With
