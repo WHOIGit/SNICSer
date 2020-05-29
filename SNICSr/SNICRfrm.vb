@@ -18,7 +18,7 @@ Public Class SNICSrFrm
 
     Public VERSION As Double = 2.92     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
-    Public TTE As String = ""                   ' modifier for Database Test Table Extension
+    Public TTE As String = ""           ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
@@ -2920,11 +2920,6 @@ Public Class SNICSrFrm
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
-                    If TargetProcs(iPos) = "DOC" Then
-                        .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
-                        .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
-                                                                                    .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
-                    End If
                     FmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr")
                     SigFmMBCorr(iPos) = .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr")
                     MBBlkFm(iPos) = MBCFm(iPos)
@@ -3161,8 +3156,9 @@ Public Class SNICSrFrm
                                  SigFmC As Double, SigFmB As Double, SigMass As Double, SigMassB As Double) As Double
         '   This version is the propogation when using M - Mb as sample mass
         If M <= Mb Then Return 42 ' flag anomalous situation
-        SigFmMassBalmc = SigFmC ^ 2 * (M / (M - Mb)) ^ 2 +
-                       SigMass ^ 2 * ((FmB - FmC) * Mb / (M - Mb) ^ 2) ^ 2 +
+
+        SigFmMassBalmc = SigFmC ^ 2 * (1 + Mb / (M - Mb)) ^ 2 +
+                       (SigMass ^ 2 + SigMassB ^ 2) * ((FmB - FmC) * Mb / (M - Mb) ^ 2) ^ 2 +
                        SigFmB ^ 2 * (Mb / (M - Mb)) ^ 2 +
                        SigMassB ^ 2 * ((FmC - FmB) / (M - Mb)) ^ 2
         If SigFmMassBalmc > 0 Then SigFmMassBalmc = SigFmMassBalmc ^ 0.5
