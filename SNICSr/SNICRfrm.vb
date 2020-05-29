@@ -930,8 +930,8 @@ Public Class SNICSrFrm
             SigFmMBCorr(i) = 0
             MBBlkMass(i) = 0
             SigMBBlkMass(i) = 0
-            SigTargetMass(i) = 0
-            SigTotalMass(i) = 0
+            'SigTargetMass(i) = 0
+            'SigTotalMass(i) = 0
         Next
     End Sub      ' Clear blank correction arrays
 
@@ -2480,6 +2480,7 @@ Public Class SNICSrFrm
     End Sub
 
     Public Sub SetUpStandardsBlankTables()
+
         With frmBlankCorr
             .tblStandards.Rows.Clear()
             For ipos = 0 To dgvTargets.Rows.Count - 1
