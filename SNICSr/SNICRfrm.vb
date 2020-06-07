@@ -2480,7 +2480,6 @@ Public Class SNICSrFrm
     End Sub
 
     Public Sub SetUpStandardsBlankTables()
-
         With frmBlankCorr
             .tblStandards.Rows.Clear()
             For ipos = 0 To dgvTargets.Rows.Count - 1
@@ -2917,7 +2916,7 @@ Public Class SNICSrFrm
         With frmBlankCorr
             If (Not .chkLock(iGrp).Checked) And (Not .chkLockAll.Checked) Then
                 Dim iPos As Integer = .tblGroup(iGrp)(iRow).Item("Pos")
-                If TargetProcs(iPos) <> "" And TotalMass(iPos) > 0 And MBCFm(iPos) > 0 And MBCMass(iPos) > 0 And MBCFmSig(iPos) > 0 And MBCMassSig(iPos) > 0 Then
+                If TargetProcs(iPos) <> "" And (Not IsDBNull(TotalMass(iPos))) And TotalMass(iPos) > 0 And MBCFm(iPos) > 0 And MBCMass(iPos) > 0 And MBCFmSig(iPos) > 0 And MBCMassSig(iPos) > 0 Then
                     .tblGroup(iGrp)(iRow).Item("Fm_Blk_Corr") = FmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos))
                     .tblGroup(iGrp)(iRow).Item("Sig_Fm_Blk_Corr") = SigFmMassBalmc(.tblGroup(iGrp)(iRow).Item("Fm_Corr"), MBCFm(iPos), .tblGroup(iGrp)(iRow).Item("Mass(ug)"), MBCMass(iPos),
                                                                                 .tblGroup(iGrp)(iRow).Item("Sig_Fm_Corr"), MBCFmSig(iPos), .tblGroup(iGrp)(iRow).Item("SigMass"), MBCMassSig(iPos))
@@ -4925,7 +4924,11 @@ Public Class SNICSrFrm
                         If Not rdr.IsDBNull(5) Then SigFmCorr(nPos) = rdr.GetDouble(5)
                         If Not rdr.IsDBNull(6) Then LgBlkFm(nPos) = rdr.GetDouble(6)
                         If Not rdr.IsDBNull(7) Then SigLgBlkFm(nPos) = rdr.GetDouble(7)
-                        If Not rdr.IsDBNull(8) Then FmMBCorr(nPos) = rdr.GetDouble(8)
+                        If Not rdr.IsDBNull(8) Then
+                            FmMBCorr(nPos) = rdr.GetDouble(8)
+                        Else
+                            FmMBCorr(nPos) = -99
+                        End If
                         If Not rdr.IsDBNull(9) Then SigFmMBCorr(nPos) = rdr.GetDouble(9)
                         TargetIsReadOnly(nPos) = False
                         If Not rdr.IsDBNull(11) Then
