@@ -5462,16 +5462,16 @@ Public Class SNICSrFrm
                                     NewRow("Pos") = nPos
                                     NewRow("SampleName") = TargetNames(nPos)
                                     NewRow("Rec_Num") = Rec_Num(nPos)
-                                    NewRow("1stFmCorr") = rdr.GetDouble(1)
-                                    NewRow("1stSigFmCorr") = rdr.GetDouble(2)
-                                    If TargetIsSmall(nPos) Then
-                                        If rdr.GetByte(6) = 1 Then
+                                    If FmMBCorr(nPos) <> -99 Then
+                                        If Not IsDBNull(rdr.GetDouble(3)) Then
                                             NewRow("1stFmCorr") = rdr.GetDouble(3)
                                             NewRow("1stSigFmCorr") = rdr.GetDouble(4)
                                         End If
                                         NewRow("2ndFmCorr") = FmMBCorr(nPos)
                                         NewRow("2ndSigFmCorr") = SigFmMBCorr(nPos)
                                     Else
+                                        NewRow("1stFmCorr") = rdr.GetDouble(1)
+                                        NewRow("1stSigFmCorr") = rdr.GetDouble(2)
                                         NewRow("2ndFmCorr") = FmCorr(nPos)
                                         NewRow("2ndSigFmCorr") = SigFmCorr(nPos)
                                     End If
@@ -5513,13 +5513,13 @@ Public Class SNICSrFrm
                                     NewRow("Rec_Num") = Rec_Num(nPos)
                                     NewRow("1stFmCorr") = rdr.GetDouble(1)
                                     NewRow("1stSigFmCorr") = rdr.GetDouble(2)
-                                    If Small1 Then     ' if there, then it must be small!
+                                    If Not IsDBNull(rdr.GetDouble(3)) Then
                                         NewRow("1stFmCorr") = rdr.GetDouble(3)
                                         NewRow("1stSigFmCorr") = rdr.GetDouble(4)
                                     End If
                                     NewRow("2ndFmCorr") = rdr.GetDouble(5)
                                     NewRow("2ndSigFmCorr") = rdr.GetDouble(6)
-                                    If Small2 Then     ' if there, then it must be small!
+                                    If Not IsDBNull(rdr.GetDouble(7)) Then     ' if there, then it must be MBC!
                                         NewRow("2ndFmCorr") = rdr.GetDouble(7)
                                         NewRow("2ndSigFmCorr") = rdr.GetDouble(8)
                                     End If
