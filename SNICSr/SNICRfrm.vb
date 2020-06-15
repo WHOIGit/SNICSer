@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 Public Class SNICSrFrm
 
     Public VERSION As Double = 2.92     ' this is the version number. Increment in units of 0.01 when updating 
-    Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
+    Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
