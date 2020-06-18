@@ -5144,11 +5144,11 @@ Public Class SNICSrFrm
                             If FIRSTAUTH Then
                                 If Not REAUTH And TargetNotAlreadyRun(iPos) Then
                                     If FmMBCorr(iPos) <> -99 Then
-                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
+                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (snics_version, wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
                                                              & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
                                                              & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, " _
                                                              & "blank_fm, sig_blank_fm, blank_mass, sig_blank_mass, comment, sample_type, runtime" _
-                                                             & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
+                                                             & ") values ('" & VERSION.ToString("0.000") & "', '" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
                                                              & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
                                                              & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
                                                              & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
@@ -5160,10 +5160,10 @@ Public Class SNICSrFrm
                                                              & MBBlkMass(iPos).ToString & ", " & SigMBBlkMass(iPos).ToString & ", '" & TargetComments(iPos).Trim _
                                                              & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "');"
                                     Else    ' need to put NULLs in the mass balance results
-                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
+                                        aCmd = "INSERT INTO dbo.snics_results" & TTE & " (snics_version, wheel, wheel_pos, tp_num, num_runs, tot_runs, np, ss, " _
                                                             & "sample_name, sample_type_1, norm_ratio, int_err, ext_err, norm_method, analyst1, date_1, " _
                                                             & "del_13c, sig_13c, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, comment, sample_type, runtime" _
-                                                            & ") values ('" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
+                                                            & ") values ('" & VERSION.ToString("0.000") & "', '" & WheelName & "', " & iPos.ToString & ", " & Tp_Num(iPos).ToString _
                                                             & ", " & TargetData.Rows(i).Item("N") & ", " & TotalRuns(iPos).ToString & ", " & NonPerf & ", " & IsSmall & ", '" _
                                                             & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
                                                             & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
@@ -5189,6 +5189,7 @@ Public Class SNICSrFrm
                                                              & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
                                                              & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
                                                              & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                             & ", snics_version = '" & VERSION.ToString("0.000") & "'" _
                                                              & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                     Else
                                         aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
@@ -5203,6 +5204,7 @@ Public Class SNICSrFrm
                                                               & ", sig_blank_fm = NULL, blank_mass = NULL, sig_blank_mass = NULL" _
                                                               & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
                                                               & ", norm_method = '" & theNormMethod & " " & CalcNum.ToString & "'" _
+                                                              & ", snics_version = '" & VERSION.ToString("0.000") & "'" _
                                                               & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                     End If
                                 End If
