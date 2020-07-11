@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.92     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.93     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -2626,11 +2626,12 @@ Public Class SNICSrFrm
             For i = 0 To .tblBlanks.Rows.Count - 1
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
-                If IsDBNull(.tblBlanks(i).Item("Proc")) Then
+                ' Define which blanks to use by default
+                If IsDBNull(.tblBlanks(i).Item("Proc")) Or
+                    .tblBlanks(i).Item("Fm_Expected") > 0.002 Or
+                    .tblBlanks(i).Item("Proc") = "WS" Or
+                    (.tblBlanks(i).Item("Mass(ug)") < 250) And (.tblBlanks(i).Item("Proc") <> "WG") Then
                     .tblBlanks(i).Item("OK") = False
-                Else
-                    If .tblBlanks(i).Item("Fm_Expected") > 0.002 Then .tblBlanks(i).Item("OK") = False
-                    If (.tblBlanks(i).Item("Mass(ug)") < 150) And (.tblBlanks(i).Item("Proc") <> "WG") Then .tblBlanks(i).Item("OK") = False
                 End If
             Next
             ComputeBlanks()
