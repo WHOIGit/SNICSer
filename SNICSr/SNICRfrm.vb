@@ -4819,6 +4819,9 @@ Public Class SNICSrFrm
                         newrow(6) = rdr.GetString(5)        ' sample name
                         newrow(7) = rdr.GetString(6)        ' original sample type
                         Samp_Typ(NumRuns) = newrow(7)          ' save as original type
+                        If Not rdr.IsDBNull(23) Then        ' if the analyst had recorded his/her choice
+                            newrow(7) = rdr.GetString(23) ' sample_type_1
+                        End If
                         newrow(8) = rdr.GetFloat(7)         ' number of cycles
                         For i = 8 To 11
                             newrow(i + 1) = rdr.GetDouble(i)    'le12, le13 he12 he13
@@ -4829,16 +4832,16 @@ Public Class SNICSrFrm
                         For i = 15 To 20
                             newrow(i + 1) = rdr.GetDouble(i)    ' he13_12, he14_12, ltcorr, corr_14_12, sig_14_12, d13c
                         Next
-                        If FIRSTAUTH And REAUTH Then
-                            If Not rdr.IsDBNull(23) Then        ' if the analyst had recorded his/her choice
-                                newrow(7) = rdr.GetString(23) ' sample_type_1
-                                'If newrow(1) = 39 Then MsgBox(newrow(7))
-                            End If
-                        End If
+                        ' Sample type assignment
+                        ' If nothing matches, use original assignment
+                        ' If 1st is revisiting wheel, use their assignments
+
+                        ' if second, use first authorizers types
                         If SECONDAUTH And Not REAUTH Then
                             newrow(0) = True                    ' first time clear the flags
                             newrow(7) = rdr.GetString(23) ' sample_type_1 the first time
                         End If
+                        ' if 2nd is revisiting, use 2nd's type assignments
                         If SECONDAUTH And REAUTH Then  ' get 2nd's flags and sample type
                             If Not rdr.IsDBNull(22) Then
                                 newrow(0) = True
@@ -4846,6 +4849,7 @@ Public Class SNICSrFrm
                             End If
                             If Not rdr.IsDBNull(24) Then newrow(7) = rdr.GetString(24) ' sample_type_2
                         End If
+                        ' if not first or second, use first's type assignments
                         RunPos(NumRuns) = newrow("Pos")
                         RunTimes(NumRuns) = CDate(newrow("RunTime")).ToOADate
                         GroupNums(NumRuns) = newrow("Grp")
