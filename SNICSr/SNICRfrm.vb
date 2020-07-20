@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.93     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.94     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -5462,17 +5462,20 @@ Public Class SNICSrFrm
                     com.CommandText = theCmd
                     Using rdr As IDataReader = com.ExecuteReader
                         While rdr.Read
-                            If Not IsDBNull(rdr.GetDouble(1)) And Not IsDBNull(rdr.GetDouble(2)) Then
+                            If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
                                 If rdr.GetDouble(2) <> 0 Then                ' 
                                     NewRow = BCComparison.NewRow
                                     Dim nPos As Integer = rdr.GetByte(0)
                                     NewRow("Pos") = nPos
                                     NewRow("SampleName") = TargetNames(nPos)
                                     NewRow("Rec_Num") = Rec_Num(nPos)
-                                    If FmMBCorr(nPos) <> -99 Then
-                                        If Not IsDBNull(rdr.GetDouble(3)) Then
+                                    If Not IsDBNull(FmMBCorr(nPos)) And FmMBCorr(nPos) <> -99 Then
+                                        If Not rdr.IsDBNull(3) Then
                                             NewRow("1stFmCorr") = rdr.GetDouble(3)
                                             NewRow("1stSigFmCorr") = rdr.GetDouble(4)
+                                        ElseIf Not rdr.IsDBNull(1) Then
+                                            NewRow("1stFmCorr") = rdr.GetDouble(1)
+                                            NewRow("1stSigFmCorr") = rdr.GetDouble(2)
                                         End If
                                         NewRow("2ndFmCorr") = FmMBCorr(nPos)
                                         NewRow("2ndSigFmCorr") = SigFmMBCorr(nPos)
@@ -5509,7 +5512,7 @@ Public Class SNICSrFrm
                     com.CommandText = theCmd
                     Using rdr As IDataReader = com.ExecuteReader
                         While rdr.Read
-                            If Not IsDBNull(rdr.GetDouble(1)) And Not IsDBNull(rdr.GetDouble(2)) Then
+                            If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
                                 If rdr.GetDouble(2) <> 0 Then   ' never get zero uncertainty on a blank corrected result
                                     If Not rdr.IsDBNull(10) Then Small1 = (rdr.GetByte(10) = 1)
                                     If Not rdr.IsDBNull(11) Then Small2 = (rdr.GetByte(11) = 1)
@@ -5520,13 +5523,13 @@ Public Class SNICSrFrm
                                     NewRow("Rec_Num") = Rec_Num(nPos)
                                     NewRow("1stFmCorr") = rdr.GetDouble(1)
                                     NewRow("1stSigFmCorr") = rdr.GetDouble(2)
-                                    If Not IsDBNull(rdr.GetDouble(3)) Then
+                                    If Not rdr.IsDBNull(3) Then
                                         NewRow("1stFmCorr") = rdr.GetDouble(3)
                                         NewRow("1stSigFmCorr") = rdr.GetDouble(4)
                                     End If
                                     NewRow("2ndFmCorr") = rdr.GetDouble(5)
                                     NewRow("2ndSigFmCorr") = rdr.GetDouble(6)
-                                    If Not IsDBNull(rdr.GetDouble(7)) Then     ' if there, then it must be MBC!
+                                    If Not rdr.IsDBNull(7) Then     ' if there, then it must be MBC!
                                         NewRow("2ndFmCorr") = rdr.GetDouble(7)
                                         NewRow("2ndSigFmCorr") = rdr.GetDouble(8)
                                     End If
@@ -5547,7 +5550,7 @@ Public Class SNICSrFrm
                     End Using
                 End If
             Catch ex As Exception
-                MsgBox(ex.Message)
+                MsgBox("Error getting data for BC comparison: " & ex.Message)
             End Try
             con.Close()
         End Using
