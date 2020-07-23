@@ -5242,9 +5242,9 @@ Public Class SNICSrFrm
                                                         & TargetData.Rows(i).Item("Typ") & "', norm_ratio_2 = " & TargetRat(iPos).ToString _
                                                         & ", int_err_2 = " & IntErr(iPos).ToString & " , ext_err_2 = " _
                                                         & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
-                                                        & ", tot_mass2 = " & TotalMass(iPos).ToString _
+                                                        & "', tot_mass2 = " & TotalMass(iPos).ToString _
                                                         & ", sig_tot2 = " & SigTotalMass(iPos).ToString _
-                                                        & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
+                                                        & ", del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
                                                         & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
                                                         & ", lg_blk_fm_2 = NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, blank_fm_2 = NULL," _
                                                         & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
