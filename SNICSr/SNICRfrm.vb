@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.94     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.95     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -4312,7 +4312,8 @@ Public Class SNICSrFrm
                     row.Item("MSdC13") = IRMSdC13(row.Item("Pos"))
                 Next row
                 If String.IsNullOrEmpty(MissMass) = False Then
-                    MsgBox("Cannot find total mass for these targets in DC13 Table: " & MissMass)
+                    MsgBox("Cannot find total mass for these targets in DC13 Table: " & MissMass & vbCrLf &
+                           "This will prevent mass balance blank correction for these targets.")
                 End If
             Catch ex As Exception
                 MsgBox("Pos 2" & vbCrLf & ex.Message)
@@ -5457,10 +5458,12 @@ Public Class SNICSrFrm
         Dim nRow As Integer = 0
         Dim Small1 As Boolean = False
         Dim Small2 As Boolean = False
+        Dim diffMass As String = ""
+        Dim diff As Double = 0.0001
         Using con As New SqlConnection
             Try
                 If (SECONDAUTH And Not REAUTH) Or (Not FIRSTAUTH And Not SECONDAUTH) Then       ' need to compare current results with first analyst
-                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr, comment, ss " _
+                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr, comment, tot_mass " _
                         & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
                         & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                     con.ConnectionString = ConString
@@ -5499,8 +5502,17 @@ Public Class SNICSrFrm
                                     If Not rdr.IsDBNull(5) Then
                                         TargetComments(nPos) = rdr.GetString(5)
                                     End If
+                                    If rdr.IsDBNull(6) Then
+                                        If TotalMass(nPos) <> 0 Then
+                                            diffMass = diffMass & nPos.ToString & " "
+                                            ' do missmass thing for error message
+                                        End If
+                                    ElseIf Math.Abs(rdr.GetDouble(6) - TotalMass(nPos)) > diff Then
+                                        diffMass = diffMass & nPos.ToString & " "
+                                        ' do missmass thing for error message
+                                    End If
                                     NewRow("Comment") = TargetComments(nPos)
-                                    MeanSigma += NewRow("SigmaFmCorr")
+                                        MeanSigma += NewRow("SigmaFmCorr")
                                     MeanAbsSigma += NewRow("SigmaFmCorr") ^ 2
                                     BCComparison.Rows.Add(NewRow)
                                     nRow += 1
@@ -5510,7 +5522,7 @@ Public Class SNICSrFrm
                     End Using
                 ElseIf (FIRSTAUTH And REAUTH) Or (SECONDAUTH And REAUTH) Then     ' need to work from database only
                     Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr," _
-                                            & "fm_corr_2, sig_fm_corr_2, fm_mb_corr_2, sig_fm_mb_corr_2, comment, ss, ss_2 " _
+                                            & "fm_corr_2, sig_fm_corr_2, fm_mb_corr_2, sig_fm_mb_corr_2, comment, tot_mass, tot_mass2 " _
                                             & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
                                             & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                     con.ConnectionString = ConString
@@ -5547,6 +5559,17 @@ Public Class SNICSrFrm
                                     If Not rdr.IsDBNull(9) Then
                                         TargetComments(nPos) = rdr.GetString(9)
                                     End If
+                                    ' do missmass thing for error message
+                                    If rdr.IsDBNull(10) Then
+                                        If rdr.IsDBNull(11) Then
+                                        Else
+                                            diffMass = diffMass & nPos.ToString & " "
+                                        End If
+                                    ElseIf rdr.IsDBNull(11) Then
+                                        diffMass = diffMass & nPos.ToString & " "
+                                    ElseIf rdr.GetDouble(10).Equals(rdr.GetDouble(11)) Then
+                                        diffMass = diffMass & nPos.ToString & " "
+                                    End If
                                     NewRow("Comment") = TargetComments(nPos)
                                     MeanSigma += NewRow("SigmaFmCorr")
                                     MeanAbsSigma += NewRow("SigmaFmCorr") ^ 2
@@ -5556,6 +5579,9 @@ Public Class SNICSrFrm
                             End If
                         End While
                     End Using
+                End If
+                If diffMass <> "" Then
+                    MsgBox("Warning: Masses differ from 1st to 2nd analyst for these samples: " & diffMass)
                 End If
             Catch ex As Exception
                 MsgBox("Error getting data for BC comparison: " & ex.Message)
