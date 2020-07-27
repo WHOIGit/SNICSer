@@ -5512,7 +5512,7 @@ Public Class SNICSrFrm
                                         ' do missmass thing for error message
                                     End If
                                     NewRow("Comment") = TargetComments(nPos)
-                                        MeanSigma += NewRow("SigmaFmCorr")
+                                    MeanSigma += NewRow("SigmaFmCorr")
                                     MeanAbsSigma += NewRow("SigmaFmCorr") ^ 2
                                     BCComparison.Rows.Add(NewRow)
                                     nRow += 1
@@ -5534,8 +5534,6 @@ Public Class SNICSrFrm
                         While rdr.Read
                             If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
                                 If rdr.GetDouble(2) <> 0 Then   ' never get zero uncertainty on a blank corrected result
-                                    If Not rdr.IsDBNull(10) Then Small1 = (rdr.GetByte(10) = 1)
-                                    If Not rdr.IsDBNull(11) Then Small2 = (rdr.GetByte(11) = 1)
                                     NewRow = BCComparison.NewRow
                                     Dim nPos As Integer = rdr.GetByte(0)
                                     NewRow("Pos") = nPos
@@ -5567,7 +5565,7 @@ Public Class SNICSrFrm
                                         End If
                                     ElseIf rdr.IsDBNull(11) Then
                                         diffMass = diffMass & nPos.ToString & " "
-                                    ElseIf rdr.GetDouble(10).Equals(rdr.GetDouble(11)) Then
+                                    ElseIf Math.Abs(rdr.GetDouble(10) - rdr.GetDouble(11)) > diff Then
                                         diffMass = diffMass & nPos.ToString & " "
                                     End If
                                     NewRow("Comment") = TargetComments(nPos)
