@@ -282,5 +282,11 @@ Public Class Options
         SNICSrFrm.ShowStdsBlanks = chkShowStdsBlanks.Checked
     End Sub
 
+    Private Sub RadioButton1_CheckedChanged(sender As Object, e As EventArgs) Handles rbNumStds.CheckedChanged
 
+    End Sub
+
+    Private Sub nudStdsMult_ValueChanged(sender As Object, e As EventArgs) Handles nudStdsMult.ValueChanged
+
+    End Sub
 End Class
