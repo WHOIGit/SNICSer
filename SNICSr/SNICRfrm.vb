@@ -2627,8 +2627,9 @@ Public Class SNICSrFrm
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
                 ' Define which blanks to use by default
-                If IsDBNull(.tblBlanks(i).Item("Proc")) Or
-                    .tblBlanks(i).Item("Fm_Expected") > 0.002 Or
+                If IsDBNull(.tblBlanks(i).Item("Proc")) Then 'catch bad proc
+                    .tblBlanks(i).Item("OK") = False
+                ElseIf .tblBlanks(i).Item("Fm_Expected") > 0.002 Or
                     .tblBlanks(i).Item("Proc") = "WS" Or
                     (.tblBlanks(i).Item("Mass(ug)") < 250) And (.tblBlanks(i).Item("Proc") <> "WG") Then
                     .tblBlanks(i).Item("OK") = False
@@ -4781,7 +4782,7 @@ Public Class SNICSrFrm
                     End While
                 End Using
             Catch ex As Exception
-                MsgBox("Error getting proc for pos " & iTarg.ToString & vbCrLf & ex.Message)
+                MsgBox("Error getting proc for pos " & iTarg.ToString & vbCrLf & "Fix before analysing wheel!" & vbCrLf & ex.Message)
             End Try
             con.Close()
         End Using
