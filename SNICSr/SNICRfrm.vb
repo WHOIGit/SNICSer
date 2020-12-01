@@ -2185,7 +2185,7 @@ Public Class SNICSrFrm
         ' this should give us a count of all standard runs per group, but how to reduce to standard targets per group
         Dim stdcount(MAXRUNS) As Integer
         For run = 0 To NumRuns - 1
-            If IsStd(run) And InputData(run).Item("Mst") = 1 Then 'if a std and 1st meas, add to count
+            If InputData(run).Item("Typ") = "S" And InputData(run).Item("Mst") = 1 Then 'if a std and 1st meas, add to count
                 stdcount(GroupNums(run)) += 1
             End If
         Next
@@ -6082,7 +6082,7 @@ Public Class SNICSrFrm
         '   If you click the row header here, you get a list of the standard runs used in normalizing that run
         Dim theList(24) As Integer        ' contains the list of urns
         Dim iRun As Integer = RunsData.Rows(e.RowIndex).Item("Run")
-        FindNearestStandards(iRun, CalcNum, theList)
+        FindNearestStandards(iRun, RunCalcNum(iRun), theList)   ' returns run numbers of proximal standards
         With NormTable
             .Clear()
             .Columns.Clear()
@@ -6092,7 +6092,7 @@ Public Class SNICSrFrm
             .Columns.Add("Corr14/12", GetType(Double))
             .Columns.Add("DelRun", GetType(Integer))
             .Columns.Add("DelTime", GetType(String))
-            For i = 0 To CalcNum + 1
+            For i = 0 To RunCalcNum(iRun) + 1
                 .Rows.Add(theList(i), InputData.Rows(theList(i)).Item("Pos"), InputData.Rows(theList(i)).Item("SampleName"),
                           InputData.Rows(theList(i)).Item("Corr14/12"), theList(i) - iRun, (CDbl((iRunTimes(theList(i)) - iRunTimes(iRun))) / 60).ToString("0.00"))
             Next
@@ -6120,7 +6120,7 @@ Public Class SNICSrFrm
                 End If
             Next
             .dgvNorm.AutoSize = True
-            .Text = CalcMode & " of " & CalcNum.ToString & " for run " & iRun.ToString
+            .Text = CalcMode & " of " & RunCalcNum(iRun).ToString & " for run " & iRun.ToString
             .lblMethod.Text = lblRuns.Text
             Dim dgvWidth As Integer = 0
             For i = 0 To .dgvNorm.Columns.Count - 1
