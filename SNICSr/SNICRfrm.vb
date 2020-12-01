@@ -184,6 +184,7 @@ Public Class SNICSrFrm
     Public pTargetNums As Integer               ' how many
     Public NumdC13Pos As Integer = 0            ' how many in plot
     Public GroupIsReadOnly(MAXGROUPS) As Boolean        ' whether a group is considered read only
+    Public RunCalcNum(MAXRUNS) As Integer        ' number of standards to use for each run
 #End Region    '       Target Table Storage
 
 #Region "Standards and Blanks Storage"
@@ -215,6 +216,7 @@ Public Class SNICSrFrm
     Public NumResFigs As Integer = 5
     Public CalcMode As String = "Average"
     Public CalcNum As Integer = 6
+    Public StdMult As Integer = 2
     Public eFnt() As String = {"0.00e+0", "0.000e+0", "0.0000e+0", "0.00000e+0", "0.000000e+0", "0.0000000e+0"}
     Public dFnt() As String = {"0.00", "0.000", "0.0000", "0.00000", "0.000000", "0.0000000"}
     Public NumVarPlt As String = "LE12C"
@@ -738,6 +740,7 @@ Public Class SNICSrFrm
             .btnUnk.BackColor = UnkCol
             .nudFontSize.Value = TableFontSize
             .nudNumStds.Value = CalcNum
+            .nudStdsMult.Value = StdMult
             .nudResSigFig.Value = NumResFigs
             .nudRunSigFig.Value = NumRawFigs
             .txtAnalyst.Text = Trim(UserName)
@@ -2152,9 +2155,15 @@ Public Class SNICSrFrm
         RefreshTargetTable()
         MakePatience()
         IdentifyStandards()         ' need an updated view on who's a valid standard run
+        GroupStandards() 'assign number of standards in group for each run
         For iRun = 0 To NumRuns - 1            ' for each run:
-            FindNearestStandards(iRun, CalcNum, RunNums)   ' returns run numbers of proximal standards
-            ComputeRun(iRun, Options.cmbFitType.Text, CalcNum, RunNums)  ' compute the normalized values
+            If Options.rbNumStds.Checked Then
+                'assign CalcNum to all runs
+                RunCalcNum(iRun) = CalcNum
+            End If
+            ' otherwise use RunCalcNum directly
+            FindNearestStandards(iRun, RunCalcNum(iRun), RunNums)   ' returns run numbers of proximal standards
+            ComputeRun(iRun, Options.cmbFitType.Text, RunCalcNum(iRun), RunNums)  ' compute the normalized values
         Next
         For i = 0 To MAXTARGETS
             AccumulateResults(i)            ' compute averages/errors, etc on a per-target basis
@@ -2171,6 +2180,19 @@ Public Class SNICSrFrm
         RestoreTargetTableChecks()  ' revert the target table selection choices to original configuration
     End Sub
 
+    Private Sub GroupStandards()
+        ' assigns the number of standards in a targets group by run
+        ' this should give us a count of all standard runs per group, but how to reduce to standard targets per group
+        Dim stdcount(MAXRUNS) As Integer
+        For run = 0 To NumRuns - 1
+            If IsStd(run) And InputData(run).Item("Mst") = 1 Then 'if a std and 1st meas, add to count
+                stdcount(GroupNums(run)) += 1
+            End If
+        Next
+        For run = 0 To NumRuns - 1
+            RunCalcNum(run) = stdcount(GroupNums(run)) * StdMult
+        Next
+    End Sub
     Private Sub IdentifyStandards()
         ' sets up a more easily used array of booleans identifying if a run is a standard and if it's OK
         For i = 0 To NumRuns - 1                                 ' first update status, must be OK, a standard, and not a non-performer
