@@ -217,6 +217,7 @@ Public Class SNICSrFrm
     Public CalcMode As String = "Average"
     Public CalcNum As Integer = 6
     Public StdMult As Integer = 2
+    Public MultOfStds As Boolean = False
     Public eFnt() As String = {"0.00e+0", "0.000e+0", "0.0000e+0", "0.00000e+0", "0.000000e+0", "0.0000000e+0"}
     Public dFnt() As String = {"0.00", "0.000", "0.0000", "0.00000", "0.000000", "0.0000000"}
     Public NumVarPlt As String = "LE12C"
@@ -708,6 +709,8 @@ Public Class SNICSrFrm
             Input(1, ClassicView)
             Input(1, GROUPBOUNDS)
             ShareDrivePath = LineInput(1)
+            Input(1, StdMult)
+            Input(1, MultOfStds)
             FileClose(1)
         Catch ex As Exception       ' cannot find options file so force them to fill it in 
             Try
@@ -741,6 +744,7 @@ Public Class SNICSrFrm
             .nudFontSize.Value = TableFontSize
             .nudNumStds.Value = CalcNum
             .nudStdsMult.Value = StdMult
+            .rbMultOfStds.Checked = MultOfStds
             .nudResSigFig.Value = NumResFigs
             .nudRunSigFig.Value = NumRawFigs
             .txtAnalyst.Text = Trim(UserName)
@@ -2157,7 +2161,7 @@ Public Class SNICSrFrm
         IdentifyStandards()         ' need an updated view on who's a valid standard run
         GroupStandards() 'assign number of standards in group for each run
         For iRun = 0 To NumRuns - 1            ' for each run:
-            If Options.rbNumStds.Checked Then
+            If Not MultOfStds Then
                 'assign CalcNum to all runs
                 RunCalcNum(iRun) = CalcNum
             End If

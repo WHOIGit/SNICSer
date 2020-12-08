@@ -29,6 +29,8 @@ Public Class Options
             .NumResFigs = nudResSigFig.Value
             .TableFontSize = nudFontSize.Value
             .CalcNum = nudNumStds.Value
+            .StdMult = nudStdsMult.Value
+            .MultOfStds = rbMultOfStds.Checked
             .UserName = Trim(txtAnalyst.Text)
             .Password = Trim(txtPwd.Text)
             .CalcMode = Trim(cmbFitType.Text)
@@ -77,6 +79,8 @@ Public Class Options
             PrintLine(1, chkClassic.Checked.ToString)
             PrintLine(1, chkGroup.Checked.ToString)
             PrintLine(1, .ShareDrivePath)
+            Print(1, .StdMult.ToString & vbCrLf)
+            PrintLine(1, rbMultOfStds.Checked.ToString)
             FileClose(1)
             .Enabled = True
             .Visible = True
