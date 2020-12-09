@@ -4918,16 +4918,16 @@ Public Class SNICSrFrm
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 If REAUTH And FIRSTAUTH Then
-                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro " _
+                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult" _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 ElseIf REAUTH And SECONDAUTH Then
-                    acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro " _
+                    acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro, std_mult2" _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 Else
-                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro " _
-                                        & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
+                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult" _
+                        & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = False
                     'Exit Try
                 End If
@@ -4967,8 +4967,8 @@ Public Class SNICSrFrm
                         If Not rdr.IsDBNull(11) Then
                             If rdr.GetByte(11) = 1 Then TargetIsReadOnly(nPos) = True
                         End If
-                        If Not rdr.IsDBNull(10) Then
-                            If Not GotMethod Then
+                        If Not GotMethod Then
+                            If Not rdr.IsDBNull(10) Then
                                 Dim theMethod As String = rdr.GetString(10)
                                 If theMethod.Contains(" (GBE)") Then
                                     'MsgBox(theMethod)
@@ -4979,17 +4979,36 @@ Public Class SNICSrFrm
                                     GROUPBOUNDS = False
                                 End If
                                 CalcMode = (theMethod.Substring(0, theMethod.Length - 2)).Trim
-                                If Val(theMethod.Substring(theMethod.Length - 2, 2)) > 0 Then CalcNum = CInt(theMethod.Substring(theMethod.Length - 2, 2))
                                 Try
-                                    Options.nudNumStds.Value = CalcNum
                                     Options.cmbFitType.Text = CalcMode
                                     Options.chkGroup.Checked = GROUPBOUNDS
                                 Catch ex As Exception
 
                                 End Try
-                                'MsgBox("Got " & CalcMode & ":" & CalcNum.ToString)
-                                GotMethod = True        ' do this only once
+                                If Not rdr.IsDBNull(12) Then
+                                    Dim theMult As Integer = rdr.GetByte(12)
+                                    If theMult = 0 Then
+                                        If Val(theMethod.Substring(theMethod.Length - 2, 2)) > 0 Then
+                                            CalcNum = CInt(theMethod.Substring(theMethod.Length - 2, 2))
+                                            Try
+                                                Options.nudNumStds.Value = CalcNum
+                                                Options.rbMultOfStds.Checked = False
+                                            Catch ex As Exception
+
+                                            End Try
+                                        End If
+                                    Else
+                                        Try
+                                            Options.rbMultOfStds.Checked = True
+                                            Options.nudStdsMult.Value = theMult
+                                        Catch ex As Exception
+
+                                        End Try
+                                    End If
+                                End If
                             End If
+                            'MsgBox("Got " & CalcMode & ":" & CalcNum.ToString)
+                            GotMethod = True        ' do this only once
                         End If
                     End While
                 End Using
