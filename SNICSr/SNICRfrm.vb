@@ -4991,13 +4991,13 @@ Public Class SNICSrFrm
                                         CalcNum = CInt(theMethod.Substring(theMethod.Length - 2, 2))
                                         Try
                                             Options.nudNumStds.Value = CalcNum
-                                            Options.rbMultOfStds.Checked = False
+                                            Options.rbNumStds.Checked = True
                                         Catch ex As Exception
 
                                         End Try
                                     End If
                                 Else
-                                    Dim theMult As Integer = rdr.GetByte(12)
+                                    Dim theMult As Integer = rdr.GetInt16(12)
                                     Try
                                         Options.rbMultOfStds.Checked = True
                                         Options.nudStdsMult.Value = theMult
@@ -5204,7 +5204,7 @@ Public Class SNICSrFrm
                                                              & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
                                                              & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
                                                              & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString _
-                                                             & "', '" & MultOfStds.ToString & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
+                                                             & "', '" & StdMult.ToString & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
                                                              & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
                                                              & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", " & FmMBCorr(iPos).ToString & ", " _
                                                              & SigFmMBCorr(iPos).ToString & ", " & MBBlkFm(iPos).ToString & ", " & SigMBBlkFm(iPos).ToString & ", " _
@@ -5219,7 +5219,7 @@ Public Class SNICSrFrm
                                                             & theSampleName & "', '" & TargetData.Rows(i).Item("Typ") _
                                                             & "', " & TargetRat(iPos).ToString & ", " & IntErr(iPos).ToString _
                                                             & ", " & ExtErr(iPos).ToString & ", '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString _
-                                                            & "', '" & MultOfStds.ToString & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
+                                                            & "', '" & StdMult.ToString & "', '" & UserName & "', '" & CalcDate & "', " & TargetData.Rows(i).Item("DelC13") & ", " _
                                                             & TargetData.Rows(i).Item("SigC13") & ", " & FmCorr(iPos).ToString & ", " & SigFmCorr(iPos).ToString & ", " _
                                                             & LgBlkFm(iPos).ToString & ", " & SigLgBlkFm(iPos).ToString & ", '" & TargetComments(iPos).Trim _
                                                             & "', '" & OrigTypes(iPos) & "','" & RunDateTime & "', " & TotalMass(iPos).ToString & ", " & SigTotalMass(iPos).ToString & ");"
@@ -5242,7 +5242,7 @@ Public Class SNICSrFrm
                                                              & MBBlkMass(iPos).ToString & ", sig_blank_mass = " & SigMBBlkMass(iPos).ToString _
                                                              & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
                                                              & ", norm_method = '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString & "'" _
-                                                             & ", std_mult = " & MultOfStds.ToString _
+                                                             & ", std_mult = " & StdMult.ToString _
                                                              & ", snics_version = '" & VERSION.ToString("0.000") & "'" _
                                                              & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                     Else
@@ -5260,7 +5260,7 @@ Public Class SNICSrFrm
                                                               & ", sig_blank_fm = NULL, blank_mass = NULL, sig_blank_mass = NULL" _
                                                               & ", comment = '" & TargetComments(iPos).Trim & "', np = " & NonPerf & ", ss = " & IsSmall _
                                                               & ", norm_method = '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString & "'" _
-                                                              & ", std_mult = " & MultOfStds.ToString _
+                                                              & ", std_mult = " & StdMult.ToString _
                                                               & ", snics_version = '" & VERSION.ToString("0.000") & "'" _
                                                               & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                     End If
@@ -5284,7 +5284,7 @@ Public Class SNICSrFrm
                                                         & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
                                                         & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall _
                                                         & ", norm_method_2 = '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString & "'" _
-                                                        & ", std_mult2 = " & MultOfStds.ToString _
+                                                        & ", std_mult2 = " & StdMult.ToString _
                                                         & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                 Else
                                     aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs_2 = " & TargetData.Rows(i).Item("N") & ", sample_type_2 = '" _
@@ -5299,7 +5299,7 @@ Public Class SNICSrFrm
                                                         & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
                                                         & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall _
                                                         & ", norm_method_2 = '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString & "'" _
-                                                        & ", std_mult2 = " & MultOfStds.ToString _
+                                                        & ", std_mult2 = " & StdMult.ToString _
                                                         & " WHERE (wheel = '" & WheelName & "') AND (wheel_pos = " & iPos.ToString & ");"
                                 End If
                             End If

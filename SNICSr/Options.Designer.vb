@@ -1039,7 +1039,7 @@ Partial Class Options
         Me.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange
         Me.BackColor = System.Drawing.Color.AntiqueWhite
         Me.CancelButton = Me.btnCancel
-        Me.ClientSize = New System.Drawing.Size(579, 507)
+        Me.ClientSize = New System.Drawing.Size(579, 534)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnHelp)
