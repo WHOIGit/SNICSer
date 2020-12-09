@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.95     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.96     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -4967,6 +4967,7 @@ Public Class SNICSrFrm
                         If Not rdr.IsDBNull(11) Then
                             If rdr.GetByte(11) = 1 Then TargetIsReadOnly(nPos) = True
                         End If
+                        ' set norm method and num of stds if not set
                         If Not GotMethod Then
                             If Not rdr.IsDBNull(10) Then
                                 Dim theMethod As String = rdr.GetString(10)
@@ -4985,26 +4986,24 @@ Public Class SNICSrFrm
                                 Catch ex As Exception
 
                                 End Try
-                                If Not rdr.IsDBNull(12) Then
-                                    Dim theMult As Integer = rdr.GetByte(12)
-                                    If theMult = 0 Then
-                                        If Val(theMethod.Substring(theMethod.Length - 2, 2)) > 0 Then
-                                            CalcNum = CInt(theMethod.Substring(theMethod.Length - 2, 2))
-                                            Try
-                                                Options.nudNumStds.Value = CalcNum
-                                                Options.rbMultOfStds.Checked = False
-                                            Catch ex As Exception
-
-                                            End Try
-                                        End If
-                                    Else
+                                If rdr.IsDBNull(12) Then 'no multiplier means classic method
+                                    If Val(theMethod.Substring(theMethod.Length - 2, 2)) > 0 Then
+                                        CalcNum = CInt(theMethod.Substring(theMethod.Length - 2, 2))
                                         Try
-                                            Options.rbMultOfStds.Checked = True
-                                            Options.nudStdsMult.Value = theMult
+                                            Options.nudNumStds.Value = CalcNum
+                                            Options.rbMultOfStds.Checked = False
                                         Catch ex As Exception
 
                                         End Try
                                     End If
+                                Else
+                                    Dim theMult As Integer = rdr.GetByte(12)
+                                    Try
+                                        Options.rbMultOfStds.Checked = True
+                                        Options.nudStdsMult.Value = theMult
+                                    Catch ex As Exception
+
+                                    End Try
                                 End If
                             End If
                             'MsgBox("Got " & CalcMode & ":" & CalcNum.ToString)
