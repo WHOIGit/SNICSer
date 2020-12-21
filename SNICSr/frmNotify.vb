@@ -36,6 +36,7 @@ Public Class FrmNotify2ndAuth
                 With SNICSrFrm
                     msg.Body &= vbCrLf & "Using V" & .VERSION.ToString("0.000") & " and  " & .CalcMode & " of " & .CalcNum
                     If .GROUPBOUNDS Then msg.Body &= "  Group Bounds Enforced"
+                    If .StdMult > 0 Then msg.Body &= ("  used" & .StdMult & " times number of standards in groups")
                     msg.Body &= vbCrLf & vbCrLf
                 End With
                 If txtMessage.Text.Trim <> "" Then msg.Body &= vbCrLf & vbCrLf & txtMessage.Text.Trim
