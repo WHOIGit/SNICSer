@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.96     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 2.97     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -2127,7 +2127,7 @@ Public Class SNICSrFrm
         Dim msg As String = (AllRuns(0) - NumFlags(0)).ToString & " of all runs were rejected (" _
                             & (100.0 * (AllRuns(0) - NumFlags(0)) / AllRuns(0)).ToString("0.0") & "%)"
         msg &= vbCrLf & (AllRuns(0) - NumFlags(0) - AllRuns(1) + NumFlags(1)).ToString & " of non-blanks were rejected (" _
-                            & (100.0 * (AllRuns(0) - NumFlags(0) - AllRuns(1) + NumFlags(1)) / AllRuns(0)).ToString("0.0") & "%)"
+                            & (100.0 * (AllRuns(0) - NumFlags(0) - AllRuns(1) + NumFlags(1)) / (AllRuns(0) - AllRuns(1))).ToString("0.0") & "%)"
         msg &= vbCrLf
         For i = 1 To 4
             msg &= vbCrLf & (AllRuns(i) - NumFlags(i)).ToString & " " & TypNames(i) & " were rejected (" _
