@@ -126,7 +126,7 @@ Partial Class SNICSrFrm
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.HelpToolStripMenuItem, Me.OptionsToolStripMenuItem, Me.FlagsToolStripMenuItem, Me.tspGroup, Me.ToolStripMenuItem1, Me.ToolStripMenuItem3, Me.CommentToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(2035, 28)
+        Me.MenuStrip1.Size = New System.Drawing.Size(2510, 38)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -134,7 +134,7 @@ Partial Class SNICSrFrm
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsmLoad, Me.InpsectRawDataFile, Me.mnuReload, Me.LoadRestOfRawDataFromFileToolStripMenuItem, Me.ToolStripSeparator3, Me.tspPrint, Me.ToolStripSeparator2, Me.tsmFillInC13Table, Me.ToolStripSeparator4, Me.tsmPrintTargetTable, Me.tsmSave, Me.tspCompare, Me.tsmBlankCorrect, Me.tspNukeDatabase, Me.tsmCommit, Me.CommitGroupToDatabaseToolStripMenuItem, Me.tspWriteDatabaseImportFile, Me.ToolStripSeparator1, Me.ExitToolStripMenuItem, Me.tspQuit})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(46, 24)
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(46, 34)
         Me.FileToolStripMenuItem.Text = "File"
         '
         'tsmLoad
@@ -313,32 +313,32 @@ Partial Class SNICSrFrm
         '
         Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tspHelp, Me.tspAbout})
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
-        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 24)
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 34)
         Me.HelpToolStripMenuItem.Text = "Help"
         '
         'tspHelp
         '
         Me.tspHelp.Name = "tspHelp"
-        Me.tspHelp.Size = New System.Drawing.Size(224, 26)
+        Me.tspHelp.Size = New System.Drawing.Size(133, 26)
         Me.tspHelp.Text = "Help"
         '
         'tspAbout
         '
         Me.tspAbout.Name = "tspAbout"
-        Me.tspAbout.Size = New System.Drawing.Size(224, 26)
+        Me.tspAbout.Size = New System.Drawing.Size(133, 26)
         Me.tspAbout.Text = "About"
         '
         'OptionsToolStripMenuItem
         '
         Me.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem"
-        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(75, 24)
+        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(75, 34)
         Me.OptionsToolStripMenuItem.Text = "Options"
         '
         'FlagsToolStripMenuItem
         '
         Me.FlagsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ResetAllFlagsToolStripMenuItem, Me.InheritFirstsFlagsToolStripMenuItem, Me.InheritSecondsFlagsToolStripMenuItem, Me.CompareFlagsToolStripMenuItem, Me.CountFlagsToolStripMenuItem})
         Me.FlagsToolStripMenuItem.Name = "FlagsToolStripMenuItem"
-        Me.FlagsToolStripMenuItem.Size = New System.Drawing.Size(57, 24)
+        Me.FlagsToolStripMenuItem.Size = New System.Drawing.Size(57, 34)
         Me.FlagsToolStripMenuItem.Text = "Flags"
         '
         'ResetAllFlagsToolStripMenuItem
@@ -378,37 +378,37 @@ Partial Class SNICSrFrm
         '
         Me.tspGroup.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tspGroupMerge, Me.tspGroupSplit, Me.tspGroupRestore, Me.tspListGroups, Me.PlotGroupsToolStripMenuItem})
         Me.tspGroup.Name = "tspGroup"
-        Me.tspGroup.Size = New System.Drawing.Size(64, 24)
+        Me.tspGroup.Size = New System.Drawing.Size(64, 34)
         Me.tspGroup.Text = "Group"
         '
         'tspGroupMerge
         '
         Me.tspGroupMerge.Name = "tspGroupMerge"
-        Me.tspGroupMerge.Size = New System.Drawing.Size(224, 26)
+        Me.tspGroupMerge.Size = New System.Drawing.Size(193, 26)
         Me.tspGroupMerge.Text = "Merge Groups"
         '
         'tspGroupSplit
         '
         Me.tspGroupSplit.Name = "tspGroupSplit"
-        Me.tspGroupSplit.Size = New System.Drawing.Size(224, 26)
+        Me.tspGroupSplit.Size = New System.Drawing.Size(193, 26)
         Me.tspGroupSplit.Text = "Split Group"
         '
         'tspGroupRestore
         '
         Me.tspGroupRestore.Name = "tspGroupRestore"
-        Me.tspGroupRestore.Size = New System.Drawing.Size(224, 26)
+        Me.tspGroupRestore.Size = New System.Drawing.Size(193, 26)
         Me.tspGroupRestore.Text = "Restore Groups"
         '
         'tspListGroups
         '
         Me.tspListGroups.Name = "tspListGroups"
-        Me.tspListGroups.Size = New System.Drawing.Size(224, 26)
+        Me.tspListGroups.Size = New System.Drawing.Size(193, 26)
         Me.tspListGroups.Text = "List Groups"
         '
         'PlotGroupsToolStripMenuItem
         '
         Me.PlotGroupsToolStripMenuItem.Name = "PlotGroupsToolStripMenuItem"
-        Me.PlotGroupsToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.PlotGroupsToolStripMenuItem.Size = New System.Drawing.Size(193, 26)
         Me.PlotGroupsToolStripMenuItem.Text = "Plot Groups"
         Me.PlotGroupsToolStripMenuItem.Visible = False
         '
@@ -416,39 +416,39 @@ Partial Class SNICSrFrm
         '
         Me.ToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PropertyPropertyToolStripMenuItem, Me.tspPlotAllStds, Me.tspPlotStds, Me.AMSVsIRMSDC13ToolStripMenuItem})
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(49, 24)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(49, 34)
         Me.ToolStripMenuItem1.Text = "Plot"
         '
         'PropertyPropertyToolStripMenuItem
         '
         Me.PropertyPropertyToolStripMenuItem.Enabled = False
         Me.PropertyPropertyToolStripMenuItem.Name = "PropertyPropertyToolStripMenuItem"
-        Me.PropertyPropertyToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.PropertyPropertyToolStripMenuItem.Size = New System.Drawing.Size(216, 26)
         Me.PropertyPropertyToolStripMenuItem.Text = "Property-Property"
         '
         'tspPlotAllStds
         '
         Me.tspPlotAllStds.Name = "tspPlotAllStds"
-        Me.tspPlotAllStds.Size = New System.Drawing.Size(224, 26)
+        Me.tspPlotAllStds.Size = New System.Drawing.Size(216, 26)
         Me.tspPlotAllStds.Text = "Plot All Standards"
         '
         'tspPlotStds
         '
         Me.tspPlotStds.Name = "tspPlotStds"
-        Me.tspPlotStds.Size = New System.Drawing.Size(224, 26)
+        Me.tspPlotStds.Size = New System.Drawing.Size(216, 26)
         Me.tspPlotStds.Text = "Plot Standards"
         '
         'AMSVsIRMSDC13ToolStripMenuItem
         '
         Me.AMSVsIRMSDC13ToolStripMenuItem.Name = "AMSVsIRMSDC13ToolStripMenuItem"
-        Me.AMSVsIRMSDC13ToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.AMSVsIRMSDC13ToolStripMenuItem.Size = New System.Drawing.Size(216, 26)
         Me.AMSVsIRMSDC13ToolStripMenuItem.Text = "AMS vs IRMS dC13"
         '
         'ToolStripMenuItem3
         '
         Me.ToolStripMenuItem3.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StandardsAndBlanksToolStripMenuItem, Me.TargetInfoToolStripMenuItem, Me.tspShowSecondaries, Me.TALLToolStripMenuItem})
         Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(55, 24)
+        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(55, 34)
         Me.ToolStripMenuItem3.Text = "View"
         '
         'StandardsAndBlanksToolStripMenuItem
@@ -493,7 +493,7 @@ Partial Class SNICSrFrm
         'CommentToolStripMenuItem
         '
         Me.CommentToolStripMenuItem.Name = "CommentToolStripMenuItem"
-        Me.CommentToolStripMenuItem.Size = New System.Drawing.Size(88, 24)
+        Me.CommentToolStripMenuItem.Size = New System.Drawing.Size(88, 34)
         Me.CommentToolStripMenuItem.Text = "Comment"
         '
         'btnLoad
@@ -501,9 +501,9 @@ Partial Class SNICSrFrm
         Me.btnLoad.BackColor = System.Drawing.Color.Tan
         Me.btnLoad.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLoad.Location = New System.Drawing.Point(3, 33)
-        Me.btnLoad.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnLoad.Margin = New System.Windows.Forms.Padding(4)
         Me.btnLoad.Name = "btnLoad"
-        Me.btnLoad.Size = New System.Drawing.Size(203, 34)
+        Me.btnLoad.Size = New System.Drawing.Size(138, 34)
         Me.btnLoad.TabIndex = 1
         Me.btnLoad.Text = "Load"
         Me.btnLoad.UseVisualStyleBackColor = False
@@ -531,12 +531,12 @@ Partial Class SNICSrFrm
         DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvInputData.DefaultCellStyle = DataGridViewCellStyle1
-        Me.dgvInputData.Location = New System.Drawing.Point(1082, 71)
-        Me.dgvInputData.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvInputData.Location = New System.Drawing.Point(1069, 71)
+        Me.dgvInputData.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvInputData.MultiSelect = False
         Me.dgvInputData.Name = "dgvInputData"
         Me.dgvInputData.RowHeadersWidth = 51
-        Me.dgvInputData.Size = New System.Drawing.Size(940, 812)
+        Me.dgvInputData.Size = New System.Drawing.Size(931, 709)
         Me.dgvInputData.TabIndex = 2
         '
         'lblStatus
@@ -570,13 +570,13 @@ Partial Class SNICSrFrm
         DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvTargets.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvTargets.Location = New System.Drawing.Point(4, 71)
-        Me.dgvTargets.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvTargets.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvTargets.MultiSelect = False
         Me.dgvTargets.Name = "dgvTargets"
         Me.dgvTargets.ReadOnly = True
         Me.dgvTargets.RowHeadersVisible = False
         Me.dgvTargets.RowHeadersWidth = 20
-        Me.dgvTargets.Size = New System.Drawing.Size(1057, 759)
+        Me.dgvTargets.Size = New System.Drawing.Size(1057, 709)
         Me.dgvTargets.TabIndex = 4
         '
         'dgvRuns
@@ -594,12 +594,12 @@ Partial Class SNICSrFrm
         DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvRuns.DefaultCellStyle = DataGridViewCellStyle2
-        Me.dgvRuns.Location = New System.Drawing.Point(4, 911)
-        Me.dgvRuns.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvRuns.Location = New System.Drawing.Point(4, 834)
+        Me.dgvRuns.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvRuns.MultiSelect = False
         Me.dgvRuns.Name = "dgvRuns"
         Me.dgvRuns.RowHeadersWidth = 25
-        Me.dgvRuns.Size = New System.Drawing.Size(1248, 270)
+        Me.dgvRuns.Size = New System.Drawing.Size(1057, 192)
         Me.dgvRuns.TabIndex = 5
         '
         'lblRuns
@@ -608,7 +608,7 @@ Partial Class SNICSrFrm
         Me.lblRuns.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.lblRuns.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.lblRuns.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblRuns.Location = New System.Drawing.Point(9, 887)
+        Me.lblRuns.Location = New System.Drawing.Point(13, 808)
         Me.lblRuns.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblRuns.Name = "lblRuns"
         Me.lblRuns.Size = New System.Drawing.Size(151, 22)
@@ -618,12 +618,11 @@ Partial Class SNICSrFrm
         '
         'chkStandards
         '
-        Me.chkStandards.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkStandards.AutoSize = True
         Me.chkStandards.Checked = True
         Me.chkStandards.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkStandards.Location = New System.Drawing.Point(670, 43)
-        Me.chkStandards.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkStandards.Location = New System.Drawing.Point(295, 41)
+        Me.chkStandards.Margin = New System.Windows.Forms.Padding(4)
         Me.chkStandards.Name = "chkStandards"
         Me.chkStandards.Size = New System.Drawing.Size(95, 21)
         Me.chkStandards.TabIndex = 7
@@ -632,12 +631,11 @@ Partial Class SNICSrFrm
         '
         'chkBlanks
         '
-        Me.chkBlanks.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkBlanks.AutoSize = True
         Me.chkBlanks.Checked = True
         Me.chkBlanks.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBlanks.Location = New System.Drawing.Point(768, 43)
-        Me.chkBlanks.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkBlanks.Location = New System.Drawing.Point(609, 41)
+        Me.chkBlanks.Margin = New System.Windows.Forms.Padding(4)
         Me.chkBlanks.Name = "chkBlanks"
         Me.chkBlanks.Size = New System.Drawing.Size(72, 21)
         Me.chkBlanks.TabIndex = 8
@@ -646,12 +644,11 @@ Partial Class SNICSrFrm
         '
         'chkSecondaries
         '
-        Me.chkSecondaries.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkSecondaries.AutoSize = True
         Me.chkSecondaries.Checked = True
         Me.chkSecondaries.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSecondaries.Location = New System.Drawing.Point(844, 43)
-        Me.chkSecondaries.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkSecondaries.Location = New System.Drawing.Point(395, 41)
+        Me.chkSecondaries.Margin = New System.Windows.Forms.Padding(4)
         Me.chkSecondaries.Name = "chkSecondaries"
         Me.chkSecondaries.Size = New System.Drawing.Size(109, 21)
         Me.chkSecondaries.TabIndex = 9
@@ -660,12 +657,11 @@ Partial Class SNICSrFrm
         '
         'chkUnknowns
         '
-        Me.chkUnknowns.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkUnknowns.AutoSize = True
         Me.chkUnknowns.Checked = True
         Me.chkUnknowns.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkUnknowns.Location = New System.Drawing.Point(960, 43)
-        Me.chkUnknowns.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkUnknowns.Location = New System.Drawing.Point(509, 41)
+        Me.chkUnknowns.Margin = New System.Windows.Forms.Padding(4)
         Me.chkUnknowns.Name = "chkUnknowns"
         Me.chkUnknowns.Size = New System.Drawing.Size(95, 21)
         Me.chkUnknowns.TabIndex = 10
@@ -674,10 +670,9 @@ Partial Class SNICSrFrm
         '
         'lblDGVTarg
         '
-        Me.lblDGVTarg.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblDGVTarg.AutoSize = True
         Me.lblDGVTarg.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDGVTarg.Location = New System.Drawing.Point(1477, 41)
+        Me.lblDGVTarg.Location = New System.Drawing.Point(149, 38)
         Me.lblDGVTarg.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblDGVTarg.Name = "lblDGVTarg"
         Me.lblDGVTarg.Size = New System.Drawing.Size(115, 25)
@@ -688,7 +683,7 @@ Partial Class SNICSrFrm
         '
         Me.lblInputDataList.AutoSize = True
         Me.lblInputDataList.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblInputDataList.Location = New System.Drawing.Point(1091, 39)
+        Me.lblInputDataList.Location = New System.Drawing.Point(1064, 43)
         Me.lblInputDataList.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblInputDataList.Name = "lblInputDataList"
         Me.lblInputDataList.Size = New System.Drawing.Size(25, 25)
@@ -699,7 +694,7 @@ Partial Class SNICSrFrm
         '
         Me.lblStats.AutoSize = True
         Me.lblStats.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblStats.Location = New System.Drawing.Point(465, 835)
+        Me.lblStats.Location = New System.Drawing.Point(468, 795)
         Me.lblStats.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblStats.Name = "lblStats"
         Me.lblStats.Size = New System.Drawing.Size(170, 20)
@@ -715,14 +710,14 @@ Partial Class SNICSrFrm
         Me.dgvSecs.AllowUserToResizeRows = False
         Me.dgvSecs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader
         Me.dgvSecs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvSecs.Location = New System.Drawing.Point(1260, 911)
-        Me.dgvSecs.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvSecs.Location = New System.Drawing.Point(1069, 834)
+        Me.dgvSecs.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvSecs.MultiSelect = False
         Me.dgvSecs.Name = "dgvSecs"
         Me.dgvSecs.ReadOnly = True
         Me.dgvSecs.RowHeadersVisible = False
         Me.dgvSecs.RowHeadersWidth = 20
-        Me.dgvSecs.Size = New System.Drawing.Size(745, 270)
+        Me.dgvSecs.Size = New System.Drawing.Size(827, 192)
         Me.dgvSecs.TabIndex = 25
         Me.dgvSecs.Visible = False
         '
@@ -730,7 +725,7 @@ Partial Class SNICSrFrm
         '
         Me.lblSecStds.AutoSize = True
         Me.lblSecStds.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSecStds.Location = New System.Drawing.Point(1256, 887)
+        Me.lblSecStds.Location = New System.Drawing.Point(1092, 784)
         Me.lblSecStds.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblSecStds.Name = "lblSecStds"
         Me.lblSecStds.Size = New System.Drawing.Size(188, 20)
@@ -740,12 +735,13 @@ Partial Class SNICSrFrm
         '
         'chkDoCalc
         '
+        Me.chkDoCalc.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkDoCalc.AutoSize = True
         Me.chkDoCalc.Checked = True
         Me.chkDoCalc.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkDoCalc.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkDoCalc.Location = New System.Drawing.Point(1802, 35)
-        Me.chkDoCalc.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkDoCalc.Location = New System.Drawing.Point(2363, 66)
+        Me.chkDoCalc.Margin = New System.Windows.Forms.Padding(4)
         Me.chkDoCalc.Name = "chkDoCalc"
         Me.chkDoCalc.Size = New System.Drawing.Size(79, 29)
         Me.chkDoCalc.TabIndex = 27
@@ -754,24 +750,22 @@ Partial Class SNICSrFrm
         '
         'btnPlotAllStds
         '
-        Me.btnPlotAllStds.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPlotAllStds.BackColor = System.Drawing.Color.PeachPuff
         Me.btnPlotAllStds.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPlotAllStds.Location = New System.Drawing.Point(244, 33)
-        Me.btnPlotAllStds.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnPlotAllStds.Location = New System.Drawing.Point(689, 34)
+        Me.btnPlotAllStds.Margin = New System.Windows.Forms.Padding(4)
         Me.btnPlotAllStds.Name = "btnPlotAllStds"
-        Me.btnPlotAllStds.Size = New System.Drawing.Size(149, 33)
+        Me.btnPlotAllStds.Size = New System.Drawing.Size(136, 33)
         Me.btnPlotAllStds.TabIndex = 28
         Me.btnPlotAllStds.Text = "Plot All Stds"
         Me.btnPlotAllStds.UseVisualStyleBackColor = False
         '
         'btnPlotStandards
         '
-        Me.btnPlotStandards.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPlotStandards.BackColor = System.Drawing.Color.PeachPuff
         Me.btnPlotStandards.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPlotStandards.Location = New System.Drawing.Point(401, 33)
-        Me.btnPlotStandards.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnPlotStandards.Location = New System.Drawing.Point(830, 34)
+        Me.btnPlotStandards.Margin = New System.Windows.Forms.Padding(4)
         Me.btnPlotStandards.Name = "btnPlotStandards"
         Me.btnPlotStandards.Size = New System.Drawing.Size(67, 33)
         Me.btnPlotStandards.TabIndex = 29
@@ -780,10 +774,11 @@ Partial Class SNICSrFrm
         '
         'btnCalculate
         '
+        Me.btnCalculate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCalculate.BackColor = System.Drawing.Color.AntiqueWhite
         Me.btnCalculate.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCalculate.Location = New System.Drawing.Point(1889, 32)
-        Me.btnCalculate.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnCalculate.Location = New System.Drawing.Point(2400, 66)
+        Me.btnCalculate.Margin = New System.Windows.Forms.Padding(4)
         Me.btnCalculate.Name = "btnCalculate"
         Me.btnCalculate.Size = New System.Drawing.Size(133, 34)
         Me.btnCalculate.TabIndex = 30
@@ -810,12 +805,11 @@ Partial Class SNICSrFrm
         '
         'cmbPlot
         '
-        Me.cmbPlot.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmbPlot.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbPlot.FormattingEnabled = True
         Me.cmbPlot.Items.AddRange(New Object() {"Standards", "Blanks", "Secondaries", "Unknowns", "All Samples"})
-        Me.cmbPlot.Location = New System.Drawing.Point(469, 36)
-        Me.cmbPlot.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbPlot.Location = New System.Drawing.Point(902, 36)
+        Me.cmbPlot.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbPlot.Name = "cmbPlot"
         Me.cmbPlot.Size = New System.Drawing.Size(159, 28)
         Me.cmbPlot.TabIndex = 31
@@ -826,7 +820,7 @@ Partial Class SNICSrFrm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.AntiqueWhite
-        Me.ClientSize = New System.Drawing.Size(2035, 1119)
+        Me.ClientSize = New System.Drawing.Size(2008, 1303)
         Me.ControlBox = False
         Me.Controls.Add(Me.dgvInputData)
         Me.Controls.Add(Me.cmbPlot)
@@ -852,7 +846,7 @@ Partial Class SNICSrFrm
         Me.Enabled = False
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "SNICSrFrm"
         Me.Text = "SNICSer"
         Me.MenuStrip1.ResumeLayout(False)
