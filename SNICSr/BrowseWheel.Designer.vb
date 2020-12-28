@@ -42,13 +42,13 @@ Partial Class BrowseWheel
         Me.trvWheel.Location = New System.Drawing.Point(0, 50)
         Me.trvWheel.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.trvWheel.Name = "trvWheel"
-        Me.trvWheel.Size = New System.Drawing.Size(367, 819)
+        Me.trvWheel.Size = New System.Drawing.Size(367, 729)
         Me.trvWheel.TabIndex = 0
         '
         'btnLoad
         '
         Me.btnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnLoad.Location = New System.Drawing.Point(0, 879)
+        Me.btnLoad.Location = New System.Drawing.Point(0, 789)
         Me.btnLoad.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.btnLoad.Name = "btnLoad"
         Me.btnLoad.Size = New System.Drawing.Size(108, 29)
@@ -59,7 +59,7 @@ Partial Class BrowseWheel
         'btnCancel
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCancel.Location = New System.Drawing.Point(259, 879)
+        Me.btnCancel.Location = New System.Drawing.Point(259, 789)
         Me.btnCancel.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(108, 29)
@@ -130,7 +130,7 @@ Partial Class BrowseWheel
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(370, 911)
+        Me.ClientSize = New System.Drawing.Size(370, 821)
         Me.ControlBox = False
         Me.Controls.Add(Me.txtWheel)
         Me.Controls.Add(Me.Label3)
