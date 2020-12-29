@@ -1494,6 +1494,10 @@ Public Class SNICSrFrm
                         If NewRow("Typ") = "B" Then dgvInputData.Rows(NumRuns).DefaultCellStyle.BackColor = BlkCol
                         If NewRow("Typ") = "U" Then dgvInputData.Rows(NumRuns).DefaultCellStyle.BackColor = UnkCol
                         NumRuns += 1
+                        If NewRow("SampleName").length > 40 Then
+                            'MsgBox("Sample name of pos " & NewRow("Pos") " truncated to 64 characters")
+                            NewRow("SampleName") = NewRow("SampleName").Substring(0, 40)
+                        End If
                     End If
                 End While
                 NumGroups = Group
