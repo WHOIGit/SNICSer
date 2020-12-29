@@ -505,7 +505,7 @@ Partial Class SNICSrFrm
         Me.btnLoad.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLoad.Location = New System.Drawing.Point(2, 27)
         Me.btnLoad.Name = "btnLoad"
-        Me.btnLoad.Size = New System.Drawing.Size(104, 28)
+        Me.btnLoad.Size = New System.Drawing.Size(108, 27)
         Me.btnLoad.TabIndex = 1
         Me.btnLoad.Text = "Load"
         Me.btnLoad.UseVisualStyleBackColor = False
@@ -806,7 +806,7 @@ Partial Class SNICSrFrm
         Me.flpPlotCalc.Controls.Add(Me.btnPlotStandards)
         Me.flpPlotCalc.Controls.Add(Me.btnPlotAllStds)
         Me.flpPlotCalc.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpPlotCalc.Location = New System.Drawing.Point(1048, 27)
+        Me.flpPlotCalc.Location = New System.Drawing.Point(1048, 24)
         Me.flpPlotCalc.Name = "flpPlotCalc"
         Me.flpPlotCalc.Size = New System.Drawing.Size(472, 30)
         Me.flpPlotCalc.TabIndex = 32

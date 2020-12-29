@@ -668,6 +668,7 @@ Public Class SNICSrFrm
         Me.Width = btnLoad.Right + 50
         Me.Height = btnLoad.Bottom + MenuStrip1.Height + 15
         flpPlotCalc.Hide()
+        lblDGVTarg.Hide()
     End Sub
 
     Public Sub GetOptions()
@@ -1183,6 +1184,7 @@ Public Class SNICSrFrm
         tsmBlankCorrect.Visible = True
         tsmCommit.Visible = False
         flpPlotCalc.Show()
+        lblDGVTarg.Show()
         Me.Width = dgvInputData.Right + 20
         Me.Height = dgvRuns.Bottom + 50
         IamLoading = False
@@ -1262,6 +1264,7 @@ Public Class SNICSrFrm
             IamLoading = False
             tsmBlankCorrect.Visible = True
             flpPlotCalc.Show()
+            lblDGVTarg.Show()
         Else
             btnLoad.Visible = True
             IamLoading = False
@@ -1595,36 +1598,34 @@ Public Class SNICSrFrm
 
     Public Sub RepositionDGVs()     ' rearranges data grid views to fit
         flpPlotCalc.Show()
+        Width = 1920
+        Height = 1080
         ReSizeDGV(dgvTargets, 40)
-        dgvTargets.Height = 660
-        If Not TALL Then dgvTargets.Height = 0.6 * dgvTargets.Height
-        dgvInputData.Left = dgvTargets.Right + 10
+        If Not TALL Then
+            Me.Height = 864
+        End If
+        dgvTargets.Height = 0.75 * Me.Height
         ReSizeDGV(dgvInputData, 20)
+        dgvInputData.Left = dgvTargets.Right + 10
         If Not WIDE Then
-            dgvInputData.Width = 0.5 * dgvInputData.Width
-            'dgvInputData.
+            Me.Width = 1536
         End If
         dgvInputData.Height = 0.9 * dgvTargets.Height
+        dgvInputData.Width = Me.Width - dgvTargets.Width - 20
         lblStats.Left = dgvInputData.Left
         lblStats.Top = dgvInputData.Bottom + 10
-        Me.Width = dgvInputData.Right + 20
+        'Me.Width = dgvInputData.Right + 20
         lblRuns.Top = dgvTargets.Bottom + 10
         dgvRuns.Top = lblRuns.Bottom + 10
+        dgvRuns.Height = Me.Height - dgvTargets.Height - 100
         dgvRuns.Width = dgvTargets.Width
-        Me.Height = dgvRuns.Bottom + 50
-        If WIDE Then
-            ReSizeDGV(dgvRuns, 40)
-        Else
-            dgvRuns.Width = dgvTargets.Width
-        End If
-        'btnCalculate.Left = dgvInputData.Right - 133
-        'btnCalculate.Top = dgvInputData.Top + 39
-        'chkDoCalc.Left = btnCalculate.Left - 90
-        'chkDoCalc.Top = btnCalculate.Top - 5
+        'Me.Height = dgvRuns.Bottom + 50
+        dgvRuns.Width = dgvTargets.Width
         dgvSecs.Left = dgvInputData.Left
         dgvSecs.Top = lblStats.Bottom + 10
         lblInputDataList.Left = dgvInputData.Left
-        'ReSizeDGV(dgvSecs, 40)
+        ReSizeDGV(dgvSecs, 40)
+        dgvSecs.Height = Me.Height - dgvInputData.Height - 100
         lblSecStds.Left = dgvInputData.Left
         '.Left = dgvTargets.Right - chkUnknowns.Width - 30
         'chkSecondaries.Left = chkUnknowns.Left - chkSecondaries.Width - 2
@@ -6694,8 +6695,8 @@ Public Class SNICSrFrm
             lblSecStds.Left = dgvInputData.Left
             tspShowSecondaries.Text = "Hide Secondaries Table"
             ReSizeDGV(dgvSecs, 20)
-            dgvSecs.Top = lblSecStds.Bottom + 10
-            dgvSecs.Height = dgvRuns.Bottom - dgvInputData.Bottom + 10
+            dgvSecs.Top = lblSecStds.Bottom + 5
+            dgvSecs.Height = Me.Bottom - dgvInputData.Bottom - 20
             dgvSecs.Left = dgvTargets.Right + 10
         Else
             dgvSecs.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells)
