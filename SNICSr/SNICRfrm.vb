@@ -665,12 +665,25 @@ Public Class SNICSrFrm
     End Sub
 
     Private Sub MakeMeSmall()
-        Me.Width = btnLoad.Right + 50
-        Me.Height = btnLoad.Bottom + MenuStrip1.Height + 15
         flpPlotCalc.Hide()
         lblDGVTarg.Hide()
+        flpSampleTypeChkBoxes.Hide()
+        lblInputDataList.Hide()
+        Me.ControlBox = False
+        Me.Width = btnLoad.Right + 50
+        Me.Height = btnLoad.Bottom + MenuStrip1.Height + 15
     End Sub
 
+    Private Sub MakeMeBig()
+        flpPlotCalc.Show()
+        lblDGVTarg.Show()
+        flpSampleTypeChkBoxes.Show()
+        lblInputDataList.Show()
+        Me.ControlBox = True
+        Me.Width = 1500
+        Me.Height = 800
+        RepositionDGVs()
+    End Sub
     Public Sub GetOptions()
         Me.Visible = False
         'HomeDirectory = My.Application.Info.DirectoryPath      ' OLD CONFIGURATION
@@ -1183,15 +1196,7 @@ Public Class SNICSrFrm
         btnLoad.Visible = True
         tsmBlankCorrect.Visible = True
         tsmCommit.Visible = False
-        flpPlotCalc.Show()
-        lblDGVTarg.Show()
-        Me.Width = 1500
-        Me.Height = 750
-        'Me.WindowState = FormWindowState.Maximized
-        'MsgBox(Me.Width & vbCrLf & Me.Height)
-        RepositionDGVs()
-        'Me.Width = dgvInputData.Right + 20
-        'Me.Height = dgvRuns.Bottom + 50
+        MakeMeBig()
         IamLoading = False
         If Not REAUTH Then ClearBlankCorr()
         Me.Text = "SNICSer V" & VERSION.ToString("0.00") & " " & WheelName
@@ -1264,12 +1269,9 @@ Public Class SNICSrFrm
             lblStatus.Text = "Loading File..."
             LoadRawDataFromFile(FileName)
             btnLoad.Visible = True
-            Me.Width = dgvInputData.Right + 20
-            Me.Height = dgvRuns.Bottom + 50
             IamLoading = False
             tsmBlankCorrect.Visible = True
-            flpPlotCalc.Show()
-            lblDGVTarg.Show()
+            MakeMeBig()
         Else
             btnLoad.Visible = True
             IamLoading = False
@@ -1554,9 +1556,6 @@ Public Class SNICSrFrm
         DoFillInC13Table()
         GetWheelInfo(whlName)
         If Not ISPARTIALWHEEL Then SetUpStds()
-        'Calculate()
-        'Me.WindowState = FormWindowState.Maximized
-        'RepositionDGVs()
         tsmSave.Enabled = True
         If Not ISACQUIFILE Then
             tsmCommit.Enabled = True
@@ -1605,31 +1604,32 @@ Public Class SNICSrFrm
     Public Sub RepositionDGVs()     ' rearranges data grid views to fit
         ReSizeDGV(dgvTargets, 20)
         If Me.Height < 800 Then
-            dgvTargets.Height = 0.6 * Me.Height
+            dgvTargets.Height = 0.55 * Me.Height
         Else
-            dgvTargets.Height = 0.7 * Me.Height
+            dgvTargets.Height = 0.65 * Me.Height
         End If
-        If Me.Width < 1500 Then
-            dgvTargets.Width = 0.8 * dgvTargets.Width
+        If Me.Width < 1200 Then
+            dgvTargets.Width = 0.5 * Me.Width
         End If
         flpSampleTypeChkBoxes.Left = dgvTargets.Right - flpSampleTypeChkBoxes.Width
         ReSizeDGV(dgvInputData, 20)
         dgvInputData.Left = dgvTargets.Right + 10
         dgvInputData.Height = 0.9 * dgvTargets.Height
-        dgvInputData.Width = Me.Width - dgvTargets.Width - 30
+        dgvInputData.Width = Me.Width - dgvTargets.Width - 35
         lblStats.Left = dgvInputData.Left
         lblStats.Top = dgvInputData.Bottom + 10
         lblRuns.Top = dgvTargets.Bottom + 10
         dgvRuns.Top = lblRuns.Bottom + 10
-        dgvRuns.Height = Height - dgvTargets.Height - 100
+        dgvRuns.Height = Height - dgvTargets.Height - 140
         dgvRuns.Width = dgvTargets.Width
         dgvRuns.Width = dgvTargets.Width
-        dgvSecs.Left = dgvInputData.Left
-        dgvSecs.Top = lblStats.Bottom + 10
         lblInputDataList.Left = dgvInputData.Left
-        ReSizeDGV(dgvSecs, 40)
-        dgvSecs.Height = Me.Height - dgvInputData.Height - 100
         lblSecStds.Left = dgvInputData.Left
+        lblSecStds.Top = lblStats.Bottom + 10
+        ReSizeDGV(dgvSecs, 20)
+        dgvSecs.Left = dgvInputData.Left
+        dgvSecs.Top = lblSecStds.Bottom + 5
+        dgvSecs.Height = dgvRuns.Bottom - dgvSecs.Top
         lblDGVTarg.Left = dgvTargets.Left + 110
     End Sub
 
@@ -2014,15 +2014,12 @@ Public Class SNICSrFrm
         lblRuns.Text = "Pos " & Posn.ToString & "  " & sName & "  " & TargetRuns(Posn).ToString & " Runs,  NormRat = " & TargetRat(Posn).ToString("0.0000") _
             & " + - " & ExtErr(Posn).ToString("0.0000") & " (IntErr = " & IntErr(Posn).ToString("0.0000") & " ) "
         dgvRuns.Visible = True
-        'Me.Height = dgvRuns.Bottom + 50
-        'If Me.Width < dgvSecs.Right + 20 Then Me.Width = dgvSecs.Right + 20
         If Not Worms.chkOverlay.Checked Then NumPlots = 0
         dgvRuns.AutoResizeColumns()
         dgvRuns.AutoResizeRows()
         PlotList(NumPlots) = Posn
         NumPlots += 1
         PlotRuns()
-        'RepositionDGVs()
     End Sub
 
     Public Sub DeselectDGV(dgv As DataGridView)
@@ -6352,7 +6349,6 @@ Public Class SNICSrFrm
             End If
         End If
         e.Graphics.DrawImage(thePlot, 50, 70, pltWid, pltHgt)
-
     End Sub
 
     Private Sub AggregateToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs)
@@ -6693,7 +6689,7 @@ Public Class SNICSrFrm
             tspShowSecondaries.Text = "Hide Secondaries Table"
             ReSizeDGV(dgvSecs, 20)
             dgvSecs.Top = lblSecStds.Bottom + 5
-            dgvSecs.Height = Me.Bottom - dgvInputData.Bottom - 100
+            dgvSecs.Height = dgvRuns.Bottom - dgvSecs.Top
             dgvSecs.Left = dgvInputData.Left
         Else
             dgvSecs.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells)
@@ -6873,5 +6869,4 @@ Public Class SNICSrFrm
     End Sub
 
 #End Region ' respond to use clicks and selections
-
 End Class
