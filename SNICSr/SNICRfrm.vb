@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 Public Class SNICSrFrm
 
     Public VERSION As Double = 3.0     ' this is the version number. Increment in units of 0.01 when updating 
-    Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
+    Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
@@ -6456,6 +6456,9 @@ Public Class SNICSrFrm
         CountFlags()
         CheckAllTargets()
         With frmBlankCorr
+            If My.Computer.Screen.WorkingArea.Height < 1080 Then
+                .Height = My.Computer.Screen.WorkingArea.Height
+            End If
             .Visible = True
             If Not False Then           'BLANKCORRECTED Then
                 .tbcGroups.TabPages.Clear()
