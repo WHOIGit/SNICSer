@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 2.97     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 3.0     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -1547,6 +1547,9 @@ Public Class SNICSrFrm
             dgvInputData.Columns(8).DefaultCellStyle.Format = "0"
         End If
         dgvInputData.AutoResizeColumns()
+        If dgvInputData.Columns(6).Width > 150 Then
+            dgvInputData.Columns(6).Width = 150
+        End If
         dgvInputData.AutoResizeRows()
         UpdateDataListLabel()
         CollectRats()
@@ -5033,6 +5036,9 @@ Public Class SNICSrFrm
             dgvInputData.Columns(8).DefaultCellStyle.Format = "0"
         End If
         dgvInputData.AutoResizeColumns()
+        If dgvInputData.Columns(6).Width > 150 Then
+            dgvInputData.Columns(6).Width = 150
+        End If
         dgvInputData.AutoResizeRows()
         UpdateDataListLabel()
         CollectRats()
