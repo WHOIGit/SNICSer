@@ -1185,8 +1185,13 @@ Public Class SNICSrFrm
         tsmCommit.Visible = False
         flpPlotCalc.Show()
         lblDGVTarg.Show()
-        Me.Width = dgvInputData.Right + 20
-        Me.Height = dgvRuns.Bottom + 50
+        Me.Width = 1500
+        Me.Height = 750
+        'Me.WindowState = FormWindowState.Maximized
+        'MsgBox(Me.Width & vbCrLf & Me.Height)
+        RepositionDGVs()
+        'Me.Width = dgvInputData.Right + 20
+        'Me.Height = dgvRuns.Bottom + 50
         IamLoading = False
         If Not REAUTH Then ClearBlankCorr()
         Me.Text = "SNICSer V" & VERSION.ToString("0.00") & " " & WheelName
@@ -1550,7 +1555,8 @@ Public Class SNICSrFrm
         GetWheelInfo(whlName)
         If Not ISPARTIALWHEEL Then SetUpStds()
         'Calculate()
-        RepositionDGVs()
+        'Me.WindowState = FormWindowState.Maximized
+        'RepositionDGVs()
         tsmSave.Enabled = True
         If Not ISACQUIFILE Then
             tsmCommit.Enabled = True
@@ -1597,29 +1603,26 @@ Public Class SNICSrFrm
     End Sub
 
     Public Sub RepositionDGVs()     ' rearranges data grid views to fit
-        flpPlotCalc.Show()
-        Width = 1920
-        Height = 1080
-        ReSizeDGV(dgvTargets, 40)
-        If Not TALL Then
-            Me.Height = 864
+        ReSizeDGV(dgvTargets, 20)
+        If Me.Height < 800 Then
+            dgvTargets.Height = 0.6 * Me.Height
+        Else
+            dgvTargets.Height = 0.7 * Me.Height
         End If
-        dgvTargets.Height = 0.75 * Me.Height
+        If Me.Width < 1500 Then
+            dgvTargets.Width = 0.8 * dgvTargets.Width
+        End If
+        flpSampleTypeChkBoxes.Left = dgvTargets.Right - flpSampleTypeChkBoxes.Width
         ReSizeDGV(dgvInputData, 20)
         dgvInputData.Left = dgvTargets.Right + 10
-        If Not WIDE Then
-            Me.Width = 1536
-        End If
         dgvInputData.Height = 0.9 * dgvTargets.Height
-        dgvInputData.Width = Me.Width - dgvTargets.Width - 20
+        dgvInputData.Width = Me.Width - dgvTargets.Width - 30
         lblStats.Left = dgvInputData.Left
         lblStats.Top = dgvInputData.Bottom + 10
-        'Me.Width = dgvInputData.Right + 20
         lblRuns.Top = dgvTargets.Bottom + 10
         dgvRuns.Top = lblRuns.Bottom + 10
-        dgvRuns.Height = Me.Height - dgvTargets.Height - 100
+        dgvRuns.Height = Height - dgvTargets.Height - 100
         dgvRuns.Width = dgvTargets.Width
-        'Me.Height = dgvRuns.Bottom + 50
         dgvRuns.Width = dgvTargets.Width
         dgvSecs.Left = dgvInputData.Left
         dgvSecs.Top = lblStats.Bottom + 10
@@ -1627,11 +1630,6 @@ Public Class SNICSrFrm
         ReSizeDGV(dgvSecs, 40)
         dgvSecs.Height = Me.Height - dgvInputData.Height - 100
         lblSecStds.Left = dgvInputData.Left
-        '.Left = dgvTargets.Right - chkUnknowns.Width - 30
-        'chkSecondaries.Left = chkUnknowns.Left - chkSecondaries.Width - 2
-        'chkBlanks.Left = chkSecondaries.Left - chkBlanks.Width - 2
-        'chkStandards.Left = chkBlanks.Left - chkSecondaries.Width - 2
-        'lblDGVTarg.Left = chkStandards.Left - lblDGVTarg.Width - 2
         lblDGVTarg.Left = dgvTargets.Left + 110
     End Sub
 
@@ -2016,15 +2014,15 @@ Public Class SNICSrFrm
         lblRuns.Text = "Pos " & Posn.ToString & "  " & sName & "  " & TargetRuns(Posn).ToString & " Runs,  NormRat = " & TargetRat(Posn).ToString("0.0000") _
             & " + - " & ExtErr(Posn).ToString("0.0000") & " (IntErr = " & IntErr(Posn).ToString("0.0000") & " ) "
         dgvRuns.Visible = True
-        Me.Height = dgvRuns.Bottom + 50
-        If Me.Width < dgvSecs.Right + 20 Then Me.Width = dgvSecs.Right + 20
+        'Me.Height = dgvRuns.Bottom + 50
+        'If Me.Width < dgvSecs.Right + 20 Then Me.Width = dgvSecs.Right + 20
         If Not Worms.chkOverlay.Checked Then NumPlots = 0
         dgvRuns.AutoResizeColumns()
         dgvRuns.AutoResizeRows()
         PlotList(NumPlots) = Posn
         NumPlots += 1
         PlotRuns()
-        RepositionDGVs()
+        'RepositionDGVs()
     End Sub
 
     Public Sub DeselectDGV(dgv As DataGridView)
@@ -5045,7 +5043,6 @@ Public Class SNICSrFrm
         PopulateTargets()
         GetWheelInfo(wheelname)
         SetUpStds()
-        RepositionDGVs()
         tsmSave.Enabled = True
         If Not ISACQUIFILE Then tsmCommit.Enabled = True
         PropertyPropertyToolStripMenuItem.Enabled = True
@@ -6585,7 +6582,7 @@ Public Class SNICSrFrm
         End If
     End Sub
 
-    Private Sub tspQuit_Click(sender As Object, e As EventArgs) Handles tspQuit.Click
+    Private Sub tspQuit_Click(sender As Object, e As EventArgs) Handles tspQuit.Click, MyBase.FormClosing
         If IAMINSPECTING Then End
         Dim ans As MsgBoxResult = vbNo
         If LOADEDWHEEL And Not SAVEDTODATABASE Then
@@ -6696,8 +6693,8 @@ Public Class SNICSrFrm
             tspShowSecondaries.Text = "Hide Secondaries Table"
             ReSizeDGV(dgvSecs, 20)
             dgvSecs.Top = lblSecStds.Bottom + 5
-            dgvSecs.Height = Me.Bottom - dgvInputData.Bottom - 20
-            dgvSecs.Left = dgvTargets.Right + 10
+            dgvSecs.Height = Me.Bottom - dgvInputData.Bottom - 100
+            dgvSecs.Left = dgvInputData.Left
         Else
             dgvSecs.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells)
             dgvSecs.Visible = False
@@ -6870,6 +6867,10 @@ Public Class SNICSrFrm
     End Sub
 
 #End Region  ' respond to menu selections
+
+    Private Sub SNICSrFrm_ResizeEnd(sender As Object, e As EventArgs) Handles MyBase.SizeChanged
+        RepositionDGVs()
+    End Sub
 
 #End Region ' respond to use clicks and selections
 

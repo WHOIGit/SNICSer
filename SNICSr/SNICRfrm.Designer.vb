@@ -113,6 +113,7 @@ Partial Class SNICSrFrm
         Me.sdfSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.cmbPlot = New System.Windows.Forms.ComboBox()
         Me.flpPlotCalc = New System.Windows.Forms.FlowLayoutPanel()
+        Me.flpSampleTypeChkBoxes = New System.Windows.Forms.FlowLayoutPanel()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.dgvInputData, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EventLog1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -120,6 +121,7 @@ Partial Class SNICSrFrm
         CType(Me.dgvRuns, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvSecs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.flpPlotCalc.SuspendLayout()
+        Me.flpSampleTypeChkBoxes.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
@@ -129,7 +131,7 @@ Partial Class SNICSrFrm
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.MenuStrip1.Size = New System.Drawing.Size(1520, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(1389, 24)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -537,7 +539,7 @@ Partial Class SNICSrFrm
         Me.dgvInputData.MultiSelect = False
         Me.dgvInputData.Name = "dgvInputData"
         Me.dgvInputData.RowHeadersWidth = 51
-        Me.dgvInputData.Size = New System.Drawing.Size(731, 531)
+        Me.dgvInputData.Size = New System.Drawing.Size(594, 531)
         Me.dgvInputData.TabIndex = 2
         '
         'lblStatus
@@ -618,7 +620,7 @@ Partial Class SNICSrFrm
         Me.chkStandards.AutoSize = True
         Me.chkStandards.Checked = True
         Me.chkStandards.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkStandards.Location = New System.Drawing.Point(468, 36)
+        Me.chkStandards.Location = New System.Drawing.Point(247, 3)
         Me.chkStandards.Name = "chkStandards"
         Me.chkStandards.Size = New System.Drawing.Size(74, 17)
         Me.chkStandards.TabIndex = 7
@@ -630,7 +632,7 @@ Partial Class SNICSrFrm
         Me.chkBlanks.AutoSize = True
         Me.chkBlanks.Checked = True
         Me.chkBlanks.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBlanks.Location = New System.Drawing.Point(719, 36)
+        Me.chkBlanks.Location = New System.Drawing.Point(9, 3)
         Me.chkBlanks.Name = "chkBlanks"
         Me.chkBlanks.Size = New System.Drawing.Size(58, 17)
         Me.chkBlanks.TabIndex = 8
@@ -642,7 +644,7 @@ Partial Class SNICSrFrm
         Me.chkSecondaries.AutoSize = True
         Me.chkSecondaries.Checked = True
         Me.chkSecondaries.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSecondaries.Location = New System.Drawing.Point(548, 36)
+        Me.chkSecondaries.Location = New System.Drawing.Point(73, 3)
         Me.chkSecondaries.Name = "chkSecondaries"
         Me.chkSecondaries.Size = New System.Drawing.Size(85, 17)
         Me.chkSecondaries.TabIndex = 9
@@ -654,7 +656,7 @@ Partial Class SNICSrFrm
         Me.chkUnknowns.AutoSize = True
         Me.chkUnknowns.Checked = True
         Me.chkUnknowns.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkUnknowns.Location = New System.Drawing.Point(639, 36)
+        Me.chkUnknowns.Location = New System.Drawing.Point(164, 3)
         Me.chkUnknowns.Name = "chkUnknowns"
         Me.chkUnknowns.Size = New System.Drawing.Size(77, 17)
         Me.chkUnknowns.TabIndex = 10
@@ -700,13 +702,13 @@ Partial Class SNICSrFrm
         Me.dgvSecs.AllowUserToResizeRows = False
         Me.dgvSecs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader
         Me.dgvSecs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvSecs.Location = New System.Drawing.Point(894, 678)
+        Me.dgvSecs.Location = New System.Drawing.Point(802, 678)
         Me.dgvSecs.MultiSelect = False
         Me.dgvSecs.Name = "dgvSecs"
         Me.dgvSecs.ReadOnly = True
         Me.dgvSecs.RowHeadersVisible = False
         Me.dgvSecs.RowHeadersWidth = 20
-        Me.dgvSecs.Size = New System.Drawing.Size(620, 143)
+        Me.dgvSecs.Size = New System.Drawing.Size(575, 143)
         Me.dgvSecs.TabIndex = 25
         Me.dgvSecs.Visible = False
         '
@@ -714,7 +716,7 @@ Partial Class SNICSrFrm
         '
         Me.lblSecStds.AutoSize = True
         Me.lblSecStds.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSecStds.Location = New System.Drawing.Point(891, 659)
+        Me.lblSecStds.Location = New System.Drawing.Point(799, 659)
         Me.lblSecStds.Name = "lblSecStds"
         Me.lblSecStds.Size = New System.Drawing.Size(158, 16)
         Me.lblSecStds.TabIndex = 26
@@ -806,18 +808,31 @@ Partial Class SNICSrFrm
         Me.flpPlotCalc.Controls.Add(Me.btnPlotStandards)
         Me.flpPlotCalc.Controls.Add(Me.btnPlotAllStds)
         Me.flpPlotCalc.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpPlotCalc.Location = New System.Drawing.Point(1048, 24)
+        Me.flpPlotCalc.Location = New System.Drawing.Point(917, 24)
         Me.flpPlotCalc.Name = "flpPlotCalc"
         Me.flpPlotCalc.Size = New System.Drawing.Size(472, 30)
         Me.flpPlotCalc.TabIndex = 32
+        '
+        'flpSampleTypeChkBoxes
+        '
+        Me.flpSampleTypeChkBoxes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkStandards)
+        Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkUnknowns)
+        Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkSecondaries)
+        Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkBlanks)
+        Me.flpSampleTypeChkBoxes.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
+        Me.flpSampleTypeChkBoxes.Location = New System.Drawing.Point(438, 34)
+        Me.flpSampleTypeChkBoxes.Name = "flpSampleTypeChkBoxes"
+        Me.flpSampleTypeChkBoxes.Size = New System.Drawing.Size(324, 24)
+        Me.flpSampleTypeChkBoxes.TabIndex = 33
         '
         'SNICSrFrm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.AntiqueWhite
-        Me.ClientSize = New System.Drawing.Size(1520, 825)
-        Me.ControlBox = False
+        Me.ClientSize = New System.Drawing.Size(1389, 825)
+        Me.Controls.Add(Me.flpSampleTypeChkBoxes)
         Me.Controls.Add(Me.flpPlotCalc)
         Me.Controls.Add(Me.dgvInputData)
         Me.Controls.Add(Me.lblSecStds)
@@ -825,16 +840,12 @@ Partial Class SNICSrFrm
         Me.Controls.Add(Me.lblStats)
         Me.Controls.Add(Me.lblInputDataList)
         Me.Controls.Add(Me.lblDGVTarg)
-        Me.Controls.Add(Me.chkBlanks)
-        Me.Controls.Add(Me.chkStandards)
         Me.Controls.Add(Me.lblRuns)
         Me.Controls.Add(Me.dgvRuns)
         Me.Controls.Add(Me.dgvTargets)
         Me.Controls.Add(Me.btnLoad)
         Me.Controls.Add(Me.lblStatus)
         Me.Controls.Add(Me.MenuStrip1)
-        Me.Controls.Add(Me.chkUnknowns)
-        Me.Controls.Add(Me.chkSecondaries)
         Me.Enabled = False
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
@@ -849,6 +860,8 @@ Partial Class SNICSrFrm
         CType(Me.dgvSecs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.flpPlotCalc.ResumeLayout(False)
         Me.flpPlotCalc.PerformLayout()
+        Me.flpSampleTypeChkBoxes.ResumeLayout(False)
+        Me.flpSampleTypeChkBoxes.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -939,4 +952,5 @@ Partial Class SNICSrFrm
     Friend WithEvents CommitGroupToDatabaseToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents LoadRestOfRawDataFromFileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents flpPlotCalc As FlowLayoutPanel
+    Friend WithEvents flpSampleTypeChkBoxes As FlowLayoutPanel
 End Class
