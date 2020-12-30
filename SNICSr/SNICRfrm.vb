@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 Public Class SNICSrFrm
 
     Public VERSION As Double = 3.0     ' this is the version number. Increment in units of 0.01 when updating 
-    Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
+    Public Const TEST As Boolean = True ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
 #Region "Constants, variables, etc"
@@ -6786,6 +6786,7 @@ Public Class SNICSrFrm
         chkSecondaries.Checked = True
         chkUnknowns.Checked = True
         MakeMeSmall()
+        lblStatus.Text = "Select File..."
         ofdLoadFile.CheckFileExists = True
         ofdLoadFile.CheckPathExists = True
         ofdLoadFile.ShowDialog()
@@ -6793,7 +6794,11 @@ Public Class SNICSrFrm
         CommitGroupToDatabaseToolStripMenuItem.Enabled = False
         tsmCommit.Enabled = False
         tspNukeDatabase.Enabled = False
-        If FileName <> "" Then LoadRawDataFromFile(FileName)
+        If FileName <> "" Then
+            lblStatus.Text = "Loading File..."
+            LoadRawDataFromFile(FileName)
+        End If
+        MakeMeBig()
     End Sub
 
     Private Sub tspWriteDatabaseImportFile_Click(sender As Object, e As EventArgs) Handles tspWriteDatabaseImportFile.Click

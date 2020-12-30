@@ -42,13 +42,13 @@ Partial Class BrowseWheel
         Me.trvWheel.Location = New System.Drawing.Point(0, 50)
         Me.trvWheel.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.trvWheel.Name = "trvWheel"
-        Me.trvWheel.Size = New System.Drawing.Size(367, 729)
+        Me.trvWheel.Size = New System.Drawing.Size(367, 661)
         Me.trvWheel.TabIndex = 0
         '
         'btnLoad
         '
         Me.btnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnLoad.Location = New System.Drawing.Point(0, 789)
+        Me.btnLoad.Location = New System.Drawing.Point(0, 721)
         Me.btnLoad.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.btnLoad.Name = "btnLoad"
         Me.btnLoad.Size = New System.Drawing.Size(108, 29)
@@ -59,7 +59,7 @@ Partial Class BrowseWheel
         'btnCancel
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCancel.Location = New System.Drawing.Point(259, 789)
+        Me.btnCancel.Location = New System.Drawing.Point(259, 721)
         Me.btnCancel.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(108, 29)
@@ -78,7 +78,7 @@ Partial Class BrowseWheel
         Me.lblChoice.AutoSize = True
         Me.lblChoice.Location = New System.Drawing.Point(2, 25)
         Me.lblChoice.Name = "lblChoice"
-        Me.lblChoice.Size = New System.Drawing.Size(126, 20)
+        Me.lblChoice.Size = New System.Drawing.Size(159, 25)
         Me.lblChoice.TabIndex = 3
         Me.lblChoice.Text = "Choose a Wheel"
         '
@@ -100,7 +100,7 @@ Partial Class BrowseWheel
         Me.lbl1st.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl1st.Location = New System.Drawing.Point(149, 4)
         Me.lbl1st.Name = "lbl1st"
-        Me.lbl1st.Size = New System.Drawing.Size(43, 16)
+        Me.lbl1st.Size = New System.Drawing.Size(54, 20)
         Me.lbl1st.TabIndex = 5
         Me.lbl1st.Text = "1st by"
         Me.lbl1st.Visible = False
@@ -112,7 +112,7 @@ Partial Class BrowseWheel
         Me.lbl2nd.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl2nd.Location = New System.Drawing.Point(145, 22)
         Me.lbl2nd.Name = "lbl2nd"
-        Me.lbl2nd.Size = New System.Drawing.Size(48, 16)
+        Me.lbl2nd.Size = New System.Drawing.Size(58, 20)
         Me.lbl2nd.TabIndex = 6
         Me.lbl2nd.Text = "2nd by"
         Me.lbl2nd.Visible = False
@@ -122,15 +122,15 @@ Partial Class BrowseWheel
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(2, 2)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(126, 20)
+        Me.Label3.Size = New System.Drawing.Size(159, 25)
         Me.Label3.TabIndex = 7
         Me.Label3.Text = "Choose a Wheel"
         '
         'BrowseWheel
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 25.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(370, 821)
+        Me.ClientSize = New System.Drawing.Size(370, 753)
         Me.ControlBox = False
         Me.Controls.Add(Me.txtWheel)
         Me.Controls.Add(Me.Label3)

@@ -179,8 +179,4 @@
     End Sub
 
 
-    'Private Sub tbResErr_TextChanged(sender As Object, e As EventArgs) Handles tbResErr.TextChanged
-    '    'update blank correction
-    '    UpDateBlankTables()
-    'End Sub
 End Class
