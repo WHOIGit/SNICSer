@@ -478,7 +478,7 @@ Public Class Worms
         End With
 
     End Sub
-
+    'can't use system close box because of the way worms is instantiated. Maybe move subs that use worms to worms.vb?
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         chkOverlay.Checked = False
         Me.Visible = False

@@ -56,7 +56,7 @@ Partial Class Worms
         '
         Me.btnPrint.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrint.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrint.Location = New System.Drawing.Point(1285, 8)
+        Me.btnPrint.Location = New System.Drawing.Point(1287, 8)
         Me.btnPrint.Name = "btnPrint"
         Me.btnPrint.Size = New System.Drawing.Size(74, 24)
         Me.btnPrint.TabIndex = 46
@@ -68,25 +68,24 @@ Partial Class Worms
         '
         Me.zc1.Location = New System.Drawing.Point(8, 58)
         Me.zc1.Name = "zc1"
-        Me.zc1.ScrollGrace = 0.0R
-        Me.zc1.ScrollMaxX = 0.0R
-        Me.zc1.ScrollMaxY = 0.0R
-        Me.zc1.ScrollMaxY2 = 0.0R
-        Me.zc1.ScrollMinX = 0.0R
-        Me.zc1.ScrollMinY = 0.0R
-        Me.zc1.ScrollMinY2 = 0.0R
+        Me.zc1.ScrollGrace = 0R
+        Me.zc1.ScrollMaxX = 0R
+        Me.zc1.ScrollMaxY = 0R
+        Me.zc1.ScrollMaxY2 = 0R
+        Me.zc1.ScrollMinX = 0R
+        Me.zc1.ScrollMinY = 0R
+        Me.zc1.ScrollMinY2 = 0R
         Me.zc1.Size = New System.Drawing.Size(1225, 453)
         Me.zc1.TabIndex = 0
         '
         'cmbOther
         '
-        Me.cmbOther.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmbOther.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmbOther.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbOther.FormattingEnabled = True
         Me.cmbOther.Location = New System.Drawing.Point(1156, 8)
         Me.cmbOther.Name = "cmbOther"
-        Me.cmbOther.Size = New System.Drawing.Size(123, 24)
+        Me.cmbOther.Size = New System.Drawing.Size(125, 24)
         Me.cmbOther.TabIndex = 45
         Me.cmbOther.TabStop = False
         '
@@ -95,7 +94,7 @@ Partial Class Worms
         Me.lblOther.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblOther.AutoSize = True
         Me.lblOther.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblOther.Location = New System.Drawing.Point(1107, 12)
+        Me.lblOther.Location = New System.Drawing.Point(1109, 12)
         Me.lblOther.Name = "lblOther"
         Me.lblOther.Size = New System.Drawing.Size(45, 16)
         Me.lblOther.TabIndex = 8
@@ -105,13 +104,13 @@ Partial Class Worms
         '
         Me.zc2.Location = New System.Drawing.Point(8, 510)
         Me.zc2.Name = "zc2"
-        Me.zc2.ScrollGrace = 0.0R
-        Me.zc2.ScrollMaxX = 0.0R
-        Me.zc2.ScrollMaxY = 0.0R
-        Me.zc2.ScrollMaxY2 = 0.0R
-        Me.zc2.ScrollMinX = 0.0R
-        Me.zc2.ScrollMinY = 0.0R
-        Me.zc2.ScrollMinY2 = 0.0R
+        Me.zc2.ScrollGrace = 0R
+        Me.zc2.ScrollMaxX = 0R
+        Me.zc2.ScrollMaxY = 0R
+        Me.zc2.ScrollMaxY2 = 0R
+        Me.zc2.ScrollMinX = 0R
+        Me.zc2.ScrollMinY = 0R
+        Me.zc2.ScrollMinY2 = 0R
         Me.zc2.Size = New System.Drawing.Size(1225, 479)
         Me.zc2.TabIndex = 9
         '
@@ -182,7 +181,7 @@ Partial Class Worms
         Me.dgvLgndWorms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvLgndWorms.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
         Me.dgvLgndWorms.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvLgndWorms.Location = New System.Drawing.Point(1238, 41)
+        Me.dgvLgndWorms.Location = New System.Drawing.Point(1240, 41)
         Me.dgvLgndWorms.Name = "dgvLgndWorms"
         Me.dgvLgndWorms.RowHeadersVisible = False
         Me.dgvLgndWorms.Size = New System.Drawing.Size(142, 388)
@@ -194,7 +193,7 @@ Partial Class Worms
         Me.lblInstr.AutoSize = True
         Me.lblInstr.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblInstr.ForeColor = System.Drawing.Color.Maroon
-        Me.lblInstr.Location = New System.Drawing.Point(806, 10)
+        Me.lblInstr.Location = New System.Drawing.Point(808, 10)
         Me.lblInstr.Name = "lblInstr"
         Me.lblInstr.Size = New System.Drawing.Size(196, 20)
         Me.lblInstr.TabIndex = 20
@@ -202,8 +201,9 @@ Partial Class Worms
         '
         'btnCalculate
         '
+        Me.btnCalculate.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCalculate.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCalculate.Location = New System.Drawing.Point(1008, 8)
+        Me.btnCalculate.Location = New System.Drawing.Point(1010, 8)
         Me.btnCalculate.Name = "btnCalculate"
         Me.btnCalculate.Size = New System.Drawing.Size(100, 26)
         Me.btnCalculate.TabIndex = 21
@@ -227,7 +227,7 @@ Partial Class Worms
         '
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(1285, 483)
+        Me.btnNext.Location = New System.Drawing.Point(1287, 564)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(93, 24)
         Me.btnNext.TabIndex = 23
@@ -239,7 +239,7 @@ Partial Class Worms
         '
         Me.btnPrev.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrev.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrev.Location = New System.Drawing.Point(1285, 459)
+        Me.btnPrev.Location = New System.Drawing.Point(1287, 540)
         Me.btnPrev.Name = "btnPrev"
         Me.btnPrev.Size = New System.Drawing.Size(93, 24)
         Me.btnPrev.TabIndex = 22
@@ -299,7 +299,7 @@ Partial Class Worms
         Me.Button1.BackColor = System.Drawing.Color.Red
         Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Button1.ForeColor = System.Drawing.Color.White
-        Me.Button1.Location = New System.Drawing.Point(1365, 1)
+        Me.Button1.Location = New System.Drawing.Point(1367, 1)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(24, 24)
         Me.Button1.TabIndex = 53
@@ -335,7 +335,7 @@ Partial Class Worms
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1390, 511)
+        Me.ClientSize = New System.Drawing.Size(1392, 592)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnPlotBlks)
         Me.Controls.Add(Me.btnPlotStds)
