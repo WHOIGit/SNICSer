@@ -4279,14 +4279,12 @@ Public Class SNICSrFrm
                 Dim MissMass As String = ""
                 For ipos = 0 To MAXTARGETS
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
-
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, " _
                                          & "fm_blank_err, fm_cont, fm_cont_err, mass_cont, " _
                                      & "mass_cont_err, dc13, added_var, sig_tot_umols " _
                                      & "FROM dbo.dc13" & TTE & " WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
-
                             While rdr.Read
                                 NumC13Ents += 1         ' increment count of entries in dC13 table
                                 If Not rdr.IsDBNull(0) Then
@@ -4294,7 +4292,11 @@ Public Class SNICSrFrm
                                 Else
                                     TotalMass(ipos) = 0
                                     If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 148820) Then
-                                        MissMass = MissMass & ipos.ToString & " "
+                                        If String.IsNullOrEmpty(MissMass) Then
+                                            MissMass = ipos.ToString
+                                        Else
+                                            MissMass = MissMass & ", " & ipos.ToString
+                                        End If
                                     End If
                                 End If
                                 If Not rdr.IsDBNull(1) Then
@@ -4343,9 +4345,7 @@ Public Class SNICSrFrm
                                     SigTotalMass(ipos) = 0.1 * TotalMass(ipos)
                                 End If
                             End While
-
                         End Using
-
                     End If
                 Next
                 For Each row As DataRow In TargetData.Rows
