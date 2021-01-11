@@ -43,7 +43,7 @@
         MsgBox("Visible portion saved to clipboard")
     End Sub
 
-    Private Sub cmbCompare1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCompare.SelectedIndexChanged
-
+    Private Sub cbUseBCFm_CheckedChanged(sender As Object, e As EventArgs) Handles cbUseBCFm.CheckedChanged, cmbCompare.SelectedIndexChanged
+        SNICSrFrm.UpdateBC()
     End Sub
 End Class

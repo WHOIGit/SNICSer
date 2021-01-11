@@ -5409,7 +5409,7 @@ Public Class SNICSrFrm
         End If
     End Function
 
-    Public Sub DoComparison()
+    Private Sub DoComparison()
         Dim TheNormMethod As String = "Unknown"
         Dim TheSecondNormMethod As String = ""
         Compare.dgvCompare.DataSource = Comparison
@@ -5529,7 +5529,7 @@ Public Class SNICSrFrm
         Dim diff As Double = 0.0001
         Using con As New SqlConnection
             Try
-                If (SECONDAUTH And Not REAUTH) Or (Not FIRSTAUTH And Not SECONDAUTH) Then       ' need to compare current results with first analyst
+                If Compare.cmbCompare.SelectedIndex() = 0 Then ' (SECONDAUTH And Not REAUTH) Or (Not FIRSTAUTH And Not SECONDAUTH) Then       ' need to compare current results with first analyst
                     Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr, comment, tot_mass " _
                         & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
                         & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
@@ -5587,7 +5587,66 @@ Public Class SNICSrFrm
                             End If
                         End While
                     End Using
-                ElseIf (FIRSTAUTH And REAUTH) Or (SECONDAUTH And REAUTH) Then     ' need to work from database only
+                ElseIf Compare.cmbCompare.SelectedIndex = 1 Then 'compare current to 2nd analyst
+                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr_2, sig_fm_corr_2, fm_mb_corr_2, sig_fm_mb_corr_2, comment, tot_mass " _
+                        & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
+                        & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
+                    con.ConnectionString = ConString
+                    con.Open()
+                    Dim com As IDbCommand = con.CreateCommand
+                    com.CommandType = CommandType.Text
+                    com.CommandText = theCmd
+                    Using rdr As IDataReader = com.ExecuteReader
+                        While rdr.Read
+                            If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
+                                If rdr.GetDouble(2) <> 0 Then                ' 
+                                    NewRow = BCComparison.NewRow
+                                    Dim nPos As Integer = rdr.GetByte(0)
+                                    NewRow("Pos") = nPos
+                                    NewRow("SampleName") = TargetNames(nPos)
+                                    NewRow("Rec_Num") = Rec_Num(nPos)
+                                    If Not IsDBNull(FmMBCorr(nPos)) And FmMBCorr(nPos) <> -99 Then
+                                        If Not rdr.IsDBNull(3) Then
+                                            NewRow("2ndFmCorr") = rdr.GetDouble(3)
+                                            NewRow("2ndSigFmCorr") = rdr.GetDouble(4)
+                                        ElseIf Not rdr.IsDBNull(1) Then
+                                            NewRow("2ndFmCorr") = rdr.GetDouble(1)
+                                            NewRow("2ndSigFmCorr") = rdr.GetDouble(2)
+                                        End If
+                                        NewRow("1stFmCorr") = FmMBCorr(nPos)
+                                        NewRow("1stSigFmCorr") = SigFmMBCorr(nPos)
+                                    Else
+                                        NewRow("2ndFmCorr") = rdr.GetDouble(1)
+                                        NewRow("2ndSigFmCorr") = rdr.GetDouble(2)
+                                        NewRow("1stFmCorr") = FmCorr(nPos)
+                                        NewRow("1stSigFmCorr") = SigFmCorr(nPos)
+                                    End If
+                                    NewRow("DelFmCorr") = NewRow("2ndFmCorr") - NewRow("1stFmCorr")
+                                    NewRow("SigmaFmCorr") = NewRow("DelFmCorr") / Math.Max(NewRow("1stSigFmCorr"), NewRow("2ndSigFmCorr"))
+                                    NewRow("DelSigFmCorr") = NewRow("2ndSigFmCorr") - NewRow("1stSigFmCorr")
+                                    If Not rdr.IsDBNull(5) Then
+                                        TargetComments(nPos) = rdr.GetString(5)
+                                    End If
+                                    If rdr.IsDBNull(6) Then
+                                        If TotalMass(nPos) <> 0 Then
+                                            diffMass = diffMass & nPos.ToString & " "
+                                            ' do missmass thing for error message
+                                        End If
+                                    ElseIf Math.Abs(rdr.GetDouble(6) - TotalMass(nPos)) > diff Then
+                                        diffMass = diffMass & nPos.ToString & " "
+                                        ' do missmass thing for error message
+                                    End If
+                                    NewRow("Comment") = TargetComments(nPos)
+                                    MeanSigma += NewRow("SigmaFmCorr")
+                                    MeanAbsSigma += NewRow("SigmaFmCorr") ^ 2
+                                    BCComparison.Rows.Add(NewRow)
+                                    nRow += 1
+                                End If
+                            End If
+                        End While
+                    End Using
+
+                ElseIf Compare.cmbCompare.SelectedIndex = 2 Then '(FIRSTAUTH And REAUTH) Or (SECONDAUTH And REAUTH) Then     ' need to work from database only
                     Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr," _
                                             & "fm_corr_2, sig_fm_corr_2, fm_mb_corr_2, sig_fm_mb_corr_2, comment, tot_mass, tot_mass2 " _
                                             & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
@@ -6880,6 +6939,37 @@ Public Class SNICSrFrm
 
     Private Sub SNICSrFrm_ResizeEnd(sender As Object, e As EventArgs) Handles MyBase.SizeChanged
         RepositionDGVs()
+    End Sub
+
+    Public Sub UpdateBC()
+        If Compare.cbUseBCFm.Checked Then
+            If BLANKCORRECTED Or frmBlankCorr.chkLockAll.Checked Then
+                DoBCComparison()
+            Else
+                MsgBox("Please run blank correction before comparing blank corrected values")
+                DoComparison()
+            End If
+        Else
+            DoComparison()
+        End If
+    End Sub
+
+    Private Sub tspCompare_Click(sender As Object, e As EventArgs) Handles tspCompare.Click
+        'logic for choosing default comparison
+        If FIRSTAUTH And Not REAUTH Then
+            Compare.cmbCompare.SelectedIndex = 0
+        ElseIf FIRSTAUTH And REAUTH Then
+            Compare.cmbCompare.SelectedIndex = 1
+        ElseIf SECONDAUTH Then
+            Compare.cmbCompare.SelectedIndex = 0
+        End If
+        If BLANKCORRECTED Then
+            Compare.cbUseBCFm.Checked = True
+            DoBCComparison()
+        Else
+            Compare.cbUseBCFm.Checked = False
+            DoComparison()
+        End If
     End Sub
 
 #End Region ' respond to use clicks and selections
