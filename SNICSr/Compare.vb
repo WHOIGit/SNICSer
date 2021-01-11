@@ -42,4 +42,8 @@
         My.Computer.Clipboard.SetImage(bm)
         MsgBox("Visible portion saved to clipboard")
     End Sub
+
+    Private Sub cmbCompare1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCompare.SelectedIndexChanged
+
+    End Sub
 End Class

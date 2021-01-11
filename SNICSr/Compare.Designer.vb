@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Compare
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class Compare
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.dgvCompare = New System.Windows.Forms.DataGridView()
         Me.lblComparison = New System.Windows.Forms.Label()
@@ -29,6 +29,7 @@ Partial Class Compare
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblFirstAnalyst = New System.Windows.Forms.Label()
         Me.lblSecondAnalyst = New System.Windows.Forms.Label()
+        Me.cmbCompare = New System.Windows.Forms.ComboBox()
         CType(Me.dgvCompare, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -103,11 +104,21 @@ Partial Class Compare
         Me.lblSecondAnalyst.TabIndex = 5
         Me.lblSecondAnalyst.Text = "2nd Analyst"
         '
+        'cmbCompare
+        '
+        Me.cmbCompare.FormattingEnabled = True
+        Me.cmbCompare.Items.AddRange(New Object() {"Current vs. 1st Analyst", "Current vs. 2nd Analyst", "1st Analyst vs. 2nd Analyst"})
+        Me.cmbCompare.Location = New System.Drawing.Point(4, 27)
+        Me.cmbCompare.Name = "cmbCompare"
+        Me.cmbCompare.Size = New System.Drawing.Size(283, 21)
+        Me.cmbCompare.TabIndex = 6
+        '
         'Compare
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1133, 763)
+        Me.Controls.Add(Me.cmbCompare)
         Me.Controls.Add(Me.lblSecondAnalyst)
         Me.Controls.Add(Me.lblFirstAnalyst)
         Me.Controls.Add(Me.btnSaveToClipboard)
@@ -128,4 +139,5 @@ Partial Class Compare
     Friend WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Friend WithEvents lblFirstAnalyst As System.Windows.Forms.Label
     Friend WithEvents lblSecondAnalyst As System.Windows.Forms.Label
+    Friend WithEvents cmbCompare As ComboBox
 End Class
