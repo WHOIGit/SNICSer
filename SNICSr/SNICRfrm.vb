@@ -5739,6 +5739,7 @@ Public Class SNICSrFrm
         End Using
         For i = 0 To CompareFlags.dgvFlags.Rows.Count - 1
             If RunNums(i) <= 0 Then
+                CompareFlags.dgvFlags.CurrentCell = Nothing
                 CompareFlags.dgvFlags.Rows.Item(i).Visible = False
             End If
         Next
