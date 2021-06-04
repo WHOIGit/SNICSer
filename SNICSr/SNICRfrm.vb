@@ -4288,7 +4288,7 @@ Public Class SNICSrFrm
                             While rdr.Read
                                 NumC13Ents += 1         ' increment count of entries in dC13 table
                                 If Not rdr.IsDBNull(0) Then
-                                    TotalMass(ipos) = 12.015 * rdr.GetDouble(0)
+                                    TotalMass(ipos) = 12.0107 * rdr.GetDouble(0)
                                 Else
                                     TotalMass(ipos) = 0
                                     If (Rec_Num(ipos) <> 32491) And (Rec_Num(ipos) <> 148820) Then
@@ -4300,7 +4300,7 @@ Public Class SNICSrFrm
                                     End If
                                 End If
                                 If Not rdr.IsDBNull(1) Then
-                                    TargetMass(ipos) = 12.015 * rdr.GetDouble(1)
+                                    TargetMass(ipos) = 12.0107 * rdr.GetDouble(1)
                                 Else
                                     TargetMass(ipos) = TotalMass(ipos)
                                 End If
@@ -4340,7 +4340,7 @@ Public Class SNICSrFrm
                                     IRMSdC13(ipos) = -1000.0
                                 End If
                                 If Not rdr.IsDBNull(10) Then
-                                    SigTotalMass(ipos) = 12.015 * rdr.GetDouble(10)
+                                    SigTotalMass(ipos) = 12.0107 * rdr.GetDouble(10)
                                 Else
                                     SigTotalMass(ipos) = 0.1 * TotalMass(ipos)
                                 End If
