@@ -6454,6 +6454,7 @@ Public Class SNICSrFrm
                                               & "(Clicking YES will recalculate)", MsgBoxStyle.YesNo)
             If iret = MsgBoxResult.Yes Then frmBlankCorr.chkLockAll.Checked = False
         End If
+        Calculate() 'make sure all values are current
         CountFlags()
         CheckAllTargets()
         With frmBlankCorr
