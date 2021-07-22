@@ -974,7 +974,7 @@ Public Class SNICSrFrm
             FileClose(22)
             With FrmNotify2ndAuth
                 .lbx2ndAuth.Items.Add("rhansman")
-                .lbx2ndAuth.Items.Add("jhlavenka")
+                .lbx2ndAuth.Items.Add("jburton")
                 .lbx2ndAuth.Items.Add("mkurz")
                 .lbx2ndAuth.Items.Add("blongworth")
                 .lbx2ndAuth.Items.Add("kelder")
