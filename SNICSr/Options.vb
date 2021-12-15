@@ -123,8 +123,8 @@ Public Class Options
 
     Private Function CheckDBCon() As Boolean
         CheckDBCon = False
-        SNICSrFrm.ConString = _
-                    "Data Source=nosams-prod.whoi.edu;Database=amsprod;User ID=" _
+        SNICSrFrm.ConString =
+                    "Data Source=mantis.whoi.edu;Database=amsprod;User ID=" _
                     & Trim(txtAnalyst.Text) & ";Password=" & txtPwd.Text & ";"
         Using con As New SqlConnection
             Try
