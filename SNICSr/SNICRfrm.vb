@@ -2505,6 +2505,14 @@ Public Class SNICSrFrm
                     .Rows.Add("Cont Fm", 0.5, 0.25)
                 End If
             End With
+            With .tblWS
+                .Columns.Clear()
+                .Columns.Add("WS_Blank")
+                .Columns.Add("Value_Used", GetType(Double))
+                .Columns.Add("Uncertainty", GetType(Double))
+                .Rows.Clear()
+                .Rows.Add("Large_Blank", 0.0045, 0.0022) ' Default value for WS blank TODO: Add correct value
+            End With
             With .tblWatson
                 .Columns.Clear()
                 .Columns.Add("Watson_Blank")
@@ -2688,6 +2696,10 @@ Public Class SNICSrFrm
         Dim SumOrg As Double = 0.0
         Dim SumSqOrg As Double = 0.0
         Dim NumOrg As Integer = 0
+        Dim SumWS As Double = 0.0
+        Dim SumErrWS As Double = 0.0
+        Dim SumSqWS As Double = 0.0
+        Dim NumWS As Integer = 0
         Dim SumWat As Double = 0.0
         Dim SumErrWat As Double = 0.0
         Dim SumSqWat As Double = 0.0
@@ -2698,7 +2710,7 @@ Public Class SNICSrFrm
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
                 If Not IsDBNull(.tblBlanks(i).Item("Proc")) AndAlso .tblBlanks(i).Item("OK") Then
                     Select Case .tblBlanks(i).Item("Proc")
-                        Case "HY", "GS", "WS"
+                        Case "HY", "GS"
                             If WTDBLANK Then
                                 SumInorg += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
                                 SumErrInorg += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2716,6 +2728,15 @@ Public Class SNICSrFrm
                                 SumErrOrg += 1
                             End If
                             SumSqOrg += .tblBlanks(i).Item("Fm_Meas") ^ 2
+                        Case "WS"
+                            If WTDBLANK Then
+                                SumWS += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
+                                SumErrWS += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
+                            Else
+                                SumWS += .tblBlanks(i).Item("Fm_Meas")
+                                SumErrWS += 1
+                            End If
+                            SumSqWat += .tblBlanks(i).Item("Fm_Meas") ^ 2
                         Case "WC", "WG"
                             If WTDBLANK Then
                                 SumWat += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2753,6 +2774,19 @@ Public Class SNICSrFrm
                     End If
                 End If
                 If .tblOrganic(0).Item(2) < SumOrg / 2.0 Then .tblOrganic(0).Item(2) = SumOrg / 2.0 ' an error floor
+            End If
+            If SumErrWS > 0 Then
+                SumWS /= SumErrWS
+                .tblWS(0).Item(1) = SumWS
+                If WTDBLANK Then
+                    .tblWS(0).Item(2) = (1 / SumErrWS) ^ 0.5
+                Else
+                    .tblWS(0).Item(2) = (SumSqWS - SumErrWS * SumWS ^ 2) ^ 0.5
+                    If SumErrWS > 1 Then
+                        .tblWS(0).Item(2) /= (SumErrWS - 1) ^ 0.5
+                    End If
+                End If
+                If .tblWS(0).Item(2) < SumWS / 2.0 Then .tblWS(0).Item(2) = SumWS / 2.0 'an error floor
             End If
             If SumErrWat > 0 Then
                 SumWat /= SumErrWat
