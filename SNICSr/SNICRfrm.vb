@@ -2631,8 +2631,8 @@ Public Class SNICSrFrm
             For ipos = 0 To dgvTargets.Rows.Count - 1
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "HY") Or (TargetProcs(npos) = "GS") _
-                                            Or (TargetProcs(npos) = "WS")) And (TargetMass(npos) > 150) Then
+                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "HY") Or (TargetProcs(npos) = "GS")) _
+                                            And (TargetMass(npos) > 150) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
@@ -2646,7 +2646,21 @@ Public Class SNICSrFrm
             For ipos = 0 To dgvTargets.Rows.Count - 1
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC")) And (TargetMass(npos) > 150) Then
+                    If (dgvTargets("Typ", ipos).Value = "B") And (TargetProcs(npos) = "OC") And (TargetMass(npos) > 150) Then
+                        Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
+                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
+                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
+                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
+                    End If
+                Catch ex As Exception
+                    ' ignore exception
+                End Try
+            Next
+            For ipos = 0 To dgvTargets.Rows.Count - 1
+                Try
+                    Dim npos As Integer = dgvTargets("Pos", ipos).Value
+                    If (dgvTargets("Typ", ipos).Value = "B") And (TargetProcs(npos) = "WS") And (TargetMass(npos) > 150) Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
@@ -2678,7 +2692,6 @@ Public Class SNICSrFrm
                 If IsDBNull(.tblBlanks(i).Item("Proc")) Then 'catch bad proc
                     .tblBlanks(i).Item("OK") = False
                 ElseIf .tblBlanks(i).Item("Fm_Expected") > 0.002 Or
-                    .tblBlanks(i).Item("Proc") = "WS" Or
                     (.tblBlanks(i).Item("Mass(ug)") < 250) And (.tblBlanks(i).Item("Proc") <> "WG") Then
                     .tblBlanks(i).Item("OK") = False
                 End If
@@ -2736,7 +2749,7 @@ Public Class SNICSrFrm
                                 SumWS += .tblBlanks(i).Item("Fm_Meas")
                                 SumErrWS += 1
                             End If
-                            SumSqWat += .tblBlanks(i).Item("Fm_Meas") ^ 2
+                            SumSqWS += .tblBlanks(i).Item("Fm_Meas") ^ 2
                         Case "WC", "WG"
                             If WTDBLANK Then
                                 SumWat += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2934,7 +2947,7 @@ Public Class SNICSrFrm
             If (Not frmBlankCorr.chkLock(iGrp).Checked) And (Not frmBlankCorr.chkLockAll.Checked) Then
                 If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
                     Select Case .Item("Proc")
-                        Case "GS", "HY", "WS"
+                        Case "GS", "HY"
                             .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
                             .Item("SigFmBgnd") = frmBlankCorr.tblInorganic(0).Item("Uncertainty")
                         Case "OC", "DOC"
@@ -2943,6 +2956,9 @@ Public Class SNICSrFrm
                         Case "WC", "WG", "SW"
                             .Item("Fm_Bgnd") = frmBlankCorr.tblWatson(0).Item("Value_Used")
                             .Item("SigFmBgnd") = frmBlankCorr.tblWatson(0).Item("Uncertainty")
+                        Case "WS"
+                            .Item("Fm_Bgnd") = frmBlankCorr.tblWS(0).Item("Value_Used")
+                            .Item("SigFmBgnd") = frmBlankCorr.tblWS(0).Item("Uncertainty")
                         Case Else
                             .Item("Fm_Bgnd") = 0.0
                             .Item("SigFmBgnd") = 0.0

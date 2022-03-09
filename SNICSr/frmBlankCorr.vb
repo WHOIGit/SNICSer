@@ -64,6 +64,8 @@
 
     Private Sub dgvWS_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWS.CellEndEdit
         UpDateBlankTables()
+    End Sub
+
     Private Sub dgvWatson_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWatson.CellEndEdit
         UpDateBlankTables()
     End Sub
