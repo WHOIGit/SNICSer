@@ -2479,12 +2479,8 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
                     .Rows.Add("Large_Blank", 0.002, 0.0015)
-                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
-                    .Rows.Add("Cont Fm", 0.75, 0.25)
                 Else
                     .Rows.Add("Large_Blank", 0.0008, 0.0004)
-                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
-                    .Rows.Add("Cont Fm", 0.75, 0.25)
                 End If
             End With
             .dgvInorganic.Width = .dgvInorganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
@@ -2497,14 +2493,12 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
                     .Rows.Add("Large_Blank", 0.0045, 0.0022)
-                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
-                    .Rows.Add("Cont Fm", 0.5, 0.25)
                 Else
                     .Rows.Add("Large_Blank", 0.002, 0.001)
-                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
-                    .Rows.Add("Cont Fm", 0.5, 0.25)
                 End If
             End With
+            .dgvOrganic.Width = .dgvOrganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
+            .dgvOrganic.Height = .dgvOrganic.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvOrganic.ColumnHeadersHeight + 3
             With .tblWS
                 .Columns.Clear()
                 .Columns.Add("WS_Blank")
@@ -2513,6 +2507,8 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 .Rows.Add("Large_Blank", 0.0045, 0.0022) ' Default value for WS blank TODO: Add correct value
             End With
+            .dgvWS.Width = .dgvWS.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
+            .dgvWS.Height = .dgvWS.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvWS.ColumnHeadersHeight + 3
             With .tblWatson
                 .Columns.Clear()
                 .Columns.Add("Watson_Blank")
@@ -2521,8 +2517,8 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 .Rows.Add("Large_Blank", 0.0045, 0.0022)
             End With
-            .dgvOrganic.Width = .dgvOrganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
-            .dgvOrganic.Height = .dgvOrganic.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvOrganic.ColumnHeadersHeight + 3
+            .dgvWatson.Width = .dgvWatson.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
+            .dgvWatson.Height = .dgvWatson.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvWatson.ColumnHeadersHeight + 3
             .GroupSel = -1      ' default to no group selected the first time through
         End With
     End Sub

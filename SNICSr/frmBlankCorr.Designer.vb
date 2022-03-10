@@ -65,12 +65,12 @@ Partial Class frmBlankCorr
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvStandards.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader
         Me.dgvStandards.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvStandards.Location = New System.Drawing.Point(-3, 158)
-        Me.dgvStandards.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvStandards.Location = New System.Drawing.Point(1, 154)
+        Me.dgvStandards.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvStandards.Name = "dgvStandards"
         Me.dgvStandards.RowHeadersVisible = False
         Me.dgvStandards.RowHeadersWidth = 51
-        Me.dgvStandards.Size = New System.Drawing.Size(1972, 254)
+        Me.dgvStandards.Size = New System.Drawing.Size(1972, 237)
         Me.dgvStandards.TabIndex = 0
         '
         'lblStandards
@@ -90,8 +90,8 @@ Partial Class frmBlankCorr
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbcGroups.Controls.Add(Me.tbpGroup1)
-        Me.tbcGroups.Location = New System.Drawing.Point(-3, 577)
-        Me.tbcGroups.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tbcGroups.Location = New System.Drawing.Point(1, 573)
+        Me.tbcGroups.Margin = New System.Windows.Forms.Padding(4)
         Me.tbcGroups.Name = "tbcGroups"
         Me.tbcGroups.SelectedIndex = 0
         Me.tbcGroups.Size = New System.Drawing.Size(1972, 702)
@@ -100,9 +100,9 @@ Partial Class frmBlankCorr
         'tbpGroup1
         '
         Me.tbpGroup1.Location = New System.Drawing.Point(4, 25)
-        Me.tbpGroup1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tbpGroup1.Margin = New System.Windows.Forms.Padding(4)
         Me.tbpGroup1.Name = "tbpGroup1"
-        Me.tbpGroup1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tbpGroup1.Padding = New System.Windows.Forms.Padding(4)
         Me.tbpGroup1.Size = New System.Drawing.Size(1964, 673)
         Me.tbpGroup1.TabIndex = 0
         Me.tbpGroup1.Text = "Group 1"
@@ -135,8 +135,8 @@ Partial Class frmBlankCorr
         DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvInorganic.DefaultCellStyle = DataGridViewCellStyle2
-        Me.dgvInorganic.Location = New System.Drawing.Point(340, 0)
-        Me.dgvInorganic.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvInorganic.Location = New System.Drawing.Point(203, 80)
+        Me.dgvInorganic.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvInorganic.Name = "dgvInorganic"
         Me.dgvInorganic.RowHeadersVisible = False
         Me.dgvInorganic.RowHeadersWidth = 51
@@ -170,8 +170,8 @@ Partial Class frmBlankCorr
         DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvOrganic.DefaultCellStyle = DataGridViewCellStyle4
-        Me.dgvOrganic.Location = New System.Drawing.Point(341, 74)
-        Me.dgvOrganic.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvOrganic.Location = New System.Drawing.Point(203, 6)
+        Me.dgvOrganic.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvOrganic.Name = "dgvOrganic"
         Me.dgvOrganic.RowHeadersVisible = False
         Me.dgvOrganic.RowHeadersWidth = 51
@@ -184,7 +184,7 @@ Partial Class frmBlankCorr
         Me.btnDone.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.btnDone.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnDone.Location = New System.Drawing.Point(1723, 15)
-        Me.btnDone.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnDone.Margin = New System.Windows.Forms.Padding(4)
         Me.btnDone.Name = "btnDone"
         Me.btnDone.Size = New System.Drawing.Size(240, 42)
         Me.btnDone.TabIndex = 8
@@ -201,12 +201,12 @@ Partial Class frmBlankCorr
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvBlanks.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader
         Me.dgvBlanks.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvBlanks.Location = New System.Drawing.Point(-3, 418)
-        Me.dgvBlanks.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvBlanks.Location = New System.Drawing.Point(1, 399)
+        Me.dgvBlanks.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvBlanks.Name = "dgvBlanks"
         Me.dgvBlanks.RowHeadersVisible = False
         Me.dgvBlanks.RowHeadersWidth = 51
-        Me.dgvBlanks.Size = New System.Drawing.Size(1972, 151)
+        Me.dgvBlanks.Size = New System.Drawing.Size(1972, 166)
         Me.dgvBlanks.TabIndex = 9
         '
         'btnSave
@@ -215,7 +215,7 @@ Partial Class frmBlankCorr
         Me.btnSave.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnSave.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnSave.Location = New System.Drawing.Point(1756, 71)
-        Me.btnSave.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnSave.Margin = New System.Windows.Forms.Padding(4)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(207, 42)
         Me.btnSave.TabIndex = 10
@@ -249,8 +249,8 @@ Partial Class frmBlankCorr
         DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvWatson.DefaultCellStyle = DataGridViewCellStyle6
-        Me.dgvWatson.Location = New System.Drawing.Point(778, 74)
-        Me.dgvWatson.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dgvWatson.Location = New System.Drawing.Point(631, 80)
+        Me.dgvWatson.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvWatson.Name = "dgvWatson"
         Me.dgvWatson.RowHeadersVisible = False
         Me.dgvWatson.RowHeadersWidth = 51
@@ -262,7 +262,7 @@ Partial Class frmBlankCorr
         Me.chkLockAll.AutoSize = True
         Me.chkLockAll.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.chkLockAll.Location = New System.Drawing.Point(16, 6)
-        Me.chkLockAll.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.chkLockAll.Margin = New System.Windows.Forms.Padding(4)
         Me.chkLockAll.Name = "chkLockAll"
         Me.chkLockAll.Size = New System.Drawing.Size(127, 33)
         Me.chkLockAll.TabIndex = 12
@@ -272,7 +272,7 @@ Partial Class frmBlankCorr
         'tbResErr
         '
         Me.tbResErr.Location = New System.Drawing.Point(16, 69)
-        Me.tbResErr.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tbResErr.Margin = New System.Windows.Forms.Padding(4)
         Me.tbResErr.Name = "tbResErr"
         Me.tbResErr.Size = New System.Drawing.Size(119, 22)
         Me.tbResErr.TabIndex = 13
@@ -315,7 +315,7 @@ Partial Class frmBlankCorr
         DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvWS.DefaultCellStyle = DataGridViewCellStyle8
-        Me.dgvWS.Location = New System.Drawing.Point(778, 0)
+        Me.dgvWS.Location = New System.Drawing.Point(630, 6)
         Me.dgvWS.Margin = New System.Windows.Forms.Padding(4)
         Me.dgvWS.Name = "dgvWS"
         Me.dgvWS.RowHeadersVisible = False
@@ -342,7 +342,7 @@ Partial Class frmBlankCorr
         Me.Controls.Add(Me.lblStandards)
         Me.Controls.Add(Me.dgvStandards)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmBlankCorr"
         Me.Text = "SNICSer Blank Corrections"
         CType(Me.dgvStandards, System.ComponentModel.ISupportInitialize).EndInit()
