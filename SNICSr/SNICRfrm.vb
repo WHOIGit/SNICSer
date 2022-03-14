@@ -157,6 +157,7 @@ Public Class SNICSrFrm
     Public TotalRuns(MAXTARGETS) As Integer            ' total number of target runs (initially)
     Public TargetMass(MAXTARGETS) As Double            ' target mass
     Public TotalMass(MAXTARGETS) As Double             ' total mass of CO2
+    Public LBType(MAXTARGETS) As Integer               ' Large Blank Type for target
     Public TargetRat(MAXTARGETS) As Double             ' target normalized ratio
     Public AsmRat(MAXTARGETS) As Double                ' assumed ratio (where relevant)
     Public IntErr(MAXTARGETS) As Double                ' computed target internal error
@@ -4327,7 +4328,7 @@ Public Class SNICSrFrm
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, " _
                                          & "fm_blank_err, fm_cont, fm_cont_err, mass_cont, " _
-                                     & "mass_cont_err, dc13, added_var, sig_tot_umols " _
+                                     & "mass_cont_err, dc13, added_var, sig_tot_umols, lb_type " _
                                      & "FROM dbo.dc13" & TTE & " WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
@@ -4389,6 +4390,11 @@ Public Class SNICSrFrm
                                     SigTotalMass(ipos) = 12.0107 * rdr.GetDouble(10)
                                 Else
                                     SigTotalMass(ipos) = 0.1 * TotalMass(ipos)
+                                End If
+                                If Not rdr.IsDBNull(11) Then
+                                    LBType(ipos) = rdr.GetInt32(11)
+                                Else
+                                    LBType(ipos) = 0
                                 End If
                             End While
                         End Using
