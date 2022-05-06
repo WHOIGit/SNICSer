@@ -981,6 +981,7 @@ Public Class SNICSrFrm
                 .lbx2ndAuth.Items.Add("mroberts")
                 .lbx2ndAuth.Items.Add("agagnon")
                 .lbx2ndAuth.Items.Add("shandwork")
+                .lbx2ndAuth.Items.Add("taylor.broek")
             End With
         End Try
     End Sub   ' set up email list for notifications
