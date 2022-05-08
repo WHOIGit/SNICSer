@@ -23,6 +23,7 @@ Public Class SNICSrFrm
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
     Dim USAMS As New List(Of WheelID)     ' list of USAMS wheel objects (see WheelID.vb)
+    Dim MICADAS As New List(Of WheelID)     ' list of USAMS wheel objects (see WheelID.vb)
     Public GroupAvgStdFm(MAXGROUPS) As Double       ' average Fm of standards in this group
     Public Peirce(60, 10) As Double                 ' storage for Peirce criteria lookup table
     Public SNICSerControlDir As String = ""         ' directory for email list
@@ -1044,9 +1045,11 @@ Public Class SNICSrFrm
             .lblChoice.Text = ""
             .trvWheel.Nodes.Clear()
             .trvWheel.Nodes.Add("CFAMS", "CFAMS", 5, 5)
+            .trvWheel.Nodes.Add("MICADAS", "MICADAS", 5, 5)
             .trvWheel.Nodes.Add("USAMS", "USAMS", 5, 5)
             DoTree(CFAMS, 0)
             DoTree(USAMS, 1)
+            DoTree(MICADAS, 1)
         End With
         IamBuildingTrees = False
     End Sub
@@ -1071,8 +1074,6 @@ Public Class SNICSrFrm
                     Dim subset As IEnumerable(Of WheelID) = From g In AMS Where g.Year = iyr And g.Month = imonth Order By g.Name Select g
                     If subset.Count > 0 Then
                         .trvWheel.Nodes(node).Nodes(yrno).Nodes.Add(Months(im - 1), Months(im - 1), 3, 3)
-                        If (AMS Is CFAMS) And (UserName = "mr") And (iy = thisYear) And (im = thisMonth) Then .trvWheel.Nodes(node).Nodes(yrno).Expand()
-                        If (AMS Is USAMS) And ((UserName = "kvr") Or (UserName = "brettl")) And (iy = thisYear) And (im = thisMonth) Then .trvWheel.Nodes(node).Nodes(yrno).Expand()
                         mno += 1
                         For Each s As WheelID In subset
                             Dim theImage As Integer = s.Analyzed
@@ -1105,12 +1106,16 @@ Public Class SNICSrFrm
         If TEST Then
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
                 FileName = ShareDrivePath & "\SNICSer\ResultsTest\CFAMSResults\" & subDir & TheWheel.Name & "R.xls"
+            ElseIf TheWheel.Name.Substring(0, 4) = "MICA" Then
+                FileName = ShareDrivePath & "\SNICSer\ResultsTest\MICADASResults\" & subDir & TheWheel.Name & "R.xls"
             Else
                 FileName = ShareDrivePath & "\SNICSer\ResultsTest\USAMSResults\" & subDir & TheWheel.Name & "R.txt"
             End If
         Else
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
                 FileName = ShareDrivePath & "\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
+            ElseIf TheWheel.Name.Substring(0, 4) = "MICA" Then
+                FileName = ShareDrivePath & "\MICADAS\MICADAS Results\" & subDir & TheWheel.Name & "R.xls"
             Else
                 FileName = ShareDrivePath & "\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
             End If
@@ -1119,17 +1124,8 @@ Public Class SNICSrFrm
         If TheWheel.Analyzed = 0 Then
             Dim fn As New FileInfo(FileName)
             If Not fn.Exists Then
-                MsgBox(FileName & "Not found. Trying V: drive")
-                If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
-                    FileName = "V:\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
-                Else
-                    FileName = "V:\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
-                End If
-                Dim fn1 As New FileInfo(FileName)
-                If Not fn1.Exists Then
-                    MsgBox("This wheel file  named " & FileName & " is not accessible" & vbCrLf & "The wheel may not have been run or someone has changed the file name from the original")
-                    FileName = ""           ' bail only if you need the file
-                End If
+                MsgBox("This wheel file  named " & FileName & " is not accessible" & vbCrLf & "The wheel may not have been run or someone has changed the file name from the original")
+                FileName = ""           ' bail only if you need the file
             End If
         End If
         '        MsgBox(FileName)
@@ -1244,6 +1240,9 @@ Public Class SNICSrFrm
         Next
         For i = 0 To USAMS.Count - 1
             If USAMS(i).Name = theName Then Return USAMS(i)
+        Next
+        For i = 0 To MICADAS.Count - 1
+            If MICADAS(i).Name = theName Then Return MICADAS(i)
         Next
     End Function
 
@@ -1411,6 +1410,8 @@ Public Class SNICSrFrm
                 If ISACQUIFILE Then
                     If fName.Contains("CFAMS") Then
                         whlName = LatestWheelName("CFAMS")
+                    ElseIf fName.Contains("MICA") Then
+                        whlName = LatestWheelName("MICA")
                     Else
                         whlName = LatestWheelName("USAMS")
                     End If
