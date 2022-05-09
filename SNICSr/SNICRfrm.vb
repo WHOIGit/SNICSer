@@ -1048,8 +1048,8 @@ Public Class SNICSrFrm
             .trvWheel.Nodes.Add("MICADAS", "MICADAS", 5, 5)
             .trvWheel.Nodes.Add("USAMS", "USAMS", 5, 5)
             DoTree(CFAMS, 0)
-            DoTree(USAMS, 1)
             DoTree(MICADAS, 1)
+            DoTree(USAMS, 2)
         End With
         IamBuildingTrees = False
     End Sub
@@ -1107,7 +1107,7 @@ Public Class SNICSrFrm
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
                 FileName = ShareDrivePath & "\SNICSer\ResultsTest\CFAMSResults\" & subDir & TheWheel.Name & "R.xls"
             ElseIf TheWheel.Name.Substring(0, 4) = "MICA" Then
-                FileName = ShareDrivePath & "\SNICSer\ResultsTest\MICADASResults\" & subDir & TheWheel.Name & "R.xls"
+                FileName = ShareDrivePath & "\SNICSer\ResultsTest\MICADASResults\" & subDir & TheWheel.Name & "R.txt"
             Else
                 FileName = ShareDrivePath & "\SNICSer\ResultsTest\USAMSResults\" & subDir & TheWheel.Name & "R.txt"
             End If
@@ -1115,7 +1115,7 @@ Public Class SNICSrFrm
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
                 FileName = ShareDrivePath & "\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
             ElseIf TheWheel.Name.Substring(0, 4) = "MICA" Then
-                FileName = ShareDrivePath & "\MICADAS\MICADAS Results\" & subDir & TheWheel.Name & "R.xls"
+                FileName = ShareDrivePath & "\MICADAS\MICADAS Results\" & subDir & TheWheel.Name & "R.txt"
             Else
                 FileName = ShareDrivePath & "\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
             End If
@@ -1210,6 +1210,8 @@ Public Class SNICSrFrm
             If FileName.Length > FileName.LastIndexOf("AMS") + 9 Then
                 ParseWheelName = FileName.Substring(FileName.LastIndexOf("AMS") - 2, 11)
             End If
+        ElseIf FileName.StartsWith("MICA") Then
+            ParseWheelName = FileName.Substring(0, FileName.LastIndexOf("R") - 1)
         End If
         If FileName.LastIndexOf("USAMS") <> 0 Then
         ElseIf FileName.LastIndexOf("CFAMS") Then
@@ -1460,7 +1462,7 @@ Public Class SNICSrFrm
                         Next
                         NewRow("Run") = NumRuns
                         RunPos(NumRuns) = NewRow("Pos")
-                        If ((whlName.Substring(0, 5)).ToUpper = "USAMS") And (NewRow("HE13/12") < 0.3) Then NewRow("HE13/12") = 100 * NewRow("HE13/12") ' convert to CFAMS convention for 13/12 X 100
+                        If ((whlName.Substring(0, 5)).ToUpper <> "CFAMS") And (NewRow("HE13/12") < 0.3) Then NewRow("HE13/12") = 100 * NewRow("HE13/12") ' convert to CFAMS convention for 13/12 X 100
                         C13C12(NumRuns) = NewRow("HE13/12")
                         theLTCorr = (NewRow("CntTotS") / NewRow("CntTotH"))
                         If (theLTCorr = 0) Or (NewRow("CntTotS") = 0) Or (NewRow("CntTotH") = 0) Then
@@ -4073,7 +4075,7 @@ Public Class SNICSrFrm
         USAMS.Clear()
         Using con As New SqlConnection
             Try
-                Dim theCmd As String = "SELECT DISTINCT wheel_id FROM dbo.wheel_pos WHERE wheel_id LIKE 'USAMS%' OR wheel_id like 'CFAMS%' ORDER BY wheel_id"
+                Dim theCmd As String = "SELECT DISTINCT wheel_id FROM dbo.wheel_pos WHERE wheel_id LIKE 'USAMS%' OR wheel_id like 'CFAMS%' OR wheel_id LIKE 'MICA%' ORDER BY wheel_id"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -4086,6 +4088,8 @@ Public Class SNICSrFrm
                             CFAMS.Add(New WheelID(whlnm))
                         ElseIf whlnm.Substring(0, 5) = "USAMS" Then
                             USAMS.Add(New WheelID(whlnm))
+                        ElseIf whlnm.Substring(0, 4) = "MICA" Then
+                            MICADAS.Add(New WheelID(whlnm))
                         End If
                     End While
                 End Using
@@ -4127,9 +4131,28 @@ Public Class SNICSrFrm
                                     Exit For
                                 End If
                             Next
-                        Else
+                        ElseIf theName.Substring(0, 5) = "USAMS" Then
                             For i = 0 To USAMS.Count - 1
                                 If USAMS(i).Name = theName Then
+                                    If Not rdr.IsDBNull(1) AndAlso rdr.GetString(1) <> "" Then
+                                        USAMS(i).Analyzed = 1
+                                        USAMS(i).FirstAuthName = rdr.GetString(1)
+                                        If Not rdr.IsDBNull(3) Then USAMS(i).FirstAuthDate = rdr.GetDateTime(3)
+                                        If Not rdr.IsDBNull(5) Then USAMS(i).Method1 = rdr.GetString(5)
+                                    End If
+                                    If Not rdr.IsDBNull(2) AndAlso rdr.GetString(2) <> "" Then
+                                        USAMS(i).Analyzed = 2
+                                        USAMS(i).SecondAuthName = rdr.GetString(2)
+                                        If Not rdr.IsDBNull(4) Then USAMS(i).SecondAuthDate = rdr.GetDateTime(4)
+                                        If Not rdr.IsDBNull(6) Then USAMS(i).Method2 = rdr.GetString(6)
+                                    End If
+                                    If Not rdr.IsDBNull(7) AndAlso rdr.GetByte(7) = 1 Then USAMS(i).IsReadOnly = True
+                                    Exit For
+                                End If
+                            Next
+                        Else
+                            For i = 0 To MICADAS.Count - 1
+                                If MICADAS(i).Name = theName Then
                                     If Not rdr.IsDBNull(1) AndAlso rdr.GetString(1) <> "" Then
                                         USAMS(i).Analyzed = 1
                                         USAMS(i).FirstAuthName = rdr.GetString(1)
