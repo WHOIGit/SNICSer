@@ -2617,7 +2617,7 @@ Public Class SNICSrFrm
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
                     If dgvTargets("Typ", ipos).Value = "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(False, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
+                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
                                                TotalMass(npos), SigTotalMass(npos), LBType(npos), TargetProcs(npos))
