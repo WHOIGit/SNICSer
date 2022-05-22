@@ -5045,7 +5045,7 @@ Public Class SNICSrFrm
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 'get process code
-                Dim aCmd As String = "SELECT [amsprod].[dbo].[fn_get_process_code] (" & Tp_Num(iTarg).ToString & ");"
+                Dim aCmd As String = "SELECT [dbo].[fn_get_process_code] (" & Tp_Num(iTarg).ToString & ");"
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
@@ -5053,7 +5053,7 @@ Public Class SNICSrFrm
                     End While
                 End Using
                 ' get process description
-                aCmd = "SELECT [amsprod].[dbo].[fn_get_method_desc_tp] (" & Tp_Num(iTarg).ToString & ");"
+                aCmd = "SELECT [dbo].[fn_get_method_desc_tp] (" & Tp_Num(iTarg).ToString & ");"
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
