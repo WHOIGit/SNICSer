@@ -5123,7 +5123,9 @@ Public Class SNICSrFrm
                         End If
                         newrow(8) = rdr.GetFloat(7)         ' number of cycles
                         For i = 8 To 11
-                            newrow(i + 1) = rdr.GetDouble(i)    'le12, le13 he12 he13
+                            If Not rdr.IsDBNull(i) Then
+                                newrow(i + 1) = rdr.GetDouble(i)    'le12, le13 he12 he13
+                            End If
                         Next
                         For i = 12 To 14
                             newrow(i + 1) = rdr.GetInt32(i)     ' cnt_in, cnt_meas, cnt_14c
@@ -5398,7 +5400,7 @@ Public Class SNICSrFrm
                             Next
                             aCmd &= "'" & theSampleName & "', '" & InputData.Rows(i).Item("Typ") & "'"
                             For j = 8 To InputData.Columns.Count - 1
-                                aCmd &= ", " & dgvInputData.Item(j, i).Value
+                                aCmd &= ", " & If(Not IsDBNull(dgvInputData.Item(j, i).Value), dgvInputData.Item(j, i).Value, "null")
                             Next
                             aCmd &= ", '" & UserName & "', '" & Samp_Typ(i).ToString & "');"
                         ElseIf FIRSTAUTH And REAUTH Then
