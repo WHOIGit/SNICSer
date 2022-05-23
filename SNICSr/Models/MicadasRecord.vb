@@ -1,6 +1,7 @@
 ﻿Public Class MicadasRecord
     Public IsOk As Boolean
     Public RunTime As DateTime
+    Public RunDuration As Double
     Public Position As Integer
     Public Measurement As Integer
     Public SampleName As String

@@ -21,7 +21,7 @@ Public Class MicadasRepository
             Dim cmd = connection.CreateCommand()
             cmd.CommandText = "
                 SELECT      ROW_NUMBER() OVER (PARTITION BY position ORDER BY TIMEDAT) as Mst,
-	                        RECNO, magazine, TIMEDAT, position, user_label, CYCLES, ANA, A, B, R, BA, RA 
+	                        RECNO, magazine, TIMEDAT, RUNTIME, position, user_label, CYCLES, ANA, A, B, R, BA, RA 
                 FROM        workproto_v_nt 
                 WHERE       magazine = @Magazine
                 ORDER BY    TIMEDAT, position
@@ -33,6 +33,7 @@ Public Class MicadasRepository
                 Dim record As New MicadasRecord()
 
                 record.RunTime = reader.GetDateTime("TIMEDAT")
+                record.RunDuration = reader.GetDouble("RUNTIME")
                 record.Position = reader.GetInt32("position")
                 record.IsOk = True
                 record.Measurement = reader.GetInt32("mst")

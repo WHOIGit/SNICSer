@@ -1366,7 +1366,7 @@ Public Class SNICSrFrm
                     NewRow("Mst") = record.Measurement
                     NewRow("SampleName") = record.SampleName
                     NewRow("Typ") = record.SampleType
-                    NewRow("Cycles") = record.Cycles
+                    NewRow("Cycles") = record.RunDuration * 10
                     NewRow("LE12C") = record.LE12C
                     NewRow("HE12C") = record.HE12C
                     NewRow("HE13C") = record.HE13C
