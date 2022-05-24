@@ -982,7 +982,7 @@ Public Class SNICSrFrm
                 .lbx2ndAuth.Items.Add("mroberts")
                 .lbx2ndAuth.Items.Add("agagnon")
                 .lbx2ndAuth.Items.Add("shandwork")
-                .lbx2ndAuth.Items.Add("taylor.broeck")
+                .lbx2ndAuth.Items.Add("taylor.broek")
             End With
         End Try
     End Sub   ' set up email list for notifications
@@ -2780,13 +2780,13 @@ Public Class SNICSrFrm
                             .tblBlanks(i).Item("Fm_Corr") = LargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"), 1.0398)
                             .tblBlanks(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"),
                                                                                    1.0398, .tblBlanks(i).Item("Max_Err"), .tblBlanks(i).Item("SigFmBgnd"))
-                                FmCorr(iPos) = .tblBlanks(i).Item("Fm_Corr")
-                                SigFmCorr(iPos) = .tblBlanks(i).Item("Sig_Fm_Corr")
-                                LgBlkFm(iPos) = .tblBlanks(i).Item("Fm_Bgnd")
-                                SigLgBlkFm(iPos) = .tblBlanks(i).Item("SigFmBgnd")
-                            End If
-                        Else
-                            .tblBlanks(i).Item("Fm_Corr") = FmCorr(iPos)
+                            FmCorr(iPos) = .tblBlanks(i).Item("Fm_Corr")
+                            SigFmCorr(iPos) = .tblBlanks(i).Item("Sig_Fm_Corr")
+                            LgBlkFm(iPos) = .tblBlanks(i).Item("Fm_Bgnd")
+                            SigLgBlkFm(iPos) = .tblBlanks(i).Item("SigFmBgnd")
+                        End If
+                    Else
+                        .tblBlanks(i).Item("Fm_Corr") = FmCorr(iPos)
                         .tblBlanks(i).Item("Sig_Fm_Corr") = SigFmCorr(iPos)
                     End If
                 Else
