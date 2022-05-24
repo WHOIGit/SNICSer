@@ -160,6 +160,7 @@ Public Class SNICSrFrm
     Public TotalRuns(MAXTARGETS) As Integer            ' total number of target runs (initially)
     Public TargetMass(MAXTARGETS) As Double            ' target mass
     Public TotalMass(MAXTARGETS) As Double             ' total mass of CO2
+    Public LBType(MAXTARGETS) As Integer               ' Large Blank Type for target
     Public TargetRat(MAXTARGETS) As Double             ' target normalized ratio
     Public AsmRat(MAXTARGETS) As Double                ' assumed ratio (where relevant)
     Public IntErr(MAXTARGETS) As Double                ' computed target internal error
@@ -2711,12 +2712,8 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
                     .Rows.Add("Large_Blank", 0.002, 0.0015)
-                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
-                    .Rows.Add("Cont Fm", 0.75, 0.25)
                 Else
                     .Rows.Add("Large_Blank", 0.0008, 0.0004)
-                    .Rows.Add("Cont_Mass (ug)", 0.3, 0.1)
-                    .Rows.Add("Cont Fm", 0.75, 0.25)
                 End If
             End With
             .dgvInorganic.Width = .dgvInorganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
@@ -2729,14 +2726,22 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 If (TheWheel.Name.Substring(0, 5) = "CFAMS") Then
                     .Rows.Add("Large_Blank", 0.0045, 0.0022)
-                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
-                    .Rows.Add("Cont Fm", 0.5, 0.25)
                 Else
                     .Rows.Add("Large_Blank", 0.002, 0.001)
-                    .Rows.Add("Cont Mass (ug)", 1.2, 0.5)
-                    .Rows.Add("Cont Fm", 0.5, 0.25)
                 End If
             End With
+            .dgvOrganic.Width = .dgvOrganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
+            .dgvOrganic.Height = .dgvOrganic.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvOrganic.ColumnHeadersHeight + 3
+            With .tblWS
+                .Columns.Clear()
+                .Columns.Add("WS_Blank")
+                .Columns.Add("Value_Used", GetType(Double))
+                .Columns.Add("Uncertainty", GetType(Double))
+                .Rows.Clear()
+                .Rows.Add("Large_Blank", 0.0045, 0.0022) ' Default value for WS blank TODO: Add correct value
+            End With
+            .dgvWS.Width = .dgvWS.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
+            .dgvWS.Height = .dgvWS.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvWS.ColumnHeadersHeight + 3
             With .tblWatson
                 .Columns.Clear()
                 .Columns.Add("Watson_Blank")
@@ -2745,8 +2750,8 @@ Public Class SNICSrFrm
                 .Rows.Clear()
                 .Rows.Add("Large_Blank", 0.0045, 0.0022)
             End With
-            .dgvOrganic.Width = .dgvOrganic.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
-            .dgvOrganic.Height = .dgvOrganic.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvOrganic.ColumnHeadersHeight + 3
+            .dgvWatson.Width = .dgvWatson.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 3
+            .dgvWatson.Height = .dgvWatson.Rows.GetRowsHeight(DataGridViewElementStates.None) + .dgvWatson.ColumnHeadersHeight + 3
             .GroupSel = -1      ' default to no group selected the first time through
         End With
     End Sub
@@ -2762,7 +2767,7 @@ Public Class SNICSrFrm
                         .tblStandards.Rows.Add(npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), LBType(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' do nothing if error
@@ -2841,55 +2846,12 @@ Public Class SNICSrFrm
             For ipos = 0 To dgvTargets.Rows.Count - 1              ' first find the non-typical blanks (e.g., alfa asar)
                 Try
                     Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "")) Then
-                        Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(False, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
-                    End If
-                Catch ex As Exception
-                    ' ignore exception
-                End Try
-            Next
-            For ipos = 0 To dgvTargets.Rows.Count - 1
-                Try
-                    Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "HY") Or (TargetProcs(npos) = "GS") _
-                                            Or (TargetProcs(npos) = "WS")) And (TargetMass(npos) > 150) Then
+                    If dgvTargets("Typ", ipos).Value = "B" Then
                         Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
                         .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
                                                dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
                                                dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
-                    End If
-                Catch ex As Exception
-                    ' ignore exception
-                End Try
-            Next
-            For ipos = 0 To dgvTargets.Rows.Count - 1
-                Try
-                    Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "OC")) And (TargetMass(npos) > 150) Then
-                        Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
-                    End If
-                Catch ex As Exception
-                    ' ignore exception
-                End Try
-            Next
-            For ipos = 0 To dgvTargets.Rows.Count - 1
-                Try
-                    Dim npos As Integer = dgvTargets("Pos", ipos).Value
-                    If (dgvTargets("Typ", ipos).Value = "B") And ((TargetProcs(npos) = "WC") Or (TargetProcs(npos) = "WG")) Then
-                        Dim MaxErr As Double = Math.Max(dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value)
-                        .tblBlanks.Rows.Add(True, npos, TargetNames(npos), dgvTargets("Typ", ipos).Value, TargetRuns(npos), dgvTargets("NormRat", ipos).Value,
-                                               dgvTargets("IntErr", ipos).Value, dgvTargets("ExtErr", ipos).Value, MaxErr,
-                                               dgvTargets("DelC13", ipos).Value, dgvTargets("SigC13", ipos).Value,
-                                               TotalMass(npos), SigTotalMass(npos), TargetProcs(npos))
+                                               TotalMass(npos), SigTotalMass(npos), LBType(npos), TargetProcs(npos))
                     End If
                 Catch ex As Exception
                     ' ignore exception
@@ -2902,7 +2864,6 @@ Public Class SNICSrFrm
                 If IsDBNull(.tblBlanks(i).Item("Proc")) Then 'catch bad proc
                     .tblBlanks(i).Item("OK") = False
                 ElseIf .tblBlanks(i).Item("Fm_Expected") > 0.002 Or
-                    .tblBlanks(i).Item("Proc") = "WS" Or
                     (.tblBlanks(i).Item("Mass(ug)") < 250) And (.tblBlanks(i).Item("Proc") <> "WG") Then
                     .tblBlanks(i).Item("OK") = False
                 End If
@@ -2920,6 +2881,10 @@ Public Class SNICSrFrm
         Dim SumOrg As Double = 0.0
         Dim SumSqOrg As Double = 0.0
         Dim NumOrg As Integer = 0
+        Dim SumWS As Double = 0.0
+        Dim SumErrWS As Double = 0.0
+        Dim SumSqWS As Double = 0.0
+        Dim NumWS As Integer = 0
         Dim SumWat As Double = 0.0
         Dim SumErrWat As Double = 0.0
         Dim SumSqWat As Double = 0.0
@@ -2928,9 +2893,9 @@ Public Class SNICSrFrm
             For i = 0 To .tblBlanks.Rows.Count - 1
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
-                If Not IsDBNull(.tblBlanks(i).Item("Proc")) AndAlso .tblBlanks(i).Item("OK") Then
-                    Select Case .tblBlanks(i).Item("Proc")
-                        Case "HY", "GS", "WS"
+                If Not IsDBNull(.tblBlanks(i).Item("LB_Type")) AndAlso .tblBlanks(i).Item("OK") Then
+                    Select Case .tblBlanks(i).Item("LB_Type")
+                        Case 2
                             If WTDBLANK Then
                                 SumInorg += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
                                 SumErrInorg += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2939,7 +2904,7 @@ Public Class SNICSrFrm
                                 SumErrInorg += 1
                             End If
                             SumSqInorg += .tblBlanks(i).Item("Fm_Meas") ^ 2
-                        Case "OC"
+                        Case 1
                             If WTDBLANK Then
                                 SumOrg += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
                                 SumErrOrg += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2948,7 +2913,16 @@ Public Class SNICSrFrm
                                 SumErrOrg += 1
                             End If
                             SumSqOrg += .tblBlanks(i).Item("Fm_Meas") ^ 2
-                        Case "WC", "WG"
+                        Case 3
+                            If WTDBLANK Then
+                                SumWS += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
+                                SumErrWS += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
+                            Else
+                                SumWS += .tblBlanks(i).Item("Fm_Meas")
+                                SumErrWS += 1
+                            End If
+                            SumSqWS += .tblBlanks(i).Item("Fm_Meas") ^ 2
+                        Case 16
                             If WTDBLANK Then
                                 SumWat += .tblBlanks(i).Item("Fm_Meas") / (.tblBlanks(i).Item("Max_Err") ^ 2)
                                 SumErrWat += 1 / (.tblBlanks(i).Item("Max_Err") ^ 2)
@@ -2986,6 +2960,19 @@ Public Class SNICSrFrm
                 End If
                 If .tblOrganic(0).Item(2) < SumOrg / 2.0 Then .tblOrganic(0).Item(2) = SumOrg / 2.0 ' an error floor
             End If
+            If SumErrWS > 0 Then
+                SumWS /= SumErrWS
+                .tblWS(0).Item(1) = SumWS
+                If WTDBLANK Then
+                    .tblWS(0).Item(2) = (1 / SumErrWS) ^ 0.5
+                Else
+                    .tblWS(0).Item(2) = (SumSqWS - SumErrWS * SumWS ^ 2) ^ 0.5
+                    If SumErrWS > 1 Then
+                        .tblWS(0).Item(2) /= (SumErrWS - 1) ^ 0.5
+                    End If
+                End If
+                If .tblWS(0).Item(2) < SumWS / 2.0 Then .tblWS(0).Item(2) = SumWS / 2.0 'an error floor
+            End If
             If SumErrWat > 0 Then
                 SumWat /= SumErrWat
                 .tblWatson(0).Item(1) = SumWat
@@ -3001,15 +2988,18 @@ Public Class SNICSrFrm
             End If
             For i = 0 To .tblBlanks.Rows.Count - 1
                 Dim iPos As Integer = .tblBlanks(i).Item("Pos")
-                If Not IsDBNull(.tblBlanks(i).Item("Proc")) Then
-                    Select Case .tblBlanks(i).Item("Proc")
-                        Case "HY", "GS"
+                If Not IsDBNull(.tblBlanks(i).Item("LB_Type")) Then
+                    Select Case .tblBlanks(i).Item("LB_Type")
+                        Case 2
                             .tblBlanks(i).Item("Fm_Bgnd") = .tblInorganic(0).Item(1)
                             .tblBlanks(i).Item("SigFmBgnd") = .tblInorganic(0).Item(2)
-                        Case "OC"
+                        Case 1
                             .tblBlanks(i).Item("Fm_Bgnd") = .tblOrganic(0).Item(1)
                             .tblBlanks(i).Item("SigFmBgnd") = .tblOrganic(0).Item(2)
-                        Case "WC", "WG"
+                        Case 3
+                            .tblBlanks(i).Item("Fm_Bgnd") = .tblWS(0).Item(1)
+                            .tblBlanks(i).Item("SigFmBgnd") = .tblWS(0).Item(2)
+                        Case 16
                             .tblBlanks(i).Item("Fm_Bgnd") = .tblWatson(0).Item(1)
                             .tblBlanks(i).Item("SigFmBgnd") = .tblWatson(0).Item(2)
                         Case Else
@@ -3017,11 +3007,10 @@ Public Class SNICSrFrm
                             .tblBlanks(i).Item("SigFmBgnd") = 0.0
                     End Select
                     If Not .chkLockAll.Checked Then
-                        If .tblBlanks(i).Item("Proc") = "HY" Or .tblBlanks(i).Item("Proc") = "GS" Or .tblBlanks(i).Item("Proc") = "OC" _
-                                        Or .tblBlanks(i).Item("Proc") = "WS" Or .tblBlanks(i).Item("Proc") = "WC" Or .tblBlanks(i).Item("Proc") = "WG" Then
+                        If Not IsDBNull(.tblBlanks(i).Item("LB_Type")) Then
                             .tblBlanks(i).Item("Fm_Corr") = LargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"), 1.0398)
                             .tblBlanks(i).Item("Sig_Fm_Corr") = SigLargeBlankCorrected(.tblBlanks(i).Item("Fm_Meas"), .tblBlanks(i).Item("Fm_Bgnd"),
-                                                                               1.0398, .tblBlanks(i).Item("Max_Err"), .tblBlanks(i).Item("SigFmBgnd"))
+                                                                                   1.0398, .tblBlanks(i).Item("Max_Err"), .tblBlanks(i).Item("SigFmBgnd"))
                             FmCorr(iPos) = .tblBlanks(i).Item("Fm_Corr")
                             SigFmCorr(iPos) = .tblBlanks(i).Item("Sig_Fm_Corr")
                             LgBlkFm(iPos) = .tblBlanks(i).Item("Fm_Bgnd")
@@ -3091,7 +3080,7 @@ Public Class SNICSrFrm
                             dgvTargets("Typ", iPos).Value, TargetRuns(npos), dgvTargets("NormRat", iPos).Value,
                             dgvTargets("IntErr", iPos).Value, dgvTargets("ExtErr", iPos).Value, MaxErr,
                             dgvTargets("DelC13", iPos).Value, dgvTargets("SigC13", iPos).Value,
-                            TotalMass(npos), SigTotalMass(npos), TargetProcs(npos), TargetProcDescs(npos))            ' Use TotalMass and mass error from dc13
+                            TotalMass(npos), SigTotalMass(npos), LBType(npos), TargetProcs(npos), TargetProcDescs(npos))    ' Use TotalMass and mass error from dc13
 
                         If TargetIsReadOnly(iPos) Then
                             GroupIsReadOnly = True
@@ -3130,25 +3119,24 @@ Public Class SNICSrFrm
     Public Sub SetLgBlkCorr(iGrp As Integer, iRow As Integer)
         With frmBlankCorr.tblGroup(iGrp).Rows(iRow)
             If (Not frmBlankCorr.chkLock(iGrp).Checked) And (Not frmBlankCorr.chkLockAll.Checked) Then
-                If Not IsDBNull(.Item("Proc")) AndAlso Trim(.Item("Proc")) <> "" Then
-                    Select Case .Item("Proc")
-                        Case "GS", "HY", "WS"
+                If Not IsDBNull(.Item("LB_Type")) Then
+                    Select Case .Item("LB_Type")
+                        Case 2
                             .Item("Fm_Bgnd") = frmBlankCorr.tblInorganic(0).Item("Value_Used")
                             .Item("SigFmBgnd") = frmBlankCorr.tblInorganic(0).Item("Uncertainty")
-                        Case "OC", "DOC"
+                        Case 1
                             .Item("Fm_Bgnd") = frmBlankCorr.tblOrganic(0).Item("Value_Used")
                             .Item("SigFmBgnd") = frmBlankCorr.tblOrganic(0).Item("Uncertainty")
-                        Case "WC", "WG", "SW"
+                        Case 16
                             .Item("Fm_Bgnd") = frmBlankCorr.tblWatson(0).Item("Value_Used")
                             .Item("SigFmBgnd") = frmBlankCorr.tblWatson(0).Item("Uncertainty")
+                        Case 3
+                            .Item("Fm_Bgnd") = frmBlankCorr.tblWS(0).Item("Value_Used")
+                            .Item("SigFmBgnd") = frmBlankCorr.tblWS(0).Item("Uncertainty")
                         Case Else
                             .Item("Fm_Bgnd") = 0.0
                             .Item("SigFmBgnd") = 0.0
                     End Select
-                Else
-                    .Item("Fm_Bgnd") = 0.0
-                    .Item("SigFmBgnd") = 0.0
-
                 End If
             End If
         End With
@@ -3279,6 +3267,7 @@ Public Class SNICSrFrm
             .Columns.Add("SigC13", GetType(Double))
             .Columns.Add("Mass(ug)", GetType(Double))
             .Columns.Add("SigMass", GetType(Double))
+            .Columns.Add("LB_Type", GetType(Integer))
             .Columns.Add("Proc", GetType(String))
             .Columns.Add("ProcDesc", GetType(String))
             .Columns.Add("Fm_Bgnd", GetType(Double))
@@ -3328,14 +3317,14 @@ Public Class SNICSrFrm
             For iCol = 10 To 11 'mass, mass err
                 .Columns(iCol).DefaultCellStyle.Format = "0"
             Next
-            For iCol = 14 To 19
+            For iCol = 15 To 20
                 .Columns(iCol).DefaultCellStyle.Format = "0.00000"
             Next
-            .Columns(20).DefaultCellStyle.Format = "0"
             .Columns(21).DefaultCellStyle.Format = "0"
-            .Columns(22).DefaultCellStyle.Format = "0.00000"
+            .Columns(22).DefaultCellStyle.Format = "0"
             .Columns(23).DefaultCellStyle.Format = "0.00000"
-            .Columns(24).DefaultCellStyle.Format = "0.000"
+            .Columns(24).DefaultCellStyle.Format = "0.00000"
+            .Columns(25).DefaultCellStyle.Format = "0.000"
             If isGrpTbl Then
                 .Columns(5).DefaultCellStyle.Format = "0"
                 For iCol = 6 To 9
@@ -3344,23 +3333,23 @@ Public Class SNICSrFrm
                 For iCol = 10 To 11
                     .Columns(iCol).DefaultCellStyle.Format = "0.00"
                 Next
-                For iCol = 12 To 13 'mass, mass err
+                For iCol = 12 To 14 'mass, mass err, LBType
                     .Columns(iCol).DefaultCellStyle.Format = "0"
                 Next
-                For iCol = 16 To 19
+                For iCol = 17 To 20
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                For iCol = 20 To 23
+                For iCol = 21 To 24
                     .Columns(iCol).DefaultCellStyle.Format = "0.0000"
                 Next
-                For iCol = 24 To 25
+                For iCol = 25 To 26
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(26).DefaultCellStyle.Format = "0"
                 .Columns(27).DefaultCellStyle.Format = "0"
-                .Columns(28).DefaultCellStyle.Format = "0.00000"
+                .Columns(28).DefaultCellStyle.Format = "0"
                 .Columns(29).DefaultCellStyle.Format = "0.00000"
-                .Columns(30).DefaultCellStyle.Format = "0.00"
+                .Columns(30).DefaultCellStyle.Format = "0.00000"
+                .Columns(31).DefaultCellStyle.Format = "0.00"
             End If
             If theTbl Is frmBlankCorr.tblBlanks Then
                 .Columns(4).DefaultCellStyle.Format = "0"
@@ -3370,17 +3359,17 @@ Public Class SNICSrFrm
                 For iCol = 9 To 10
                     .Columns(iCol).DefaultCellStyle.Format = "0.00"
                 Next
-                For iCol = 11 To 12
+                For iCol = 11 To 13
                     .Columns(iCol).DefaultCellStyle.Format = "0" 'mass, mass err
                 Next
-                For iCol = 15 To 18
+                For iCol = 16 To 19
                     .Columns(iCol).DefaultCellStyle.Format = "0.00000"
                 Next
-                .Columns(21).DefaultCellStyle.Format = "0"
                 .Columns(22).DefaultCellStyle.Format = "0"
-                .Columns(23).DefaultCellStyle.Format = "0.00000"
+                .Columns(23).DefaultCellStyle.Format = "0"
                 .Columns(24).DefaultCellStyle.Format = "0.00000"
-                .Columns(25).DefaultCellStyle.Format = "0.000"
+                .Columns(25).DefaultCellStyle.Format = "0.00000"
+                .Columns(26).DefaultCellStyle.Format = "0.000"
 
             End If
             For i = 0 To theDGV.Columns.Count - 1
@@ -4537,7 +4526,7 @@ Public Class SNICSrFrm
                     If TargetIsPresent(ipos) Then      ' do only if Target is present
                         Dim theCmd As String = "SELECT total_umols_co2, graphite_umols_co2, fm_blank, " _
                                          & "fm_blank_err, fm_cont, fm_cont_err, mass_cont, " _
-                                     & "mass_cont_err, dc13, added_var, sig_tot_umols " _
+                                     & "mass_cont_err, dc13, added_var, sig_tot_umols, lb_type " _
                                      & "FROM dbo.dc13" & TTE & " WHERE tp_num = " & Tp_Num(ipos).ToString & ";"
                         com.CommandText = theCmd
                         Using rdr As IDataReader = com.ExecuteReader
@@ -4599,6 +4588,11 @@ Public Class SNICSrFrm
                                     SigTotalMass(ipos) = 12.0107 * rdr.GetDouble(10)
                                 Else
                                     SigTotalMass(ipos) = 0.1 * TotalMass(ipos)
+                                End If
+                                If Not rdr.IsDBNull(11) Then
+                                    LBType(ipos) = rdr.GetInt16(11)
+                                Else
+                                    LBType(ipos) = 0
                                 End If
                             End While
                         End Using
