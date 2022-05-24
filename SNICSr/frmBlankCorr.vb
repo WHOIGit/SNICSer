@@ -4,6 +4,7 @@
     Public tblGroup(10) As DataTable
     Public tblInorganic As New DataTable
     Public tblOrganic As New DataTable
+    Public tblWS As New DataTable
     Public tblWatson As New DataTable
     Public tblBlanks As New DataTable
     Public dgvGroup(10) As DataGridView
@@ -15,6 +16,7 @@
     Private Sub frmBlankCorr_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         dgvOrganic.DataSource = tblOrganic
         dgvInorganic.DataSource = tblInorganic
+        dgvWS.DataSource = tblWS
         dgvBlanks.DataSource = tblBlanks
         dgvWatson.DataSource = tblWatson
     End Sub
@@ -57,6 +59,10 @@
     End Sub
 
     Private Sub dgvOrganic_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvOrganic.CellEndEdit
+        UpDateBlankTables()
+    End Sub
+
+    Private Sub dgvWS_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWS.CellEndEdit
         UpDateBlankTables()
     End Sub
 
@@ -177,6 +183,5 @@
             Next
         End If
     End Sub
-
 
 End Class
