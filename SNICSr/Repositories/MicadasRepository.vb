@@ -31,29 +31,33 @@ Public Class MicadasRepository
             Dim reader = cmd.ExecuteReader()
             While reader.Read()
                 Dim record As New MicadasRecord()
+                Try
+                    record.RunTime = reader.GetDateTime("TIMEDAT")
+                    record.RunDuration = reader.GetDouble("RUNTIME")
+                    record.Position = reader.GetInt32("position")
+                    record.IsOk = True
+                    record.Measurement = reader.GetInt32("mst")
+                    record.SampleName = reader.GetString("user_label")
 
-                record.RunTime = reader.GetDateTime("TIMEDAT")
-                record.RunDuration = reader.GetDouble("RUNTIME")
-                record.Position = reader.GetInt32("position")
-                record.IsOk = True
-                record.Measurement = reader.GetInt32("mst")
-                record.SampleName = reader.GetString("user_label")
+                    If sampleTypes.ContainsKey(record.Position) Then
+                        record.SampleType = sampleTypes(record.Position)
+                    End If
 
-                If sampleTypes.ContainsKey(record.Position) Then
-                    record.SampleType = sampleTypes(record.Position)
-                End If
+                    record.Cycles = reader.GetInt32("CYCLES")
+                    record.LE12C = reader.GetDouble("ANA") * 0.000001
+                    record.HE12C = reader.GetDouble("A") * 0.000001
+                    record.HE13C = reader.GetDouble("B") * 0.000001
+                    record.CntTotH = 1 ' Always one per Kathy
+                    record.CntTotS = 1 ' Always one per Kathy
+                    record.CntTotGT = reader.GetInt32("R")
+                    record.HE13Over12 = reader.GetDouble("BA")
+                    record.HE14Over12 = reader.GetDouble("RA")
+                    records.Add(record)
+                Catch ex As Exception
+                    MsgBox($"Error in MICADAS import: pos {record.Position}, meas {record.Measurement} {vbCrLf} {ex.Message}")
+                End Try
 
-                record.Cycles = reader.GetInt32("CYCLES")
-                record.LE12C = reader.GetDouble("ANA") * 0.000001
-                record.HE12C = reader.GetDouble("A") * 0.000001
-                record.HE13C = reader.GetDouble("B") * 0.000001
-                record.CntTotH = 1 ' Always one per Kathy
-                record.CntTotS = 1 ' Always one per Kathy
-                record.CntTotGT = reader.GetInt32("R")
-                record.HE13Over12 = reader.GetDouble("BA")
-                record.HE14Over12 = reader.GetDouble("RA")
 
-                records.Add(record)
 
             End While
         End Using

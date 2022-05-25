@@ -1472,7 +1472,7 @@ Public Class SNICSrFrm
                 End With
             End If
         Catch ex As Exception
-            MsgBox(ex.Message & vbCrLf & " at around row " & NumRuns.ToString)
+            MsgBox(ex.Message & vbCrLf & " at around row " & NumRuns.ToString & " - " & ex.StackTrace)
         End Try
 
         For i = 0 To NumRuns - 1
