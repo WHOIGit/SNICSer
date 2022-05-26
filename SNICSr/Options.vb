@@ -3,7 +3,7 @@ Imports System.IO
 Imports System.Text
 Imports System.Data
 Imports System.Data.SqlClient
-
+Imports System.Configuration
 
 Public Class Options
 
@@ -123,9 +123,13 @@ Public Class Options
 
     Private Function CheckDBCon() As Boolean
         CheckDBCon = False
-        SNICSrFrm.ConString = _
-                    "Data Source=nosams-prod.whoi.edu;Database=amsprod;User ID=" _
-                    & Trim(txtAnalyst.Text) & ";Password=" & txtPwd.Text & ";"
+
+        Dim connectionString = ConfigurationManager _
+            .ConnectionStrings("Nosams").ConnectionString _
+            .Replace("{{username}}", Trim(txtAnalyst.Text)) _
+            .Replace("{{password}}", txtPwd.Text)
+        SNICSrFrm.ConString = connectionString
+
         Using con As New SqlConnection
             Try
                 con.ConnectionString = SNICSrFrm.ConString

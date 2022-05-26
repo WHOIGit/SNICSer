@@ -12,6 +12,8 @@ Imports ZedGraph
 Imports System.Diagnostics
 Imports System.Net.Mail
 Imports System.Runtime.InteropServices
+Imports MySqlConnector
+Imports System.Configuration
 #End Region  'namespace declarations
 
 Public Class SNICSrFrm
@@ -23,6 +25,7 @@ Public Class SNICSrFrm
 #Region "Constants, variables, etc"
     Dim CFAMS As New List(Of WheelID)     ' list of CFAMS wheel objects (see WheelID.vb)
     Dim USAMS As New List(Of WheelID)     ' list of USAMS wheel objects (see WheelID.vb)
+    Dim MICADAS As New List(Of WheelID)   ' list of MICADAS wheel objects (see WheelID.vb)
     Public GroupAvgStdFm(MAXGROUPS) As Double       ' average Fm of standards in this group
     Public Peirce(60, 10) As Double                 ' storage for Peirce criteria lookup table
     Public SNICSerControlDir As String = ""         ' directory for email list
@@ -228,7 +231,7 @@ Public Class SNICSrFrm
     Public SymbSize As Integer = 6
     Public TopPlot As Boolean = False
     Public ClassicView As Boolean = False
-    Public ShareDrivePath As String = "\\fileshare.whoi.edu\whoi\dept\gg\nosams\"
+    Public ShareDrivePath As String
 
 #Region "Colors"
     Public PlotColsOrig() As Color = {Color.Purple, Color.Magenta, Color.Red, Color.DarkOrange, Color.Orange,
@@ -266,6 +269,8 @@ Public Class SNICSrFrm
         Me.Top = 10                 ' locate the main form in the upper left corner of the screen
         Me.Left = 10
         MySNICSerDir = My.Application.Info.DirectoryPath        ' save the location of the /App directory
+        ShareDrivePath = ConfigurationManager.AppSettings("ShareDrivePath")
+
         If TEST Then TTE = "_test" ' test environment Database Test Table name extension
         Try
             MySNICSerDir = MySNICSerDir.Substring(0, MySNICSerDir.Length - 3) & "SNICSER Results"
@@ -1045,9 +1050,11 @@ Public Class SNICSrFrm
             .lblChoice.Text = ""
             .trvWheel.Nodes.Clear()
             .trvWheel.Nodes.Add("CFAMS", "CFAMS", 5, 5)
+            .trvWheel.Nodes.Add("MICADAS", "MICADAS", 5, 5)
             .trvWheel.Nodes.Add("USAMS", "USAMS", 5, 5)
             DoTree(CFAMS, 0)
-            DoTree(USAMS, 1)
+            DoTree(MICADAS, 1)
+            DoTree(USAMS, 2)
         End With
         IamBuildingTrees = False
     End Sub
@@ -1099,6 +1106,7 @@ Public Class SNICSrFrm
 #Region "Data Loading"
 
     Private Function WheelFileName(ByRef Wheel As WheelID) As String
+        Dim isFileBased As Boolean = True
         Dim iyr As Integer = CInt(Now.ToString("yy"))
         Dim subDir As String = ""
         Dim FileName As String = ""
@@ -1112,12 +1120,15 @@ Public Class SNICSrFrm
         Else
             If TheWheel.Name.Substring(0, 5) = "CFAMS" Then
                 FileName = ShareDrivePath & "\CFAMS\CFAMS Results\" & subDir & TheWheel.Name & "R.xls"
-            Else
+            ElseIf TheWheel.Name.Substring(0, 5) = "USAMS" Then
                 FileName = ShareDrivePath & "\USAMS\Results\" & subDir & TheWheel.Name & "R.txt"
+            ElseIf TheWheel.Name.ToUpper().StartsWith("MICAD") Then
+                FileName = TheWheel.Name
+                isFileBased = False
             End If
         End If
         If TheWheel.Year <> iyr Then subDir = "20" & TheWheel.Year.ToString & " Results\"
-        If TheWheel.Analyzed = 0 Then
+        If TheWheel.Analyzed = 0 AndAlso isFileBased Then
             Dim fn As New FileInfo(FileName)
             If Not fn.Exists Then
                 MsgBox(FileName & "Not found. Trying V: drive")
@@ -1163,7 +1174,12 @@ Public Class SNICSrFrm
             IamLoading = False
             Exit Sub
         End If
-        SaveDirectoryName(FileName)
+
+        ' This can only be done for file based loading, so exclude MICADAS imports
+        If Not FileName.ToUpper().StartsWith("MICAD") Then
+            SaveDirectoryName(FileName)
+        End If
+
         WheelName = ParseWheelName(FileName)
         If GetWheelID(WheelName).IsReadOnly Then MsgBox("SOME OR ALL OF THE SAMPLES ON THIS WHEEL" & vbCrLf _
                                             & "    HAVE BEEN PROMOTED TO THE OS TABLE AND POSSIBLY REPORTED" _
@@ -1172,7 +1188,7 @@ Public Class SNICSrFrm
         tspGroup.Visible = False
         Select Case GetWheelID(WheelName).Analyzed
             Case 0
-                LoadRawDataFromFile(FileName)
+                LoadRawDataFromSource(FileName)
                 FIRSTAUTH = True
                 REAUTH = False
                 If GROUPBOUNDS Then tspGroup.Visible = True
@@ -1211,6 +1227,11 @@ Public Class SNICSrFrm
 
     Private Function ParseWheelName(FileName As String) As String
         ParseWheelName = ""
+
+        If Path.GetFileNameWithoutExtension(FileName).ToUpper().StartsWith("MICAD") Then
+            Return Path.GetFileNameWithoutExtension(FileName)
+        End If
+
         If FileName.LastIndexOf("AMS") <> 0 Then
             If FileName.Length > FileName.LastIndexOf("AMS") + 9 Then
                 ParseWheelName = FileName.Substring(FileName.LastIndexOf("AMS") - 2, 11)
@@ -1246,6 +1267,9 @@ Public Class SNICSrFrm
         For i = 0 To USAMS.Count - 1
             If USAMS(i).Name = theName Then Return USAMS(i)
         Next
+        For i = 0 To MICADAS.Count - 1
+            If MICADAS(i).Name = theName Then Return MICADAS(i)
+        Next
     End Function
 
     Private Sub doReLoad()
@@ -1269,7 +1293,7 @@ Public Class SNICSrFrm
         If ofdReLoadFile.ShowDialog() = Windows.Forms.DialogResult.OK Then
             FileName = ofdReLoadFile.FileName
             lblStatus.Text = "Loading File..."
-            LoadRawDataFromFile(FileName)
+            LoadRawDataFromSource(FileName)
             btnLoad.Visible = True
             IamLoading = False
             tsmBlankCorrect.Visible = True
@@ -1279,6 +1303,213 @@ Public Class SNICSrFrm
             IamLoading = False
         End If
         If Not REAUTH Then ClearBlankCorr()
+    End Sub
+
+
+    Private Sub LoadRawDataFromSource(source As String)
+        ' Source will either be a file name (for CFAMS or USAMS, or the magazine name for MICADAS
+        Dim filename = Path.GetFileNameWithoutExtension(source)
+        If filename.ToUpper.StartsWith("MICAD") Then
+            LoadRawDataFromDatabase(filename)
+            Exit Sub
+        End If
+
+        LoadRawDataFromFile(source)
+    End Sub
+
+    Private Sub LoadRawDataFromDatabase(source As String)
+        Dim micadasRepository As New MicadasRepository(ConString)
+
+        ' need to check with database to see if this wheel has been first/second authorized by the user
+        ' if so, skip the file reading part and load directly from the database
+        '
+        For i = 0 To OrigTypes.Length - 1       ' clear array of original types (for safety)
+            OrigTypes(i) = ""
+        Next
+        nBogus = 0              ' restart the bogus line count
+
+        StdsAndBlks.Text = "Standards and Blanks for " & source
+        PropPropPlot.Text = "Property-Property Plot for " & source
+        PlotRaw.Text = "Raw Data Plot for " & source
+
+        Dim Group As Integer = 1, LastMst As Integer = Group
+        GroupEnd(0) = -1           ' signifies that the last run of "group 0" is -1 (0 based list!)
+        Dim inpLine As String = ""
+        Dim StartDate As Date
+        Dim theLTCorr As Double
+        TypeSubstFlag = False          ' start with no substitutes
+        FirstTimeThrough = True
+        NumGroups = 0
+        For i = 0 To MAXTARGETS
+            RunKeys(i, 0) = 0
+        Next
+        InputData.Clear()
+        NumRuns = 0
+
+        Me.Text = $"SNICSer v {VERSION:0.000} Magazine = {source}" & If(GROUPBOUNDS, "  GROUP BOUNDS ENFORCED", "")
+
+        btnLoad.Text = "Load"
+        Dim NewRow As DataRow
+        Try
+            For i = 0 To MAXTARGETS            ' must instantiate comments or errors will ensue...
+                TargetComments(i) = ""
+            Next
+
+            Dim records = micadasRepository.GetMicadasData(source)
+
+            For Each record In records
+                NewRow = InputData.NewRow
+
+                Try
+                    NewRow("OK") = record.IsOk
+                    NewRow("RunTime") = record.RunTime
+                    NewRow("Pos") = record.Position
+                    NewRow("Mst") = record.Measurement
+                    NewRow("SampleName") = record.SampleName
+                    NewRow("Typ") = record.SampleType
+                    NewRow("Cycles") = record.RunDuration * 10
+                    NewRow("LE12C") = record.LE12C
+                    NewRow("HE12C") = record.HE12C
+                    NewRow("HE13C") = record.HE13C
+                    NewRow("CntTotH") = record.CntTotH
+                    NewRow("CntTotS") = record.CntTotS
+                    NewRow("CntTotGT") = record.CntTotGT
+                    NewRow("HE13/12") = record.HE13Over12
+                    NewRow("HE14/12") = record.HE14Over12
+
+                    If NumRuns = 0 Then
+                        StartDate = record.RunTime
+                        SmpTimes(0) = 0
+                        RunTimes(0) = record.RunTime.ToOADate
+                    Else
+                        SmpTimes(NumRuns) = DateDiff(DateInterval.Second, StartDate, record.RunTime)
+                        RunTimes(NumRuns) = record.RunTime.ToOADate
+                    End If
+
+                Catch ex As Exception
+                    MsgBox($"{ex.Message}{vbCrLf} in row {NumRawFigs}")
+                    Continue For
+                End Try
+
+#Region " Processing Logic "
+
+                ' TODO: This logic is a copy of what was found when processing CFAMS/USAMS - the code should be moved somewhere separate and reused
+
+                NewRow("Run") = NumRuns
+                RunPos(NumRuns) = NewRow("Pos")
+                'If ((whlName.Substring(0, 5)).ToUpper = "USAMS") And (NewRow("HE13/12") < 0.3) Then NewRow("HE13/12") = 100 * NewRow("HE13/12") ' convert to CFAMS convention for 13/12 X 100
+                C13C12(NumRuns) = NewRow("HE13/12")
+                theLTCorr = (NewRow("CntTotS") / NewRow("CntTotH"))
+                If (theLTCorr = 0) Or (NewRow("CntTotS") = 0) Or (NewRow("CntTotH") = 0) Then
+                    theLTCorr = 1 ' cannot divide by zero!
+                    NewRow("OK") = False          ' bad line is automatically disabled
+                    nBogus += 1                 ' increment bogus count
+                    BogusLines(nBogus) = NumRuns            ' save the run number
+                End If
+                NewRow("LTCorr") = theLTCorr
+                NewRow("Corr14/12") = NewRow("He14/12") / NewRow("LTCorr") / C13C12(NumRuns) ^ 2    '### SQ FRAC CORR ###
+                If NewRow("CntTotS") <> 0 And NewRow("CntTotGT") <> 0 Then
+                    Dim RelErrSq As Double = (NewRow("CntTotH") - NewRow("CntTotS")) * NewRow("CntTotH") ^ 2 / NewRow("CntTotS") ^ 4 _
+                                     + NewRow("CntTotH") ^ 2 / NewRow("CntTotGT") / NewRow("CntTotS") ^ 2
+                    NewRow("Sig14/12") = NewRow("Corr14/12") * RelErrSq ^ 0.5
+                Else
+                    NewRow("Sig14/12") = 0.000000000000001
+                End If
+                NewRow("DelC13") = 1000 * (C13C12(NumRuns) / 1.12372 - 1)         ' referenced to VPDB
+                If (NewRow("Mst") < LastMst) And (NewRow("Mst") = 1) Then
+                    GroupEnd(Group) = NumRuns - 1           ' point to end of the last group
+                    GroupTimes(Group) = (RunTimes(NumRuns) + RunTimes(NumRuns - 1)) / 2     ' time marker between two runs
+                    'MsgBox(Group.ToString & ":: " & GroupEnd(Group).ToString)
+                    Group += 1                          ' must be onto a new group
+                End If
+                LastMst = NewRow("Mst")
+                NewRow("Grp") = Group
+                GroupNums(NumRuns) = Group
+                RunKeys(NewRow("Pos"), 0) += 1               ' increment number of runs for this position
+                RunKeys(NewRow("Pos"), RunKeys(NewRow("Pos"), 0)) = NumRuns         ' save the run key info
+                Samp_Typ(NumRuns) = NewRow("Typ")              ' save the original assignment
+                If (NewRow("Typ") <> "S") And (NewRow("Typ") <> "SS") And (NewRow("Typ") <> "B") And (NewRow("Typ") <> "U") Then
+                    If Not TypeSubstFlag Then
+                        TypeSubstFlag = True        ' so only do this once
+                        Dim theMsg As String = "Error in TYPE field of input file:" & vbCrLf & NewRow("SampleName") _
+                                       & "(Pos " & NewRow("Pos") & ") classed as '" & NewRow("Typ") & "'" _
+                                       & vbCrLf & "Reclassified as 'U'" & vbCrLf & "You may need to correct this" _
+                                       & vbCrLf & "... and there may be more!"
+                        MsgBox(theMsg)
+                    End If
+                    NewRow("Typ") = "U"
+                End If
+                iRunTimes(NumRuns) = 24 * 3600 * (RunTimes(NumRuns) - RunTimes(0)) + NewRow("Cycles") / 20  ' seconds from start of wheel to mid-analysis
+                InputData.Rows.Add(NewRow)
+                If NewRow("Typ") = "S" Then dgvInputData.Rows(NumRuns).DefaultCellStyle.BackColor = StdCol
+                If NewRow("Typ") = "SS" Then dgvInputData.Rows(NumRuns).DefaultCellStyle.BackColor = SecCol
+                If NewRow("Typ") = "B" Then dgvInputData.Rows(NumRuns).DefaultCellStyle.BackColor = BlkCol
+                If NewRow("Typ") = "U" Then dgvInputData.Rows(NumRuns).DefaultCellStyle.BackColor = UnkCol
+                NumRuns += 1
+                If NewRow("SampleName").length > 40 Then
+                    'MsgBox("Sample name of pos " & NewRow("Pos") " truncated to 64 characters")
+                    NewRow("SampleName") = NewRow("SampleName").Substring(0, 40)
+                End If
+
+#End Region
+
+            Next
+
+            NumGroups = Group
+            GroupEnd(NumGroups) = NumRuns - 1             ' point to end of last group
+            GroupTimes(NumGroups) = RunTimes(NumRuns - 1)
+            GroupTimes(0) = RunTimes(0) - 0.01
+
+            If nBogus > 0 Then
+                With Bogus
+                    .Text = source
+                    .lblBogus.Text = nBogus.ToString & " bad lines" & vbCrLf & "were encountered" & vbCrLf & "and disabled"
+                    .lbxBogus.Items.Clear()
+                    For i = 1 To nBogus
+                        .lbxBogus.Items.Add(BogusLines(i).ToString)
+                    Next
+                    .ShowDialog(Me)
+                End With
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message & vbCrLf & " at around row " & NumRuns.ToString & " - " & ex.StackTrace)
+        End Try
+
+        For i = 0 To NumRuns - 1
+            OrigTypes(RunPos(i)) = InputData(i).Item("Typ")
+        Next
+
+        'Dim thegMsg As String = "Group Table: entries " & NumGroups.ToString
+        'For i = 0 To NumGroups - 1
+        'thegMsg &= vbCrLf & GroupNums(i).ToString & " : " & GroupTimes(i).ToString
+        'Next
+        'MsgBox(thegMsg)
+
+        dgvInputData.Columns(8).DefaultCellStyle.Format = "0"
+        dgvInputData.AutoResizeColumns()
+        If dgvInputData.Columns(6).Width > 150 Then
+            dgvInputData.Columns(6).Width = 150
+        End If
+        dgvInputData.AutoResizeRows()
+
+        UpdateDataListLabel()
+        CollectRats()
+        AssignTargets()          ' find out if target exists
+        PopulateTargets()
+        WheelName = source
+        DoFillInC13Table()
+        GetWheelInfo(source)
+        If Not ISPARTIALWHEEL Then SetUpStds()
+        tsmSave.Enabled = True
+        If Not ISACQUIFILE Then
+            tsmCommit.Enabled = True
+            tsmCommit.Visible = True
+        End If
+        PropertyPropertyToolStripMenuItem.Enabled = True
+        StandardsAndBlanksToolStripMenuItem.Enabled = True
+        LOADEDWHEEL = True
+        FindSmallSamples()          ' find out if target is small
+        'If GROUPBOUNDS Then CommitGroupToDatabaseToolStripMenuItem.Enabled = True
     End Sub
 
     Private Sub LoadRawDataFromFile(fName As String)
@@ -4059,9 +4290,10 @@ Public Class SNICSrFrm
     Public Sub FindAllWheels()
         CFAMS.Clear()
         USAMS.Clear()
+        MICADAS.Clear()
         Using con As New SqlConnection
             Try
-                Dim theCmd As String = "SELECT DISTINCT wheel_id FROM dbo.wheel_pos WHERE wheel_id LIKE 'USAMS%' OR wheel_id like 'CFAMS%' ORDER BY wheel_id"
+                Dim theCmd As String = "SELECT DISTINCT wheel_id FROM dbo.wheel_pos WHERE wheel_id LIKE 'USAMS%' OR wheel_id like 'CFAMS%' OR wheel_id like 'MICAD%' ORDER BY wheel_id"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -4074,6 +4306,8 @@ Public Class SNICSrFrm
                             CFAMS.Add(New WheelID(whlnm))
                         ElseIf whlnm.Substring(0, 5) = "USAMS" Then
                             USAMS.Add(New WheelID(whlnm))
+                        ElseIf whlnm.Substring(0, 5) = "MICAD" Then
+                            MICADAS.Add(New WheelID(whlnm))
                         End If
                     End While
                 End Using
@@ -4111,6 +4345,27 @@ Public Class SNICSrFrm
                                     End If
                                     If Not rdr.IsDBNull(7) AndAlso rdr.GetByte(7) = 1 Then
                                         CFAMS(i).IsReadOnly = True
+                                    End If
+                                    Exit For
+                                End If
+                            Next
+                        ElseIf theName.Substring(0, 5) = "MICAD" Then
+                            For i = 0 To MICADAS.Count - 1
+                                If MICADAS(i).Name = theName Then
+                                    If Not rdr.IsDBNull(1) AndAlso rdr.GetString(1) <> "" Then
+                                        MICADAS(i).Analyzed = 1
+                                        MICADAS(i).FirstAuthName = rdr.GetString(1)
+                                        If Not rdr.IsDBNull(3) Then MICADAS(i).FirstAuthDate = rdr.GetDateTime(3)
+                                        If Not rdr.IsDBNull(5) Then MICADAS(i).Method1 = rdr.GetString(5)
+                                    End If
+                                    If Not rdr.IsDBNull(2) AndAlso rdr.GetString(2) <> "" Then
+                                        MICADAS(i).Analyzed = 2
+                                        MICADAS(i).SecondAuthName = rdr.GetString(2)
+                                        If Not rdr.IsDBNull(4) Then MICADAS(i).SecondAuthDate = rdr.GetDateTime(4)
+                                        If Not rdr.IsDBNull(6) Then MICADAS(i).Method2 = rdr.GetString(6)
+                                    End If
+                                    If Not rdr.IsDBNull(7) AndAlso rdr.GetByte(7) = 1 Then
+                                        MICADAS(i).IsReadOnly = True
                                     End If
                                     Exit For
                                 End If
@@ -4784,7 +5039,7 @@ Public Class SNICSrFrm
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 'get process code
-                Dim aCmd As String = "SELECT [amsprod].[dbo].[fn_get_process_code] (" & Tp_Num(iTarg).ToString & ");"
+                Dim aCmd As String = "SELECT [dbo].[fn_get_process_code] (" & Tp_Num(iTarg).ToString & ");"
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
@@ -4792,7 +5047,7 @@ Public Class SNICSrFrm
                     End While
                 End Using
                 ' get process description
-                aCmd = "SELECT [amsprod].[dbo].[fn_get_method_desc_tp] (" & Tp_Num(iTarg).ToString & ");"
+                aCmd = "SELECT [dbo].[fn_get_method_desc_tp] (" & Tp_Num(iTarg).ToString & ");"
                 com.CommandText = aCmd
                 Using rdr As IDataReader = com.ExecuteReader
                     While rdr.Read
@@ -4862,7 +5117,9 @@ Public Class SNICSrFrm
                         End If
                         newrow(8) = rdr.GetFloat(7)         ' number of cycles
                         For i = 8 To 11
-                            newrow(i + 1) = rdr.GetDouble(i)    'le12, le13 he12 he13
+                            If Not rdr.IsDBNull(i) Then
+                                newrow(i + 1) = rdr.GetDouble(i)    'le12, le13 he12 he13
+                            End If
                         Next
                         For i = 12 To 14
                             newrow(i + 1) = rdr.GetInt32(i)     ' cnt_in, cnt_meas, cnt_14c
@@ -5137,7 +5394,7 @@ Public Class SNICSrFrm
                             Next
                             aCmd &= "'" & theSampleName & "', '" & InputData.Rows(i).Item("Typ") & "'"
                             For j = 8 To InputData.Columns.Count - 1
-                                aCmd &= ", " & dgvInputData.Item(j, i).Value
+                                aCmd &= ", " & If(Not IsDBNull(dgvInputData.Item(j, i).Value), dgvInputData.Item(j, i).Value, "null")
                             Next
                             aCmd &= ", '" & UserName & "', '" & Samp_Typ(i).ToString & "');"
                         ElseIf FIRSTAUTH And REAUTH Then
@@ -6796,7 +7053,7 @@ Public Class SNICSrFrm
         tspNukeDatabase.Enabled = False
         If FileName <> "" Then
             lblStatus.Text = "Loading File..."
-            LoadRawDataFromFile(FileName)
+            LoadRawDataFromSource(FileName)
         End If
         MakeMeBig()
     End Sub
@@ -6860,7 +7117,7 @@ Public Class SNICSrFrm
                 pTargetPos(i) = TargetData.Rows(i).Item("Pos")
             Next
             MakeMeSmall()
-            LoadRawDataFromFile(WheelFileName(TheWheel))
+            LoadRawDataFromSource(WheelFileName(TheWheel))
             tsmBlankCorrect.Visible = True
             tsmCommit.Visible = False
             For i = 0 To pRuns - 1                  ' now re-instate flags and types
