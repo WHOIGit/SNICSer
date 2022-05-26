@@ -1050,11 +1050,11 @@ Public Class SNICSrFrm
             .lblChoice.Text = ""
             .trvWheel.Nodes.Clear()
             .trvWheel.Nodes.Add("CFAMS", "CFAMS", 5, 5)
-            .trvWheel.Nodes.Add("USAMS", "USAMS", 5, 5)
             .trvWheel.Nodes.Add("MICADAS", "MICADAS", 5, 5)
+            .trvWheel.Nodes.Add("USAMS", "USAMS", 5, 5)
             DoTree(CFAMS, 0)
-            DoTree(USAMS, 1)
-            DoTree(MICADAS, 2)
+            DoTree(MICADAS, 1)
+            DoTree(USAMS, 2)
         End With
         IamBuildingTrees = False
     End Sub
