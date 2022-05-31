@@ -18,7 +18,7 @@ Imports System.Configuration
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 3.0     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 3.2     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -5605,23 +5605,23 @@ Public Class SNICSrFrm
                 .ShowDialog() ' present them with the option to send an automatic email
             End With
         End If
-        If SECONDAUTH Then
-            With FrmNotify2ndAuth
-                .lblNotify.Text = "Do you wish to (email) notify the 1st Analyst?"
-                ' convert username to email address
-                Select Case TheWheel.FirstAuthName
-                    Case "mr"
-                        .lbx2ndAuth.Text = "mroberts"
-                    Case "jh"
-                        .lbx2ndAuth.Text = "jhlavenka"
-                    Case "brettl"
-                        .lbx2ndAuth.Text = "blongworth"
-                    Case Else
-                        .lbx2ndAuth.Text = ""
-                End Select
-                .ShowDialog()
-            End With
-        End If
+        'If SECONDAUTH Then
+        '    With FrmNotify2ndAuth
+        '        .lblNotify.Text = "Do you wish to (email) notify the 1st Analyst?"
+        '        ' convert username to email address
+        '        Select Case TheWheel.FirstAuthName
+        '            Case "mr"
+        '                .lbx2ndAuth.Text = "mroberts"
+        '            Case "jh"
+        '                .lbx2ndAuth.Text = "jhlavenka"
+        '            Case "brettl"
+        '                .lbx2ndAuth.Text = "blongworth"
+        '            Case Else
+        '                .lbx2ndAuth.Text = ""
+        '        End Select
+        '        .ShowDialog()
+        '    End With
+        'End If
         ISPARTIALWHEEL = False
         ' clear this in case you've just updated a partial wheel
         REAUTH = True
