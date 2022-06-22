@@ -88,18 +88,18 @@ Partial Class frmBlankCorr
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbcGroups.Controls.Add(Me.tbpGroup1)
-        Me.tbcGroups.Location = New System.Drawing.Point(1, 466)
+        Me.tbcGroups.Location = New System.Drawing.Point(1, 465)
         Me.tbcGroups.Name = "tbcGroups"
         Me.tbcGroups.SelectedIndex = 0
-        Me.tbcGroups.Size = New System.Drawing.Size(1446, 570)
+        Me.tbcGroups.Size = New System.Drawing.Size(1446, 423)
         Me.tbcGroups.TabIndex = 5
         '
         'tbpGroup1
         '
         Me.tbpGroup1.Location = New System.Drawing.Point(4, 22)
         Me.tbpGroup1.Name = "tbpGroup1"
-        Me.tbpGroup1.Padding = New System.Windows.Forms.Padding(3, 3, 3, 3)
-        Me.tbpGroup1.Size = New System.Drawing.Size(1438, 544)
+        Me.tbpGroup1.Padding = New System.Windows.Forms.Padding(3)
+        Me.tbpGroup1.Size = New System.Drawing.Size(1438, 397)
         Me.tbpGroup1.TabIndex = 0
         Me.tbpGroup1.Text = "Group 1"
         Me.tbpGroup1.UseVisualStyleBackColor = True
