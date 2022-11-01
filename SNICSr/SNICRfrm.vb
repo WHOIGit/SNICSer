@@ -163,6 +163,7 @@ Public Class SNICSrFrm
     Public LBType(MAXTARGETS) As Integer               ' Large Blank Type for target
     Public TargetRat(MAXTARGETS) As Double             ' target normalized ratio
     Public AsmRat(MAXTARGETS) As Double                ' assumed ratio (where relevant)
+    Public BlankOK(MAXTARGETS) As Boolean                ' assumed ratio (where relevant)
     Public IntErr(MAXTARGETS) As Double                ' computed target internal error
     Public ExtErr(MAXTARGETS) As Double                ' computed target external errror
     Public Tp_Num(MAXTARGETS) As Integer               ' target press numbers for each target
@@ -198,6 +199,7 @@ Public Class SNICSrFrm
     Public Std_Fm(500) As Double
     Public Std_delC13(500) As Double
     Public Std_Flag(500) As Boolean
+    Public Std_Blank_Flag(500) As Boolean
     Public FitMode As String = "Average"
     Public FitNum As Integer = 6
     Public StdNames(6) As String
@@ -541,6 +543,7 @@ Public Class SNICSrFrm
         StandardsValues.Columns.Add("C13/12", GetType(Double))
         BlanksValues.Columns.Clear()
         BlanksValues.Columns.Add("Pos", GetType(Integer))
+        BlanksValues.Columns.Add("OK", GetType(Boolean))
         BlanksValues.Columns.Add("SampleName", GetType(String))
         BlanksValues.Columns.Add("Tp_Num", GetType(Integer))
         BlanksValues.Columns.Add("Rec_Num", GetType(Integer))
@@ -811,6 +814,7 @@ Public Class SNICSrFrm
             TargetData(i).Item("Rec_Num") = Rec_Num(TargetData(i).Item("Pos"))
         Next
         Dim theName As String = ""
+        Dim theBlank As Boolean = False
         Dim theRecNum As Integer = 0
         Dim theFm As Double = 42
         Dim theDel As Double = 42
@@ -857,12 +861,14 @@ Public Class SNICSrFrm
                 nSrow += 1
             ElseIf TargetTypes(i) = "B" Then
                 theName = TargetNames(i)
+                theBlank = False
                 theRecNum = Rec_Num(i)          'TargetData(i).Item("Rec_Num")
                 theFm = 42
                 theDel = 42
                 For j = 0 To NumStds - 1
                     If Std_Rec_Num(j) = Rec_Num(i) Then
                         theName = Std_Name(j)
+                        theBlank = Std_Blank_Flag(j)
                         theRecNum = Std_Rec_Num(j)
                         theFm = Std_Fm(j)
                         theDel = Std_delC13(j)
@@ -872,12 +878,14 @@ Public Class SNICSrFrm
                 If theName <> "" Then
                     NewRow = BlanksValues.NewRow
                     NewRow("Pos") = i
+                    NewRow("OK") = theBlank
                     NewRow("TP_Num") = Tp_Num(i)
                     NewRow("SampleName") = theName
                     NewRow("Rec_Num") = theRecNum
                     NewRow("Asm_Rat") = theFm
                     NewRow("Asm13/12") = theDel
                     BlanksValues.Rows.Add(NewRow)
+                    BlankOK(i) = theBlank
                 End If
                 If (theFm = 42) Or (theDel = 42) Then
                     StdsAndBlks.dgvBlanks.Rows(nBrow).DefaultCellStyle.BackColor = Color.LightPink
@@ -2861,10 +2869,8 @@ Public Class SNICSrFrm
                 .dgvBlanks.Rows(i).DefaultCellStyle.BackColor = BlkCol
                 .tblBlanks(i).Item("Fm_Expected") = AsmRat(.tblBlanks(i).Item("Pos"))
                 ' Define which blanks to use by default
-                If IsDBNull(.tblBlanks(i).Item("Proc")) Then 'catch bad proc
-                    .tblBlanks(i).Item("OK") = False
-                ElseIf .tblBlanks(i).Item("Fm_Expected") > 0.002 Or
-                    (.tblBlanks(i).Item("Mass(ug)") < 250) And (.tblBlanks(i).Item("Proc") <> "WG") Then
+                .tblBlanks(i).Item("OK") = BlankOK(.tblBlanks(i).Item("Pos"))
+                If IsDBNull(.tblBlanks(i).Item("Proc")) Or (.tblBlanks(i).Item("Mass(ug)") < 250) And (.tblBlanks(i).Item("Proc") <> "WG") Then
                     .tblBlanks(i).Item("OK") = False
                 End If
             Next
@@ -4943,14 +4949,19 @@ Public Class SNICSrFrm
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 com.CommandText = "Select type, rec_num, sample_id, Fm_cons, d13_cons, Fm_NOSAM_avg," _
-                                            & " d13C_NOSAMS_avg from dbo.standards"
+                                            & " d13C_NOSAMS_avg, blank from dbo.standards"
                 Using rdr As IDataReader = com.ExecuteReader
                     NumStds = 0
                     While rdr.Read
                         Std_Rec_Num(NumStds) = rdr.GetInt32(1)
                         Std_Name(NumStds) = rdr.GetString(2)
+                        If Not rdr.IsDBNull(7) Then
+                            If rdr.GetByte(7) = 1 Then
+                                Std_Blank_Flag(NumStds) = True
+                            End If
+                        End If
                         Std_Fm(NumStds) = 42.0
-                        If Not rdr.IsDBNull(3) Then
+                            If Not rdr.IsDBNull(3) Then
                             Std_Fm(NumStds) = rdr.GetDouble(3)
                             Std_Flag(NumStds) = True
                         ElseIf Not rdr.IsDBNull(5) Then
@@ -4972,7 +4983,7 @@ Public Class SNICSrFrm
                     End While
                 End Using
             Catch ex As Exception
-                MsgBox(ex.Message)
+                MsgBox("Error getting standards" & ex.Message)
             End Try
             con.Close()
         End Using
