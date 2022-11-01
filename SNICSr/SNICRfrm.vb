@@ -18,7 +18,7 @@ Imports System.Configuration
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 3.2     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 3.21     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
