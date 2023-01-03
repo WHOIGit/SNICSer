@@ -18,7 +18,7 @@ Imports System.Configuration
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 3.21     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 3.22     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -2154,17 +2154,18 @@ Public Class SNICSrFrm
 
     Public Sub ColorizeTargets()
         For i = 0 To TargetData.Rows.Count - 1
+            Dim iPos = dgvTargets.Item("Pos", i).Value
             dgvTargets.Rows(i).DefaultCellStyle.BackColor = TargetColor(dgvTargets.Item("Typ", i).Value)
             dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Black
-            If TargetIsReadOnly(i) Then
+            If TargetIsReadOnly(iPos) Then
                 dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Gray
             Else
                 dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Black
             End If
-            If dgvTargets.Item("NP", i).Value Then            'If TargetNonPerf(i) Then
+            If TargetNonPerf(iPos) Then
                 dgvTargets.Rows(i).DefaultCellStyle.BackColor = Color.Black
                 dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.White
-                If TargetIsReadOnly(i) Then dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Gray
+                If TargetIsReadOnly(iPos) Then dgvTargets.Rows(i).DefaultCellStyle.ForeColor = Color.Gray
             End If
         Next
     End Sub
