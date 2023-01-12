@@ -1710,7 +1710,7 @@ Public Class SNICSrFrm
                         End If
                         NewRow("LTCorr") = theLTCorr
                         NewRow("Corr14/12") = NewRow("He14/12") / NewRow("LTCorr") / C13C12(NumRuns) ^ 2    '### SQ FRAC CORR ###
-                        If NewRow("CntTotS") <> 0 And NewRow("CntTotGT") <> 0 Then
+                        If NewRow("CntTotS") <> 0 And NewRow("CntTotGT") <> 0 And NewRow("CntTotH") >= NewRow("CntTotS") Then
                             Dim RelErrSq As Double = (NewRow("CntTotH") - NewRow("CntTotS")) * NewRow("CntTotH") ^ 2 / NewRow("CntTotS") ^ 4 _
                                                      + NewRow("CntTotH") ^ 2 / NewRow("CntTotGT") / NewRow("CntTotS") ^ 2
                             NewRow("Sig14/12") = NewRow("Corr14/12") * RelErrSq ^ 0.5
