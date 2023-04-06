@@ -18,7 +18,7 @@ Imports System.Configuration
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 3.22     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 3.23     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -1715,7 +1715,7 @@ Public Class SNICSrFrm
                                                      + NewRow("CntTotH") ^ 2 / NewRow("CntTotGT") / NewRow("CntTotS") ^ 2
                             NewRow("Sig14/12") = NewRow("Corr14/12") * RelErrSq ^ 0.5
                         Else
-                            NewRow("Sig14/12") = 0.000000000000001
+                            NewRow("Sig14/12") = NewRow("Corr14/12") / NewRow("CntTotGT") ^ 0.5
                         End If
                         NewRow("DelC13") = 1000 * (C13C12(NumRuns) / 1.12372 - 1)         ' referenced to VPDB
                         If (NewRow("Mst") < LastMst) And (NewRow("Mst") = 1) Then
