@@ -18,7 +18,7 @@ Imports System.Configuration
 
 Public Class SNICSrFrm
 
-    Public VERSION As Double = 3.23     ' this is the version number. Increment in units of 0.01 when updating 
+    Public VERSION As Double = 3.24     ' this is the version number. Increment in units of 0.01 when updating 
     Public Const TEST As Boolean = False ' TRUE triggers test environment behavior, FALSE for production
     Public TTE As String = ""           ' modifier for Database Test Table Extension
 
@@ -313,6 +313,7 @@ Public Class SNICSrFrm
         SetupCompareList()
         SetupBCCompareList()
         SetupStandardsTables()          ' set up the data set structures for display and manipulation
+
         With Options
             .cmbNumVar.Items.Clear()
             .cmbNumVar.Items.Add("None")
@@ -2350,7 +2351,6 @@ Public Class SNICSrFrm
             Next
         End With
     End Sub
-
 
 #End Region
 
@@ -6702,6 +6702,37 @@ Public Class SNICSrFrm
 
     Private Sub CommentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CommentToolStripMenuItem.Click
         PresentTargetInfo()
+    End Sub
+
+    Private Sub ShowRecentAuthorizersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowRecentAuthorizersToolStripMenuItem.Click
+        Dim query As String = "
+            select distinct wheel, analyst1, analyst2
+            from snics_results where DATEDIFF (ww, runtime, GETDATE()) < 3
+            order by wheel
+        "
+
+        Using con As New SqlConnection(ConString)
+            Try
+                con.Open()
+
+                Dim com As IDbCommand = con.CreateCommand
+                com.CommandType = CommandType.Text
+                com.CommandText = query
+
+                Dim dt As New DataTable()
+                Using adapter = New SqlDataAdapter(com)
+                    adapter.Fill(dt)
+                End Using
+
+                RecentAuthorizers.dgvRecentAuthorizers.DataSource = dt
+                RecentAuthorizers.Visible = True
+            Catch ex As Exception
+                MsgBox(ex.Message & vbCrLf & query)
+                Return
+            End Try
+
+            con.Close()
+        End Using
     End Sub
 
 #Region "Menu Hits"

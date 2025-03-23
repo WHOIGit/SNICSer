@@ -223,6 +223,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Models\MicadasRecord.vb" />
+    <Compile Include="RecentAuthorizers.Designer.vb">
+      <DependentUpon>RecentAuthorizers.vb</DependentUpon>
+    </Compile>
+    <Compile Include="RecentAuthorizers.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Repositories\MicadasRepository.vb" />
     <Compile Include="WheelID.vb" />
     <Compile Include="ExtStd.Designer.vb">
@@ -422,6 +428,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Options.resx">
       <DependentUpon>Options.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RecentAuthorizers.resx">
+      <DependentUpon>RecentAuthorizers.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SNICRfrm.resx">
       <DependentUpon>SNICRfrm.vb</DependentUpon>
