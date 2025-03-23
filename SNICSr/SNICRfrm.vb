@@ -6735,6 +6735,33 @@ Public Class SNICSrFrm
         End Using
     End Sub
 
+    Private Sub ShowWheelDirectoryToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowWheelDirectoryToolStripMenuItem.Click
+        Dim query As String = "EXEC dbo.sp_wh_directory '" & WheelName & "';"
+
+        Using con As New SqlConnection(ConString)
+            Try
+                con.Open()
+
+                Dim com As IDbCommand = con.CreateCommand
+                com.CommandType = CommandType.Text
+                com.CommandText = query
+
+                Dim dt As New DataTable()
+                Using adapter = New SqlDataAdapter(com)
+                    adapter.Fill(dt)
+                End Using
+
+                WheelDirectory.dgvWheelDirectory.DataSource = dt
+                WheelDirectory.Visible = True
+            Catch ex As Exception
+                MsgBox(ex.Message & vbCrLf & query)
+                Return
+            End Try
+
+            con.Close()
+        End Using
+    End Sub
+
 #Region "Menu Hits"
 
     Private Sub tsmCommit_Click(sender As System.Object, e As System.EventArgs) Handles tsmCommit.Click

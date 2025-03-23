@@ -84,6 +84,7 @@ Partial Class SNICSrFrm
         Me.TALLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TALLToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.WIDEToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowRecentAuthorizersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.ofdLoadFile = New System.Windows.Forms.OpenFileDialog()
@@ -114,7 +115,7 @@ Partial Class SNICSrFrm
         Me.cmbPlot = New System.Windows.Forms.ComboBox()
         Me.flpPlotCalc = New System.Windows.Forms.FlowLayoutPanel()
         Me.flpSampleTypeChkBoxes = New System.Windows.Forms.FlowLayoutPanel()
-        Me.ShowRecentAuthorizersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowWheelDirectoryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.dgvInputData, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EventLog1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -452,7 +453,7 @@ Partial Class SNICSrFrm
         '
         'ToolStripMenuItem3
         '
-        Me.ToolStripMenuItem3.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StandardsAndBlanksToolStripMenuItem, Me.TargetInfoToolStripMenuItem, Me.tspShowSecondaries, Me.TALLToolStripMenuItem, Me.ShowRecentAuthorizersToolStripMenuItem})
+        Me.ToolStripMenuItem3.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StandardsAndBlanksToolStripMenuItem, Me.TargetInfoToolStripMenuItem, Me.tspShowSecondaries, Me.TALLToolStripMenuItem, Me.ShowRecentAuthorizersToolStripMenuItem, Me.ShowWheelDirectoryToolStripMenuItem})
         Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
         Me.ToolStripMenuItem3.Size = New System.Drawing.Size(52, 23)
         Me.ToolStripMenuItem3.Text = "View"
@@ -487,14 +488,20 @@ Partial Class SNICSrFrm
         'TALLToolStripMenuItem1
         '
         Me.TALLToolStripMenuItem1.Name = "TALLToolStripMenuItem1"
-        Me.TALLToolStripMenuItem1.Size = New System.Drawing.Size(206, 24)
+        Me.TALLToolStripMenuItem1.Size = New System.Drawing.Size(120, 24)
         Me.TALLToolStripMenuItem1.Text = "TALL"
         '
         'WIDEToolStripMenuItem
         '
         Me.WIDEToolStripMenuItem.Name = "WIDEToolStripMenuItem"
-        Me.WIDEToolStripMenuItem.Size = New System.Drawing.Size(206, 24)
+        Me.WIDEToolStripMenuItem.Size = New System.Drawing.Size(120, 24)
         Me.WIDEToolStripMenuItem.Text = "WIDE"
+        '
+        'ShowRecentAuthorizersToolStripMenuItem
+        '
+        Me.ShowRecentAuthorizersToolStripMenuItem.Name = "ShowRecentAuthorizersToolStripMenuItem"
+        Me.ShowRecentAuthorizersToolStripMenuItem.Size = New System.Drawing.Size(238, 24)
+        Me.ShowRecentAuthorizersToolStripMenuItem.Text = "Show Recent Authorizers"
         '
         'CommentToolStripMenuItem
         '
@@ -827,11 +834,11 @@ Partial Class SNICSrFrm
         Me.flpSampleTypeChkBoxes.Size = New System.Drawing.Size(324, 24)
         Me.flpSampleTypeChkBoxes.TabIndex = 33
         '
-        'ShowRecentAuthorizersToolStripMenuItem
+        'ShowWheelDirectoryToolStripMenuItem
         '
-        Me.ShowRecentAuthorizersToolStripMenuItem.Name = "ShowRecentAuthorizersToolStripMenuItem"
-        Me.ShowRecentAuthorizersToolStripMenuItem.Size = New System.Drawing.Size(238, 24)
-        Me.ShowRecentAuthorizersToolStripMenuItem.Text = "Show Recent Authorizers"
+        Me.ShowWheelDirectoryToolStripMenuItem.Name = "ShowWheelDirectoryToolStripMenuItem"
+        Me.ShowWheelDirectoryToolStripMenuItem.Size = New System.Drawing.Size(238, 24)
+        Me.ShowWheelDirectoryToolStripMenuItem.Text = "Show Wheel Directory"
         '
         'SNICSrFrm
         '
@@ -961,4 +968,5 @@ Partial Class SNICSrFrm
     Friend WithEvents flpPlotCalc As FlowLayoutPanel
     Friend WithEvents flpSampleTypeChkBoxes As FlowLayoutPanel
     Friend WithEvents ShowRecentAuthorizersToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ShowWheelDirectoryToolStripMenuItem As ToolStripMenuItem
 End Class
