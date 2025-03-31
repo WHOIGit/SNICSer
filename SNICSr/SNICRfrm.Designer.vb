@@ -85,6 +85,7 @@ Partial Class SNICSrFrm
         Me.TALLToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.WIDEToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowRecentAuthorizersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowWheelDirectoryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.ofdLoadFile = New System.Windows.Forms.OpenFileDialog()
@@ -115,7 +116,6 @@ Partial Class SNICSrFrm
         Me.cmbPlot = New System.Windows.Forms.ComboBox()
         Me.flpPlotCalc = New System.Windows.Forms.FlowLayoutPanel()
         Me.flpSampleTypeChkBoxes = New System.Windows.Forms.FlowLayoutPanel()
-        Me.ShowWheelDirectoryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.dgvInputData, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EventLog1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -133,7 +133,7 @@ Partial Class SNICSrFrm
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.MenuStrip1.Size = New System.Drawing.Size(1389, 27)
+        Me.MenuStrip1.Size = New System.Drawing.Size(1782, 27)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -503,6 +503,12 @@ Partial Class SNICSrFrm
         Me.ShowRecentAuthorizersToolStripMenuItem.Size = New System.Drawing.Size(238, 24)
         Me.ShowRecentAuthorizersToolStripMenuItem.Text = "Show Recent Authorizers"
         '
+        'ShowWheelDirectoryToolStripMenuItem
+        '
+        Me.ShowWheelDirectoryToolStripMenuItem.Name = "ShowWheelDirectoryToolStripMenuItem"
+        Me.ShowWheelDirectoryToolStripMenuItem.Size = New System.Drawing.Size(238, 24)
+        Me.ShowWheelDirectoryToolStripMenuItem.Text = "Show Wheel Directory"
+        '
         'CommentToolStripMenuItem
         '
         Me.CommentToolStripMenuItem.Name = "CommentToolStripMenuItem"
@@ -543,11 +549,11 @@ Partial Class SNICSrFrm
         DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvInputData.DefaultCellStyle = DataGridViewCellStyle1
-        Me.dgvInputData.Location = New System.Drawing.Point(783, 58)
+        Me.dgvInputData.Location = New System.Drawing.Point(948, 58)
         Me.dgvInputData.MultiSelect = False
         Me.dgvInputData.Name = "dgvInputData"
         Me.dgvInputData.RowHeadersWidth = 51
-        Me.dgvInputData.Size = New System.Drawing.Size(594, 531)
+        Me.dgvInputData.Size = New System.Drawing.Size(668, 531)
         Me.dgvInputData.TabIndex = 2
         '
         'lblStatus
@@ -585,7 +591,7 @@ Partial Class SNICSrFrm
         Me.dgvTargets.ReadOnly = True
         Me.dgvTargets.RowHeadersVisible = False
         Me.dgvTargets.RowHeadersWidth = 20
-        Me.dgvTargets.Size = New System.Drawing.Size(774, 576)
+        Me.dgvTargets.Size = New System.Drawing.Size(895, 576)
         Me.dgvTargets.TabIndex = 4
         '
         'dgvRuns
@@ -607,7 +613,7 @@ Partial Class SNICSrFrm
         Me.dgvRuns.MultiSelect = False
         Me.dgvRuns.Name = "dgvRuns"
         Me.dgvRuns.RowHeadersWidth = 25
-        Me.dgvRuns.Size = New System.Drawing.Size(793, 143)
+        Me.dgvRuns.Size = New System.Drawing.Size(895, 143)
         Me.dgvRuns.TabIndex = 5
         '
         'lblRuns
@@ -695,7 +701,7 @@ Partial Class SNICSrFrm
         '
         Me.lblStats.AutoSize = True
         Me.lblStats.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblStats.Location = New System.Drawing.Point(799, 604)
+        Me.lblStats.Location = New System.Drawing.Point(945, 616)
         Me.lblStats.Name = "lblStats"
         Me.lblStats.Size = New System.Drawing.Size(150, 18)
         Me.lblStats.TabIndex = 21
@@ -710,13 +716,13 @@ Partial Class SNICSrFrm
         Me.dgvSecs.AllowUserToResizeRows = False
         Me.dgvSecs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader
         Me.dgvSecs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvSecs.Location = New System.Drawing.Point(802, 678)
+        Me.dgvSecs.Location = New System.Drawing.Point(967, 678)
         Me.dgvSecs.MultiSelect = False
         Me.dgvSecs.Name = "dgvSecs"
         Me.dgvSecs.ReadOnly = True
         Me.dgvSecs.RowHeadersVisible = False
         Me.dgvSecs.RowHeadersWidth = 20
-        Me.dgvSecs.Size = New System.Drawing.Size(575, 143)
+        Me.dgvSecs.Size = New System.Drawing.Size(649, 143)
         Me.dgvSecs.TabIndex = 25
         Me.dgvSecs.Visible = False
         '
@@ -724,7 +730,7 @@ Partial Class SNICSrFrm
         '
         Me.lblSecStds.AutoSize = True
         Me.lblSecStds.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSecStds.Location = New System.Drawing.Point(799, 659)
+        Me.lblSecStds.Location = New System.Drawing.Point(964, 658)
         Me.lblSecStds.Name = "lblSecStds"
         Me.lblSecStds.Size = New System.Drawing.Size(169, 18)
         Me.lblSecStds.TabIndex = 26
@@ -816,7 +822,7 @@ Partial Class SNICSrFrm
         Me.flpPlotCalc.Controls.Add(Me.btnPlotStandards)
         Me.flpPlotCalc.Controls.Add(Me.btnPlotAllStds)
         Me.flpPlotCalc.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpPlotCalc.Location = New System.Drawing.Point(917, 24)
+        Me.flpPlotCalc.Location = New System.Drawing.Point(1310, 24)
         Me.flpPlotCalc.Name = "flpPlotCalc"
         Me.flpPlotCalc.Size = New System.Drawing.Size(472, 30)
         Me.flpPlotCalc.TabIndex = 32
@@ -829,23 +835,17 @@ Partial Class SNICSrFrm
         Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkSecondaries)
         Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkBlanks)
         Me.flpSampleTypeChkBoxes.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpSampleTypeChkBoxes.Location = New System.Drawing.Point(438, 34)
+        Me.flpSampleTypeChkBoxes.Location = New System.Drawing.Point(831, 34)
         Me.flpSampleTypeChkBoxes.Name = "flpSampleTypeChkBoxes"
         Me.flpSampleTypeChkBoxes.Size = New System.Drawing.Size(324, 24)
         Me.flpSampleTypeChkBoxes.TabIndex = 33
-        '
-        'ShowWheelDirectoryToolStripMenuItem
-        '
-        Me.ShowWheelDirectoryToolStripMenuItem.Name = "ShowWheelDirectoryToolStripMenuItem"
-        Me.ShowWheelDirectoryToolStripMenuItem.Size = New System.Drawing.Size(238, 24)
-        Me.ShowWheelDirectoryToolStripMenuItem.Text = "Show Wheel Directory"
         '
         'SNICSrFrm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.AntiqueWhite
-        Me.ClientSize = New System.Drawing.Size(1389, 825)
+        Me.ClientSize = New System.Drawing.Size(1782, 825)
         Me.Controls.Add(Me.flpSampleTypeChkBoxes)
         Me.Controls.Add(Me.flpPlotCalc)
         Me.Controls.Add(Me.dgvInputData)

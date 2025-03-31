@@ -186,10 +186,14 @@ Public Class SNICSrFrm
     Public IRMSdC13(MAXTARGETS) As Double              ' the IRMS delC13 measurement
     Public IRMSdC13Pos(MAXTARGETS) As Integer          ' a list of the positions in the plot 
     Public pTargetPos(MAXTARGETS) As Integer        ' a list of target positions that have been run in a partial run
+    Public He12cAverage(MAXTARGETS) As Double
+    Public Le12cAverage(MAXTARGETS) As Double
+    Public He12cLe12cRatio(MAXTARGETS) As Double
     Public pTargetNums As Integer               ' how many
     Public NumdC13Pos As Integer = 0            ' how many in plot
     Public GroupIsReadOnly(MAXGROUPS) As Boolean        ' whether a group is considered read only
     Public RunCalcNum(MAXRUNS) As Integer        ' number of standards to use for each run
+
 #End Region    '       Target Table Storage
 
 #Region "Standards and Blanks Storage"
@@ -420,6 +424,10 @@ Public Class SNICSrFrm
         TargetData.Columns.Add("DelC13", GetType(Double))
         TargetData.Columns.Add("SigC13", GetType(Double))
         TargetData.Columns.Add("MSdC13", GetType(Double))
+        TargetData.Columns.Add("He12c", GetType(Double))
+        TargetData.Columns.Add("Le12c", GetType(Double))
+        TargetData.Columns.Add("Ratio", GetType(Double))
+
         dgvTargets.DataSource = TargetData
         For i = 1 To TargetData.Columns.Count - 1
             If i > 0 Then dgvTargets.Columns(i).ReadOnly = True
@@ -434,6 +442,10 @@ Public Class SNICSrFrm
         dgvTargets.Columns("SigC13").DefaultCellStyle.Format = ("0.00")
         dgvTargets.Columns("Mass").DefaultCellStyle.Format = "0"
         dgvTargets.Columns("MSdC13").DefaultCellStyle.Format = "0.00"
+        dgvTargets.Columns("He12c").DefaultCellStyle.Format = "E2"
+        dgvTargets.Columns("Le12c").DefaultCellStyle.Format = "E2"
+        dgvTargets.Columns("Ratio").DefaultCellStyle.Format = "E2"
+
         dgvTargets.Font = New Font("Arial Narrow", TableFontSize)
         TargetInfo.Columns.Clear()
         TargetInfo.Columns.Add("Pos", GetType(Integer))               ' add all the columns in correct order
@@ -690,7 +702,7 @@ Public Class SNICSrFrm
         flpSampleTypeChkBoxes.Show()
         lblInputDataList.Show()
         Me.ControlBox = True
-        Me.Width = 1500
+        Me.Width = 1900
         Me.Height = 800
         RepositionDGVs()
     End Sub
@@ -2135,6 +2147,9 @@ Public Class SNICSrFrm
                         NewRow("DelC13") = 1000.0 * (C13Rat(i) - 1)
                         NewRow("SigC13") = 1000.0 * Math.Max(SigC13(i), SigC13IntErr(i))
                         NewRow("MSdC13") = IRMSdC13(i)
+                        NewRow("He12c") = He12cAverage(i)
+                        NewRow("Le12c") = Le12cAverage(i)
+                        NewRow("Ratio") = He12cLe12cRatio(i)
                         TargetData.Rows.Add(NewRow)
                     End If
                 End If
@@ -5102,7 +5117,9 @@ Public Class SNICSrFrm
                 com.CommandType = CommandType.Text
                 acmd = "SELECT run_num,  runtime, wheel_pos, group_num, mst_num, sample_name, sample_type, cycles, "
                 acmd &= "le12c, le13c, he12c, he13c, cnt_in, cnt_meas, cnt_14c, he13_12, he14_12, ltcorr, "
-                acmd &= "corr_14_12, sig_14_12, d13c, ok_calc, ok_calc_2, sample_type_1, sample_type_2 FROM dbo.snics_raw" & TTE & " WHERE wheel = '" & wheelname
+                acmd &= "corr_14_12, sig_14_12, d13c, ok_calc, ok_calc_2, sample_type_1, sample_type_2 "
+                acmd &= "FROM dbo.snics_raw" & TTE
+                acmd &= " WHERE wheel = '" & wheelname
                 acmd &= "' AND analyst = '" & GetWheelID(wheelname).FirstAuthName & "' ORDER BY run_num;"
                 com.CommandText = acmd
                 'MsgBox(acmd)
@@ -5193,18 +5210,43 @@ Public Class SNICSrFrm
             Try
                 con.ConnectionString = ConString
                 con.Open()
+
+                Dim AverageColumns As String = "
+                    ,(
+	                    SELECT		avg(le12c)
+	                    FROM		snics_raw r
+	                    WHERE		r.ok_calc = 1
+				                    AND r.wheel = snics_results.wheel
+				                    AND	r.wheel_pos = snics_results.wheel_pos
+                    ) AS le12c_average
+                    ,(
+	                    SELECT		avg(he12c)
+	                    FROM		snics_raw r
+	                    WHERE		r.ok_calc = 1
+				                    AND r.wheel = snics_results.wheel
+				                    AND	r.wheel_pos = snics_results.wheel_pos
+                    ) AS he12c_average
+                    ,(
+	                    SELECT		avg(r.he12c/r.le12c)
+	                    FROM		snics_raw r
+	                    WHERE		r.ok_calc = 1
+				                    AND r.wheel = snics_results.wheel
+				                    AND	r.wheel_pos = snics_results.wheel_pos
+                    ) AS he12c_le12c_ratio
+                "
+
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 If REAUTH And FIRSTAUTH Then
-                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " _
+                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " & AverageColumns _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 ElseIf REAUTH And SECONDAUTH Then
-                    acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro, std_mult2 " _
+                    acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro, std_mult2 " & AverageColumns _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 Else
-                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " _
+                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " & AverageColumns _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = False
                     'Exit Try
@@ -5287,6 +5329,10 @@ Public Class SNICSrFrm
                             'MsgBox("Got " & CalcMode & ":" & CalcNum.ToString)
                             GotMethod = True        ' do this only once
                         End If
+
+                        If Not rdr.IsDBNull(13) Then He12cAverage(nPos) = rdr.GetDouble(13)
+                        If Not rdr.IsDBNull(14) Then Le12cAverage(nPos) = rdr.GetDouble(14)
+                        If Not rdr.IsDBNull(15) Then He12cLe12cRatio(nPos) = rdr.GetDouble(15)
                     End While
                 End Using
             Catch ex As Exception
@@ -5688,11 +5734,28 @@ Public Class SNICSrFrm
         Dim nRow As Integer = 0
         Using con As New SqlConnection
             Try
-                Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  dbo.snics_results" & TTE & ".sample_type, " _
+                Dim sampleTypeIndex As Integer = 1
+                Dim numRunsIndex As Integer = 2
+                Dim normRatioIndex As Integer = 3
+                Dim intErrIndex As Integer = 4
+                Dim extErrIndex As Integer = 5
+                Dim commentIndex As Integer = 8
+
+
+                Dim theCmd As String = "SELECT " _
+                    & "dbo.snics_results" & TTE & ".wheel_pos,  " _
+                    & "dbo.snics_results" & TTE & ".sample_type, " _
                     & "dbo.snics_results" & TTE & ".num_runs, " _
-                    & "dbo.snics_results" & TTE & ".norm_ratio, dbo.snics_results" & TTE & ".int_err, dbo.snics_results" & TTE & ".ext_err, " _
-                    & "dbo.snics_results" & TTE & ".del_13C, dbo.snics_results" & TTE & ".sig_13c, dbo.snics_results" & TTE & ".comment, dbo.snics_results" & TTE & ".np, " _
-                    & "dbo.snics_results" & TTE & ".sample_type_1, dbo.snics_results" & TTE & ".norm_method, dbo.snics_results" & TTE & ".norm_method_2" _
+                    & "dbo.snics_results" & TTE & ".norm_ratio, " _
+                    & "dbo.snics_results" & TTE & ".int_err, " _
+                    & "dbo.snics_results" & TTE & ".ext_err, " _
+                    & "dbo.snics_results" & TTE & ".del_13C, " _
+                    & "dbo.snics_results" & TTE & ".sig_13c, " _
+                    & "dbo.snics_results" & TTE & ".comment, " _
+                    & "dbo.snics_results" & TTE & ".np, " _
+                    & "dbo.snics_results" & TTE & ".sample_type_1, " _
+                    & "dbo.snics_results" & TTE & ".norm_method, " _
+                    & "dbo.snics_results" & TTE & ".norm_method_2" _
                     & " FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
                     & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                 con.ConnectionString = ConString
@@ -5708,36 +5771,49 @@ Public Class SNICSrFrm
                         NewRow("Pos") = nPos
                         NewRow("SampleName") = TargetNames(nPos)
                         NewRow("Rec_Num") = Rec_Num(nPos)
+
                         NewRow("1stTyp") = rdr.GetString(1)
-                        If Not rdr.IsDBNull(10) Then NewRow("1stTyp") = rdr.GetString(10)
+                        If Not rdr.IsDBNull(10) Then
+                            NewRow("1stTyp") = rdr.GetString(10)
+                        End If
                         NewRow("2ndTyp") = TargetTypes(nPos)
+
                         NewRow("1stN") = rdr.GetInt32(2)
                         NewRow("2ndN") = TargetRuns(nPos)
+
                         NewRow("1stNormRat") = rdr.GetDouble(3)
                         NewRow("2ndNormRat") = TargetRat(nPos)
                         NewRow("DelNormRat") = NewRow("2ndNormRat") - NewRow("1stNormRat")
+
                         NewRow("1stIntErr") = rdr.GetDouble(4)
                         NewRow("2ndIntErr") = IntErr(nPos)
+
                         NewRow("1stExtErr") = rdr.GetDouble(5)
                         NewRow("2ndExtErr") = ExtErr(nPos)
+
                         NewRow("SigmaC14") = NewRow("DelNormRat") / Math.Max(Math.Max(NewRow("1stIntErr"), NewRow("1stExtErr")) _
                                                 , Math.Max(NewRow("2ndIntErr"), NewRow("2ndExtErr")))
                         MeanSigma += NewRow("SigmaC14")
+
                         If rdr.IsDBNull(8) Then
                             NewRow("Comment") = ""
                         Else
                             NewRow("Comment") = rdr.GetString(8)
                             TargetComments(nPos) = NewRow("Comment")
                         End If
+
                         If Not rdr.IsDBNull(9) Then
                             If rdr.GetByte(9) = 1 Then NewRow("NP") = True
                         End If
+
                         If rdr.GetByte(9) = 1 Then
                         End If
+
                         MeanAbsSigma += NewRow("SigmaC14") ^ 2
                         If Not rdr.IsDBNull(11) Then
                             TheNormMethod = rdr.GetString(11)
                         End If
+
                         If Not rdr.IsDBNull(12) Then
                             TheSecondNormMethod = rdr.GetString(12)
                         End If
@@ -5794,7 +5870,14 @@ Public Class SNICSrFrm
         Using con As New SqlConnection
             Try
                 If (SECONDAUTH And Not REAUTH) Or (Not FIRSTAUTH And Not SECONDAUTH) Then       ' need to compare current results with first analyst
-                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr, comment, tot_mass " _
+                    Dim theCmd As String = "SELECT " _
+                        & "dbo.snics_results" & TTE & ".wheel_pos,  " _
+                        & "fm_corr, " _
+                        & "sig_fm_corr, " _
+                        & "fm_mb_corr, " _
+                        & "sig_fm_mb_corr, " _
+                        & "comment, " _
+                        & "tot_mass " _
                         & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
                         & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                     con.ConnectionString = ConString
@@ -5852,10 +5935,21 @@ Public Class SNICSrFrm
                         End While
                     End Using
                 ElseIf (FIRSTAUTH And REAUTH) Or (SECONDAUTH And REAUTH) Then     ' need to work from database only
-                    Dim theCmd As String = "SELECT dbo.snics_results" & TTE & ".wheel_pos,  fm_corr, sig_fm_corr, fm_mb_corr, sig_fm_mb_corr," _
-                                            & "fm_corr_2, sig_fm_corr_2, fm_mb_corr_2, sig_fm_mb_corr_2, comment, tot_mass, tot_mass2 " _
-                                            & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
-                                            & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
+                    Dim theCmd As String = "SELECT " _
+                        & "dbo.snics_results" & TTE & ".wheel_pos,  " _
+                        & "fm_corr, " _
+                        & "sig_fm_corr, " _
+                        & "fm_mb_corr, " _
+                        & "sig_fm_mb_corr," _
+                        & "fm_corr_2, " _
+                        & "sig_fm_corr_2, " _
+                        & "fm_mb_corr_2, " _
+                        & "sig_fm_mb_corr_2, " _
+                        & "comment, " _
+                        & "tot_mass, " _
+                        & "tot_mass2 " _
+                        & "FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
+                        & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
                     con.ConnectionString = ConString
                     con.Open()
                     Dim com As IDbCommand = con.CreateCommand
