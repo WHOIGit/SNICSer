@@ -5369,6 +5369,13 @@ Public Class SNICSrFrm
             CompareFlagsToolStripMenuItem.Visible = False
             FlagsToolStripMenuItem1.Visible = False
         End If
+        If TheWheel.SecondAuthName <> "" Then
+            SecondAnalystNormalizedResultsToolStripMenuItem.Visible = True
+            SecondAnalystBlankCorrectedResultsToolStripMenuItem.Visible = True
+        Else
+            SecondAnalystNormalizedResultsToolStripMenuItem.Visible = False
+            SecondAnalystBlankCorrectedResultsToolStripMenuItem.Visible = False
+        End If
         FindSmallSamples()       ' find out if target is small
         CommitGroupToDatabaseToolStripMenuItem.Enabled = False
         If Not FIRSTAUTH Then
