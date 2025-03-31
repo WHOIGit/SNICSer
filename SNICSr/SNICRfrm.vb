@@ -5719,7 +5719,7 @@ Public Class SNICSrFrm
         End If
     End Function
 
-    Public Sub DoComparison()
+    Public Sub DoComparison(AnalystNumber As Integer)
         Dim TheNormMethod As String = "Unknown"
         Dim TheSecondNormMethod As String = ""
         Compare.dgvCompare.DataSource = Comparison
@@ -5734,30 +5734,22 @@ Public Class SNICSrFrm
         Dim nRow As Integer = 0
         Using con As New SqlConnection
             Try
-                Dim sampleTypeIndex As Integer = 1
-                Dim numRunsIndex As Integer = 2
-                Dim normRatioIndex As Integer = 3
-                Dim intErrIndex As Integer = 4
-                Dim extErrIndex As Integer = 5
-                Dim commentIndex As Integer = 8
-
-
                 Dim theCmd As String = "SELECT " _
-                    & "dbo.snics_results" & TTE & ".wheel_pos,  " _
-                    & "dbo.snics_results" & TTE & ".sample_type, " _
-                    & "dbo.snics_results" & TTE & ".num_runs, " _
-                    & "dbo.snics_results" & TTE & ".norm_ratio, " _
-                    & "dbo.snics_results" & TTE & ".int_err, " _
-                    & "dbo.snics_results" & TTE & ".ext_err, " _
-                    & "dbo.snics_results" & TTE & ".del_13C, " _
-                    & "dbo.snics_results" & TTE & ".sig_13c, " _
-                    & "dbo.snics_results" & TTE & ".comment, " _
-                    & "dbo.snics_results" & TTE & ".np, " _
-                    & "dbo.snics_results" & TTE & ".sample_type_1, " _
-                    & "dbo.snics_results" & TTE & ".norm_method, " _
-                    & "dbo.snics_results" & TTE & ".norm_method_2" _
-                    & " FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName _
-                    & "' ORDER BY dbo.snics_results" & TTE & ".wheel_pos;"
+                    & "wheel_pos,  " _
+                    & "sample_type, " _
+                    & If(AnalystNumber = 1, "num_runs, ", "num_runs_2, ") _ 'xx
+                    & If(AnalystNumber = 1, "norm_ratio, ", "norm_ratio_2, ") _ 'xx
+                    & If(AnalystNumber = 1, "int_err, ", "int_err_2, ") _ 'xx
+                    & If(AnalystNumber = 1, "ext_err, ", "ext_err_2, ") _ 'xx
+                    & If(AnalystNumber = 1, "del_13C, ", "del_13C_2, ") _
+                    & If(AnalystNumber = 1, "sig_13c, ", "sig_13c_2, ") _
+                    & If(AnalystNumber = 1, "comment, ", "comment_2, ") _
+                    & If(AnalystNumber = 1, "np, ", "np_2, ") _
+                    & If(AnalystNumber = 1, "sample_type_1, ", "sample_type_2, ") _
+                    & "norm_method, " _
+                    & "norm_method_2" _
+                    & " FROM dbo.snics_results" & TTE & "  WHERE dbo.snics_results" & TTE & ".wheel = '" & WheelName & "'" _
+                    & " ORDER BY wheel_pos;"
                 con.ConnectionString = ConString
                 con.Open()
                 Dim com As IDbCommand = con.CreateCommand
@@ -5806,8 +5798,8 @@ Public Class SNICSrFrm
                             If rdr.GetByte(9) = 1 Then NewRow("NP") = True
                         End If
 
-                        If rdr.GetByte(9) = 1 Then
-                        End If
+                        'If rdr.GetByte(9) = 1 Then
+                        'End If
 
                         MeanAbsSigma += NewRow("SigmaC14") ^ 2
                         If Not rdr.IsDBNull(11) Then
@@ -5817,6 +5809,7 @@ Public Class SNICSrFrm
                         If Not rdr.IsDBNull(12) Then
                             TheSecondNormMethod = rdr.GetString(12)
                         End If
+
                         'NewRow("1stDelC13") = rdr.GetDouble(5)
                         'NewRow("2ndDelC13") = TargetData.Rows(nRow).Item("DelC13")
                         'NewRow("DelDelC13") = NewRow("2ndDelC13") - NewRow("1stDelC13")
@@ -5837,8 +5830,7 @@ Public Class SNICSrFrm
         MeanAbsSigma = (MeanAbsSigma / (Compare.dgvCompare.Rows.Count - 1)) ^ 0.5
         With Compare
             .Text = "SNICSer v" & VERSION.ToString("0.000") & " NORMALIZED SAMPLE COMPARISON for " & FileName
-            .lblComparison.Text = "Mean SigmaC14 = " & MeanSigma.ToString("0.00") & "  (RMS = " _
-                    & MeanAbsSigma.ToString("0.00") & " )"
+            .lblComparison.Text = "Mean SigmaC14 = " & MeanSigma.ToString("0.00") & "  (RMS = " & MeanAbsSigma.ToString("0.00") & " )"
             .lblFirstAnalyst.Text = "1st Analyst (" & TheWheel.FirstAuthName & " on " & TheWheel.FirstAuthDate.ToShortDateString & ") used " & TheNormMethod
             If TheSecondNormMethod <> "" Then
                 .lblSecondAnalyst.Text = "2nd Analyst (" & TheWheel.SecondAuthName & ") " & TheWheel.SecondAuthDate.ToShortDateString & ") used " & TheSecondNormMethod
@@ -5852,7 +5844,7 @@ Public Class SNICSrFrm
         End With
     End Sub
 
-    Private Sub DoBCComparison()
+    Private Sub DoBCComparison(AnalystNumber As Integer)
         Compare.dgvCompare.DataSource = BCComparison
         For i = 3 To BCComparison.Columns.Count - 1
             Compare.dgvCompare.Columns(i).DefaultCellStyle.Format = dFnt(NumResFigs - 3)
@@ -7127,11 +7119,27 @@ Public Class SNICSrFrm
     End Sub
 
     Private Sub NormalizedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NormalizedResultsToolStripMenuItem.Click
-        DoComparison()
+        DoComparison(1)
+    End Sub
+
+    Private Sub FirstAnalystNormalizedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FirstAnalystNormalizedResultsToolStripMenuItem.Click
+        DoComparison(1)
+    End Sub
+
+    Private Sub SecondAnalystNormalizedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SecondAnalystNormalizedResultsToolStripMenuItem.Click
+        DoComparison(2)
+    End Sub
+
+    Private Sub FirstAnnalystBlankCorrectedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Click
+        DoBCComparison(1)
+    End Sub
+
+    Private Sub SecondAnalystBlankCorrectedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SecondAnalystBlankCorrectedResultsToolStripMenuItem.Click
+        DoBCComparison(2)
     End Sub
 
     Private Sub BlankCorrectedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BlankCorrectedResultsToolStripMenuItem.Click
-        DoBCComparison()
+        DoBCComparison(1)
     End Sub
 
     Private Sub OptionsToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles OptionsToolStripMenuItem.Click
