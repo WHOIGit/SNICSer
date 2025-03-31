@@ -6024,6 +6024,110 @@ Public Class SNICSrFrm
 
     End Sub
 
+    Private Sub DoBlankCorrectedComparison(AnalystNumber As Integer)
+        Compare.dgvCompare.DataSource = BCComparison
+        For i = 3 To BCComparison.Columns.Count - 1
+            Compare.dgvCompare.Columns(i).DefaultCellStyle.Format = dFnt(NumResFigs - 3)
+        Next
+        Dim NewRow As DataRow
+        Calculate()                       ' force a recalculation to make sure results are current
+        Dim MeanSigma As Double = 0
+        Dim MeanAbsSigma As Double = 0
+        BCComparison.Rows.Clear()
+        Dim nRow As Integer = 0
+        Dim Small1 As Boolean = False
+        Dim Small2 As Boolean = False
+        Dim diffMass As String = ""
+        Dim diff As Double = 0.0001
+        Using con As New SqlConnection
+            Try
+                Dim theCmd As String = "SELECT " _
+                        & "wheel_pos,  " _
+                        & If(AnalystNumber = 1, "fm_corr, ", "fm_corr_2, ") _
+                        & If(AnalystNumber = 1, "sig_fm_corr, ", "sig_fm_corr_2, ") _
+                        & If(AnalystNumber = 1, "fm_mb_corr, ", "fm_mb_corr_2, ") _
+                        & If(AnalystNumber = 1, "sig_fm_mb_corr, ", "sig_fm_mb_corr_2, ") _
+                        & If(AnalystNumber = 1, "comment, ", "'test 2nd', ") _
+                        & If(AnalystNumber = 1, "tot_mass ", "tot_mass2 ") _
+                        & "FROM dbo.snics_results" & TTE _
+                        & " WHERE wheel = '" & WheelName & "'" _
+                        & " ORDER BY wheel_pos;"
+                con.ConnectionString = ConString
+                con.Open()
+                Dim com As IDbCommand = con.CreateCommand
+                com.CommandType = CommandType.Text
+                com.CommandText = theCmd
+                Using rdr As IDataReader = com.ExecuteReader
+                    While rdr.Read
+                        If Not rdr.IsDBNull(1) And Not rdr.IsDBNull(2) Then
+                            If rdr.GetDouble(2) <> 0 Then                ' 
+                                NewRow = BCComparison.NewRow
+                                Dim nPos As Integer = rdr.GetByte(0)
+                                NewRow("Pos") = nPos
+                                NewRow("SampleName") = TargetNames(nPos)
+                                NewRow("Rec_Num") = Rec_Num(nPos)
+                                If Not IsDBNull(FmMBCorr(nPos)) And FmMBCorr(nPos) <> -99 Then
+                                    If Not rdr.IsDBNull(3) Then
+                                        NewRow("1stFmCorr") = rdr.GetDouble(3)
+                                        NewRow("1stSigFmCorr") = rdr.GetDouble(4)
+                                    ElseIf Not rdr.IsDBNull(1) Then
+                                        NewRow("1stFmCorr") = rdr.GetDouble(1)
+                                        NewRow("1stSigFmCorr") = rdr.GetDouble(2)
+                                    End If
+                                    NewRow("2ndFmCorr") = FmMBCorr(nPos)
+                                    NewRow("2ndSigFmCorr") = SigFmMBCorr(nPos)
+                                Else
+                                    NewRow("1stFmCorr") = rdr.GetDouble(1)
+                                    NewRow("1stSigFmCorr") = rdr.GetDouble(2)
+                                    NewRow("2ndFmCorr") = FmCorr(nPos)
+                                    NewRow("2ndSigFmCorr") = SigFmCorr(nPos)
+                                End If
+                                NewRow("DelFmCorr") = NewRow("2ndFmCorr") - NewRow("1stFmCorr")
+                                NewRow("SigmaFmCorr") = NewRow("DelFmCorr") / Math.Max(NewRow("1stSigFmCorr"), NewRow("2ndSigFmCorr"))
+                                NewRow("DelSigFmCorr") = NewRow("2ndSigFmCorr") - NewRow("1stSigFmCorr")
+                                If Not rdr.IsDBNull(5) Then
+                                    TargetComments(nPos) = rdr.GetString(5)
+                                End If
+                                If rdr.IsDBNull(6) Then
+                                    If TotalMass(nPos) <> 0 Then
+                                        diffMass = diffMass & nPos.ToString & " "
+                                        ' do missmass thing for error message
+                                    End If
+                                ElseIf Math.Abs(rdr.GetDouble(6) - TotalMass(nPos)) > diff Then
+                                    diffMass = diffMass & nPos.ToString & " "
+                                    ' do missmass thing for error message
+                                End If
+                                NewRow("Comment") = TargetComments(nPos)
+                                MeanSigma += NewRow("SigmaFmCorr")
+                                MeanAbsSigma += NewRow("SigmaFmCorr") ^ 2
+                                BCComparison.Rows.Add(NewRow)
+                                nRow += 1
+                            End If
+                        End If
+                    End While
+                End Using
+                If diffMass <> "" Then
+                    MsgBox("Warning: Masses differ from 1st to 2nd analyst for these samples: " & diffMass)
+                End If
+            Catch ex As Exception
+                MsgBox("Error getting data for BC comparison: " & ex.Message)
+            End Try
+            con.Close()
+        End Using
+        ColorizeBCCompare()
+        MeanSigma /= Compare.dgvCompare.Rows.Count - 1
+        MeanAbsSigma = (MeanAbsSigma / (Compare.dgvCompare.Rows.Count - 1)) ^ 0.5
+        With Compare
+            Dim theWidth As Integer = 50 + .dgvCompare.Columns.GetColumnsWidth(DataGridViewElementStates.None)
+            .Text = "SNICSer v" & VERSION.ToString("0.000") & " MASS BALANCE BLANK CORRECTED COMPARISON for " & FileName
+            .lblComparison.Text = "Mean SigmaC14 = " & MeanSigma.ToString("0.00") & "  (RMS = " _
+                    & MeanAbsSigma.ToString("0.00") & " )"
+            .Width = theWidth
+            .Visible = True
+        End With
+
+    End Sub
+
     Public Sub CompareTheFlags()
         CompareFlags.dgvFlags.DataSource = FlagTable
         CompareFlags.Visible = True
@@ -7138,11 +7242,11 @@ Public Class SNICSrFrm
     End Sub
 
     Private Sub FirstAnnalystBlankCorrectedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Click
-        DoBCComparison(1)
+        DoBlankCorrectedComparison(1)
     End Sub
 
     Private Sub SecondAnalystBlankCorrectedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SecondAnalystBlankCorrectedResultsToolStripMenuItem.Click
-        DoBCComparison(2)
+        DoBlankCorrectedComparison(2)
     End Sub
 
     Private Sub BlankCorrectedResultsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BlankCorrectedResultsToolStripMenuItem.Click
