@@ -48,6 +48,10 @@ Partial Class SNICSrFrm
         Me.NormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FlagsToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FirstAnalystNormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SecondAnalystNormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsmBlankCorrect = New System.Windows.Forms.ToolStripMenuItem()
         Me.tspNukeDatabase = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsmCommit = New System.Windows.Forms.ToolStripMenuItem()
@@ -116,10 +120,6 @@ Partial Class SNICSrFrm
         Me.cmbPlot = New System.Windows.Forms.ComboBox()
         Me.flpPlotCalc = New System.Windows.Forms.FlowLayoutPanel()
         Me.flpSampleTypeChkBoxes = New System.Windows.Forms.FlowLayoutPanel()
-        Me.FirstAnalystNormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SecondAnalystNormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.dgvInputData, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.EventLog1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -137,7 +137,7 @@ Partial Class SNICSrFrm
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.MenuStrip1.Size = New System.Drawing.Size(1782, 27)
+        Me.MenuStrip1.Size = New System.Drawing.Size(1625, 27)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -268,6 +268,30 @@ Partial Class SNICSrFrm
         Me.FlagsToolStripMenuItem1.Text = "Flags"
         Me.FlagsToolStripMenuItem1.Visible = False
         '
+        'FirstAnalystNormalizedResultsToolStripMenuItem
+        '
+        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Name = "FirstAnalystNormalizedResultsToolStripMenuItem"
+        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
+        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Text = "1st Analyst Normalized Results"
+        '
+        'SecondAnalystNormalizedResultsToolStripMenuItem
+        '
+        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Name = "SecondAnalystNormalizedResultsToolStripMenuItem"
+        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
+        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Text = "2nd Analyst Normalized Results"
+        '
+        'FirstAnnalystBlankCorrectedResultsToolStripMenuItem
+        '
+        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Name = "FirstAnnalystBlankCorrectedResultsToolStripMenuItem"
+        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
+        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Text = "1st Annalyst Blank Corrected Results"
+        '
+        'SecondAnalystBlankCorrectedResultsToolStripMenuItem
+        '
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Name = "SecondAnalystBlankCorrectedResultsToolStripMenuItem"
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Text = "2nd Analyst Blank Corrected Results"
+        '
         'tsmBlankCorrect
         '
         Me.tsmBlankCorrect.Name = "tsmBlankCorrect"
@@ -330,13 +354,13 @@ Partial Class SNICSrFrm
         'tspHelp
         '
         Me.tspHelp.Name = "tspHelp"
-        Me.tspHelp.Size = New System.Drawing.Size(206, 24)
+        Me.tspHelp.Size = New System.Drawing.Size(124, 24)
         Me.tspHelp.Text = "Help"
         '
         'tspAbout
         '
         Me.tspAbout.Name = "tspAbout"
-        Me.tspAbout.Size = New System.Drawing.Size(206, 24)
+        Me.tspAbout.Size = New System.Drawing.Size(124, 24)
         Me.tspAbout.Text = "About"
         '
         'OptionsToolStripMenuItem
@@ -395,31 +419,31 @@ Partial Class SNICSrFrm
         'tspGroupMerge
         '
         Me.tspGroupMerge.Name = "tspGroupMerge"
-        Me.tspGroupMerge.Size = New System.Drawing.Size(206, 24)
+        Me.tspGroupMerge.Size = New System.Drawing.Size(181, 24)
         Me.tspGroupMerge.Text = "Merge Groups"
         '
         'tspGroupSplit
         '
         Me.tspGroupSplit.Name = "tspGroupSplit"
-        Me.tspGroupSplit.Size = New System.Drawing.Size(206, 24)
+        Me.tspGroupSplit.Size = New System.Drawing.Size(181, 24)
         Me.tspGroupSplit.Text = "Split Group"
         '
         'tspGroupRestore
         '
         Me.tspGroupRestore.Name = "tspGroupRestore"
-        Me.tspGroupRestore.Size = New System.Drawing.Size(206, 24)
+        Me.tspGroupRestore.Size = New System.Drawing.Size(181, 24)
         Me.tspGroupRestore.Text = "Restore Groups"
         '
         'tspListGroups
         '
         Me.tspListGroups.Name = "tspListGroups"
-        Me.tspListGroups.Size = New System.Drawing.Size(206, 24)
+        Me.tspListGroups.Size = New System.Drawing.Size(181, 24)
         Me.tspListGroups.Text = "List Groups"
         '
         'PlotGroupsToolStripMenuItem
         '
         Me.PlotGroupsToolStripMenuItem.Name = "PlotGroupsToolStripMenuItem"
-        Me.PlotGroupsToolStripMenuItem.Size = New System.Drawing.Size(206, 24)
+        Me.PlotGroupsToolStripMenuItem.Size = New System.Drawing.Size(181, 24)
         Me.PlotGroupsToolStripMenuItem.Text = "Plot Groups"
         Me.PlotGroupsToolStripMenuItem.Visible = False
         '
@@ -434,25 +458,25 @@ Partial Class SNICSrFrm
         '
         Me.PropertyPropertyToolStripMenuItem.Enabled = False
         Me.PropertyPropertyToolStripMenuItem.Name = "PropertyPropertyToolStripMenuItem"
-        Me.PropertyPropertyToolStripMenuItem.Size = New System.Drawing.Size(206, 24)
+        Me.PropertyPropertyToolStripMenuItem.Size = New System.Drawing.Size(205, 24)
         Me.PropertyPropertyToolStripMenuItem.Text = "Property-Property"
         '
         'tspPlotAllStds
         '
         Me.tspPlotAllStds.Name = "tspPlotAllStds"
-        Me.tspPlotAllStds.Size = New System.Drawing.Size(206, 24)
+        Me.tspPlotAllStds.Size = New System.Drawing.Size(205, 24)
         Me.tspPlotAllStds.Text = "Plot All Standards"
         '
         'tspPlotStds
         '
         Me.tspPlotStds.Name = "tspPlotStds"
-        Me.tspPlotStds.Size = New System.Drawing.Size(206, 24)
+        Me.tspPlotStds.Size = New System.Drawing.Size(205, 24)
         Me.tspPlotStds.Text = "Plot Standards"
         '
         'AMSVsIRMSDC13ToolStripMenuItem
         '
         Me.AMSVsIRMSDC13ToolStripMenuItem.Name = "AMSVsIRMSDC13ToolStripMenuItem"
-        Me.AMSVsIRMSDC13ToolStripMenuItem.Size = New System.Drawing.Size(206, 24)
+        Me.AMSVsIRMSDC13ToolStripMenuItem.Size = New System.Drawing.Size(205, 24)
         Me.AMSVsIRMSDC13ToolStripMenuItem.Text = "AMS vs IRMS dC13"
         '
         'ToolStripMenuItem3
@@ -695,7 +719,7 @@ Partial Class SNICSrFrm
         '
         Me.lblInputDataList.AutoSize = True
         Me.lblInputDataList.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblInputDataList.Location = New System.Drawing.Point(798, 35)
+        Me.lblInputDataList.Location = New System.Drawing.Point(546, 34)
         Me.lblInputDataList.Name = "lblInputDataList"
         Me.lblInputDataList.Size = New System.Drawing.Size(22, 24)
         Me.lblInputDataList.TabIndex = 16
@@ -747,7 +771,7 @@ Partial Class SNICSrFrm
         Me.chkDoCalc.Checked = True
         Me.chkDoCalc.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkDoCalc.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkDoCalc.Location = New System.Drawing.Point(291, 3)
+        Me.chkDoCalc.Location = New System.Drawing.Point(476, 3)
         Me.chkDoCalc.Name = "chkDoCalc"
         Me.chkDoCalc.Size = New System.Drawing.Size(72, 28)
         Me.chkDoCalc.TabIndex = 27
@@ -759,7 +783,7 @@ Partial Class SNICSrFrm
         '
         Me.btnPlotAllStds.BackColor = System.Drawing.Color.PeachPuff
         Me.btnPlotAllStds.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPlotAllStds.Location = New System.Drawing.Point(367, 37)
+        Me.btnPlotAllStds.Location = New System.Drawing.Point(186, 3)
         Me.btnPlotAllStds.Name = "btnPlotAllStds"
         Me.btnPlotAllStds.Size = New System.Drawing.Size(102, 27)
         Me.btnPlotAllStds.TabIndex = 28
@@ -770,7 +794,7 @@ Partial Class SNICSrFrm
         '
         Me.btnPlotStandards.BackColor = System.Drawing.Color.PeachPuff
         Me.btnPlotStandards.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPlotStandards.Location = New System.Drawing.Point(109, 3)
+        Me.btnPlotStandards.Location = New System.Drawing.Point(294, 3)
         Me.btnPlotStandards.Name = "btnPlotStandards"
         Me.btnPlotStandards.Size = New System.Drawing.Size(50, 27)
         Me.btnPlotStandards.TabIndex = 29
@@ -781,9 +805,9 @@ Partial Class SNICSrFrm
         '
         Me.btnCalculate.BackColor = System.Drawing.Color.AntiqueWhite
         Me.btnCalculate.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCalculate.Location = New System.Drawing.Point(369, 3)
+        Me.btnCalculate.Location = New System.Drawing.Point(554, 3)
         Me.btnCalculate.Name = "btnCalculate"
-        Me.btnCalculate.Size = New System.Drawing.Size(100, 27)
+        Me.btnCalculate.Size = New System.Drawing.Size(120, 27)
         Me.btnCalculate.TabIndex = 30
         Me.btnCalculate.Text = "Calculate"
         Me.btnCalculate.UseVisualStyleBackColor = False
@@ -811,7 +835,7 @@ Partial Class SNICSrFrm
         Me.cmbPlot.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbPlot.FormattingEnabled = True
         Me.cmbPlot.Items.AddRange(New Object() {"Standards", "Blanks", "Secondaries", "Unknowns", "All Samples"})
-        Me.cmbPlot.Location = New System.Drawing.Point(165, 3)
+        Me.cmbPlot.Location = New System.Drawing.Point(350, 3)
         Me.cmbPlot.Name = "cmbPlot"
         Me.cmbPlot.Size = New System.Drawing.Size(120, 26)
         Me.cmbPlot.TabIndex = 31
@@ -826,9 +850,9 @@ Partial Class SNICSrFrm
         Me.flpPlotCalc.Controls.Add(Me.btnPlotStandards)
         Me.flpPlotCalc.Controls.Add(Me.btnPlotAllStds)
         Me.flpPlotCalc.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpPlotCalc.Location = New System.Drawing.Point(1310, 24)
+        Me.flpPlotCalc.Location = New System.Drawing.Point(948, 28)
         Me.flpPlotCalc.Name = "flpPlotCalc"
-        Me.flpPlotCalc.Size = New System.Drawing.Size(472, 30)
+        Me.flpPlotCalc.Size = New System.Drawing.Size(677, 30)
         Me.flpPlotCalc.TabIndex = 32
         '
         'flpSampleTypeChkBoxes
@@ -839,48 +863,24 @@ Partial Class SNICSrFrm
         Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkSecondaries)
         Me.flpSampleTypeChkBoxes.Controls.Add(Me.chkBlanks)
         Me.flpSampleTypeChkBoxes.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpSampleTypeChkBoxes.Location = New System.Drawing.Point(831, 34)
+        Me.flpSampleTypeChkBoxes.Location = New System.Drawing.Point(574, 34)
         Me.flpSampleTypeChkBoxes.Name = "flpSampleTypeChkBoxes"
         Me.flpSampleTypeChkBoxes.Size = New System.Drawing.Size(324, 24)
         Me.flpSampleTypeChkBoxes.TabIndex = 33
-        '
-        'FirstAnalystNormalizedResultsToolStripMenuItem
-        '
-        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Name = "FirstAnalystNormalizedResultsToolStripMenuItem"
-        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Text = "1st Analyst Normalized Results"
-        '
-        'SecondAnalystNormalizedResultsToolStripMenuItem
-        '
-        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Name = "SecondAnalystNormalizedResultsToolStripMenuItem"
-        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Text = "2nd Analyst Normalized Results"
-        '
-        'FirstAnnalystBlankCorrectedResultsToolStripMenuItem
-        '
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Name = "FirstAnnalystBlankCorrectedResultsToolStripMenuItem"
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Text = "1st Annalyst Blank Corrected Results"
-        '
-        'SecondAnalystBlankCorrectedResultsToolStripMenuItem
-        '
-        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Name = "SecondAnalystBlankCorrectedResultsToolStripMenuItem"
-        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Text = "2nd Analyst Blank Corrected Results"
         '
         'SNICSrFrm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.AntiqueWhite
-        Me.ClientSize = New System.Drawing.Size(1782, 825)
+        Me.ClientSize = New System.Drawing.Size(1625, 825)
+        Me.Controls.Add(Me.lblInputDataList)
         Me.Controls.Add(Me.flpSampleTypeChkBoxes)
         Me.Controls.Add(Me.flpPlotCalc)
         Me.Controls.Add(Me.dgvInputData)
         Me.Controls.Add(Me.lblSecStds)
         Me.Controls.Add(Me.dgvSecs)
         Me.Controls.Add(Me.lblStats)
-        Me.Controls.Add(Me.lblInputDataList)
         Me.Controls.Add(Me.lblDGVTarg)
         Me.Controls.Add(Me.lblRuns)
         Me.Controls.Add(Me.dgvRuns)
