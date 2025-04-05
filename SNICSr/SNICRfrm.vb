@@ -442,7 +442,9 @@ Public Class SNICSrFrm
         dgvTargets.Columns("SigC13").DefaultCellStyle.Format = ("0.00")
         dgvTargets.Columns("Mass").DefaultCellStyle.Format = "0"
         dgvTargets.Columns("MSdC13").DefaultCellStyle.Format = "0.00"
+        dgvTargets.Columns("He12c").HeaderText = "Average He12c"
         dgvTargets.Columns("He12c").DefaultCellStyle.Format = "E2"
+        dgvTargets.Columns("Le12c").HeaderText = "Average Le12c"
         dgvTargets.Columns("Le12c").DefaultCellStyle.Format = "E2"
         dgvTargets.Columns("Ratio").DefaultCellStyle.Format = "E2"
 
@@ -2671,6 +2673,11 @@ Public Class SNICSrFrm
         ExtErr(iPos) = 0
         C13Rat(iPos) = 0
         SigC13(iPos) = 0
+
+        ' Store local sums so their average can be calculated
+        Dim he12c As Double = 0
+        Dim le12c As Double = 0
+
         For i = 1 To RunKeys(iPos, 0)
             Dim iRun As Integer = RunKeys(iPos, i)
             If InputData(iRun).Item("OK") Then
@@ -2678,9 +2685,14 @@ Public Class SNICSrFrm
                 IntErr(iPos) += 1 / NormRatErr(iRun) ^ 2
                 C13Rat(iPos) += C13C12(iRun) / SigC13C12(iRun) ^ 2            ' weighted mean
                 SigC13(iPos) += 1 / SigC13C12(iRun) ^ 2
+
+                he12c += Double.Parse(InputData(iRun).Item("HE12C").ToString())
+                le12c += Double.Parse(InputData(iRun).Item("LE12C").ToString())
+
                 TargetRuns(iPos) += 1
             End If
         Next
+
         SigC13IntErr(iPos) = 0
         If SigC13(iPos) > 0 Then SigC13IntErr(iPos) = SigC13(iPos) ^ -0.5
         If TargetRuns(iPos) > 0 Then
@@ -2699,6 +2711,14 @@ Public Class SNICSrFrm
                 ExtErr(iPos) = (ExtErr(iPos) / (TargetRuns(iPos) - 1) / TargetRuns(iPos)) ^ 0.5
                 SigC13(iPos) = (SigC13(iPos) / (TargetRuns(iPos) - 1) / TargetRuns(iPos)) ^ 0.5
             End If
+
+            He12cAverage(iPos) = he12c / TargetRuns(iPos)
+            Le12cAverage(iPos) = le12c / TargetRuns(iPos)
+            If le12c <> 0 Then
+                He12cLe12cRatio(iPos) = he12c / le12c
+            Else
+                He12cLe12cRatio(iPos) = -99
+            End If
         Else        ' insert flagged values if no runs left
             IntErr(iPos) = -99
             ExtErr(iPos) = -99
@@ -2706,6 +2726,10 @@ Public Class SNICSrFrm
             SigC13(iPos) = -99
             C13Rat(iPos) = -99
             SigC13IntErr(iPos) = -99
+
+            He12cAverage(iPos) = -99
+            Le12cAverage(iPos) = -99
+            He12cLe12cRatio(iPos) = -99
         End If
     End Sub
 
@@ -5211,42 +5235,18 @@ Public Class SNICSrFrm
                 con.ConnectionString = ConString
                 con.Open()
 
-                Dim AverageColumns As String = "
-                    ,(
-	                    SELECT		avg(le12c)
-	                    FROM		snics_raw r
-	                    WHERE		r.ok_calc = 1
-				                    AND r.wheel = snics_results.wheel
-				                    AND	r.wheel_pos = snics_results.wheel_pos
-                    ) AS le12c_average
-                    ,(
-	                    SELECT		avg(he12c)
-	                    FROM		snics_raw r
-	                    WHERE		r.ok_calc = 1
-				                    AND r.wheel = snics_results.wheel
-				                    AND	r.wheel_pos = snics_results.wheel_pos
-                    ) AS he12c_average
-                    ,(
-	                    SELECT		avg(r.he12c/r.le12c)
-	                    FROM		snics_raw r
-	                    WHERE		r.ok_calc = 1
-				                    AND r.wheel = snics_results.wheel
-				                    AND	r.wheel_pos = snics_results.wheel_pos
-                    ) AS he12c_le12c_ratio
-                "
-
                 Dim com As IDbCommand = con.CreateCommand
                 com.CommandType = CommandType.Text
                 If REAUTH And FIRSTAUTH Then
-                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " & AverageColumns _
+                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 ElseIf REAUTH And SECONDAUTH Then
-                    acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro, std_mult2 " & AverageColumns _
+                    acmd = "SELECT wheel_pos, np_2, ss_2, comment_2, fm_corr_2, sig_fm_corr_2, lg_blk_fm_2, sig_lg_blk_fm_2, fm_mb_corr_2, sig_fm_mb_corr_2, norm_method_2, ro, std_mult2 " _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = True
                 Else
-                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " & AverageColumns _
+                    acmd = "SELECT wheel_pos, np, ss, comment, fm_corr, sig_fm_corr, lg_blk_fm, sig_lg_blk_fm, fm_mb_corr, sig_fm_mb_corr, norm_method, ro, std_mult " _
                         & " FROM dbo.snics_results" & TTE & " WHERE wheel = '" & wheelname & "' ORDER BY wheel_pos;"
                     frmBlankCorr.chkLockAll.Checked = False
                     'Exit Try
@@ -5330,9 +5330,6 @@ Public Class SNICSrFrm
                             GotMethod = True        ' do this only once
                         End If
 
-                        If Not rdr.IsDBNull(13) Then He12cAverage(nPos) = rdr.GetDouble(13)
-                        If Not rdr.IsDBNull(14) Then Le12cAverage(nPos) = rdr.GetDouble(14)
-                        If Not rdr.IsDBNull(15) Then He12cLe12cRatio(nPos) = rdr.GetDouble(15)
                     End While
                 End Using
             Catch ex As Exception
