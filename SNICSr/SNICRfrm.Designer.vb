@@ -46,11 +46,10 @@ Partial Class SNICSrFrm
         Me.tsmSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.tspCompare = New System.Windows.Forms.ToolStripMenuItem()
         Me.NormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.BlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FlagsToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.FirstAnalystNormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SecondAnalystNormalizedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FirstAnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsmBlankCorrect = New System.Windows.Forms.ToolStripMenuItem()
         Me.tspNukeDatabase = New System.Windows.Forms.ToolStripMenuItem()
@@ -242,7 +241,7 @@ Partial Class SNICSrFrm
         '
         'tspCompare
         '
-        Me.tspCompare.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NormalizedResultsToolStripMenuItem, Me.BlankCorrectedResultsToolStripMenuItem, Me.FlagsToolStripMenuItem1, Me.FirstAnalystNormalizedResultsToolStripMenuItem, Me.SecondAnalystNormalizedResultsToolStripMenuItem, Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem, Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem})
+        Me.tspCompare.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NormalizedResultsToolStripMenuItem, Me.FlagsToolStripMenuItem1, Me.FirstAnalystNormalizedResultsToolStripMenuItem, Me.SecondAnalystNormalizedResultsToolStripMenuItem, Me.FirstAnalystBlankCorrectedResultsToolStripMenuItem, Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem})
         Me.tspCompare.Name = "tspCompare"
         Me.tspCompare.Size = New System.Drawing.Size(284, 24)
         Me.tspCompare.Text = "Compare"
@@ -251,46 +250,41 @@ Partial Class SNICSrFrm
         'NormalizedResultsToolStripMenuItem
         '
         Me.NormalizedResultsToolStripMenuItem.Name = "NormalizedResultsToolStripMenuItem"
-        Me.NormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
+        Me.NormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(360, 24)
         Me.NormalizedResultsToolStripMenuItem.Text = "Normalized Results"
-        '
-        'BlankCorrectedResultsToolStripMenuItem
-        '
-        Me.BlankCorrectedResultsToolStripMenuItem.Name = "BlankCorrectedResultsToolStripMenuItem"
-        Me.BlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.BlankCorrectedResultsToolStripMenuItem.Text = "Blank Corrected Results"
-        Me.BlankCorrectedResultsToolStripMenuItem.Visible = False
         '
         'FlagsToolStripMenuItem1
         '
         Me.FlagsToolStripMenuItem1.Name = "FlagsToolStripMenuItem1"
-        Me.FlagsToolStripMenuItem1.Size = New System.Drawing.Size(310, 24)
+        Me.FlagsToolStripMenuItem1.Size = New System.Drawing.Size(360, 24)
         Me.FlagsToolStripMenuItem1.Text = "Flags"
         Me.FlagsToolStripMenuItem1.Visible = False
         '
         'FirstAnalystNormalizedResultsToolStripMenuItem
         '
         Me.FirstAnalystNormalizedResultsToolStripMenuItem.Name = "FirstAnalystNormalizedResultsToolStripMenuItem"
-        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Text = "1st Analyst Normalized Results"
+        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(360, 24)
+        Me.FirstAnalystNormalizedResultsToolStripMenuItem.Text = "Against 1st Analyst Normalized Results"
         '
         'SecondAnalystNormalizedResultsToolStripMenuItem
         '
         Me.SecondAnalystNormalizedResultsToolStripMenuItem.Name = "SecondAnalystNormalizedResultsToolStripMenuItem"
-        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Text = "2nd Analyst Normalized Results"
+        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Size = New System.Drawing.Size(360, 24)
+        Me.SecondAnalystNormalizedResultsToolStripMenuItem.Text = "Against 2nd Analyst Normalized Results"
         '
-        'FirstAnnalystBlankCorrectedResultsToolStripMenuItem
+        'FirstAnalystBlankCorrectedResultsToolStripMenuItem
         '
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Name = "FirstAnnalystBlankCorrectedResultsToolStripMenuItem"
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.FirstAnnalystBlankCorrectedResultsToolStripMenuItem.Text = "1st Annalyst Blank Corrected Results"
+        Me.FirstAnalystBlankCorrectedResultsToolStripMenuItem.Name = "FirstAnalystBlankCorrectedResultsToolStripMenuItem"
+        Me.FirstAnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(360, 24)
+        Me.FirstAnalystBlankCorrectedResultsToolStripMenuItem.Text = "Against 1st Annalyst Blank Corrected Results"
+        Me.FirstAnalystBlankCorrectedResultsToolStripMenuItem.Visible = False
         '
         'SecondAnalystBlankCorrectedResultsToolStripMenuItem
         '
         Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Name = "SecondAnalystBlankCorrectedResultsToolStripMenuItem"
-        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(310, 24)
-        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Text = "2nd Analyst Blank Corrected Results"
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Size = New System.Drawing.Size(360, 24)
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Text = "Against 2nd Analyst Blank Corrected Results"
+        Me.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Visible = False
         '
         'tsmBlankCorrect
         '
@@ -970,7 +964,6 @@ Partial Class SNICSrFrm
     Friend WithEvents CommentToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmbPlot As System.Windows.Forms.ComboBox
     Friend WithEvents NormalizedResultsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents BlankCorrectedResultsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents OptionsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents TALLToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents TALLToolStripMenuItem1 As System.Windows.Forms.ToolStripMenuItem
@@ -999,6 +992,6 @@ Partial Class SNICSrFrm
     Friend WithEvents ShowWheelDirectoryToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FirstAnalystNormalizedResultsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SecondAnalystNormalizedResultsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents FirstAnnalystBlankCorrectedResultsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FirstAnalystBlankCorrectedResultsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SecondAnalystBlankCorrectedResultsToolStripMenuItem As ToolStripMenuItem
 End Class
