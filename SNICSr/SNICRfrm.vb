@@ -5831,16 +5831,21 @@ Public Class SNICSrFrm
         With Compare
             .Text = "SNICSer v" & VERSION.ToString("0.000") & " NORMALIZED SAMPLE COMPARISON for " & FileName
             .lblComparison.Text = "Mean SigmaC14 = " & MeanSigma.ToString("0.00") & "  (RMS = " & MeanAbsSigma.ToString("0.00") & " )"
+            .lblFirstAnalyst.Visible = True
             .lblFirstAnalyst.Text = "1st Analyst (" & TheWheel.FirstAuthName & " on " & TheWheel.FirstAuthDate.ToShortDateString & ") used " & TheNormMethod
+            .lblSecondAnalyst.Visible = True
             If TheSecondNormMethod <> "" Then
                 .lblSecondAnalyst.Text = "2nd Analyst (" & TheWheel.SecondAuthName & ") " & TheWheel.SecondAuthDate.ToShortDateString & ") used " & TheSecondNormMethod
             Else
                 .lblSecondAnalyst.Text = "2nd Analyst (" & UserName & ") " & Now.ToShortDateString & ") used "
                 If GROUPBOUNDS Then .lblSecondAnalyst.Text &= " (Group Bounds Enforced)"
             End If
-            Dim theWidth As Integer = 50 + .dgvCompare.Columns.GetColumnsWidth(DataGridViewElementStates.None)
-            .Width = theWidth
+            .lblCompareDescription.Text = String.Format("Comparing against the {0} analyst", If(AnalystNumber = 1, "First", "Second"))
             .Visible = True
+
+            ' Changed to just remain as the full (larger) width
+            'Dim theWidth As Integer = 50 + .dgvCompare.Columns.GetColumnsWidth(DataGridViewElementStates.None)
+            '.Width = theWidth
         End With
     End Sub
 
@@ -6112,12 +6117,17 @@ Public Class SNICSrFrm
         MeanSigma /= Compare.dgvCompare.Rows.Count - 1
         MeanAbsSigma = (MeanAbsSigma / (Compare.dgvCompare.Rows.Count - 1)) ^ 0.5
         With Compare
-            Dim theWidth As Integer = 50 + .dgvCompare.Columns.GetColumnsWidth(DataGridViewElementStates.None)
             .Text = "SNICSer v" & VERSION.ToString("0.000") & " MASS BALANCE BLANK CORRECTED COMPARISON for " & FileName
             .lblComparison.Text = "Mean SigmaC14 = " & MeanSigma.ToString("0.00") & "  (RMS = " _
                     & MeanAbsSigma.ToString("0.00") & " )"
-            .Width = theWidth
+            .lblCompareDescription.Text = String.Format("Comparing against the {0} analyst", If(AnalystNumber = 1, "First", "Second"))
+            .lblFirstAnalyst.Visible = False
+            .lblSecondAnalyst.Visible = False
             .Visible = True
+
+            ' Changed to just remain as the full (larger) width
+            'Dim theWidth As Integer = 50 + .dgvCompare.Columns.GetColumnsWidth(DataGridViewElementStates.None)
+            '.Width = theWidth
         End With
 
     End Sub
