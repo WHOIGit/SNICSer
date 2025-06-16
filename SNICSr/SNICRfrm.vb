@@ -443,10 +443,10 @@ Public Class SNICSrFrm
         dgvTargets.Columns("Mass").DefaultCellStyle.Format = "0"
         dgvTargets.Columns("MSdC13").DefaultCellStyle.Format = "0.00"
         dgvTargets.Columns("He12c").HeaderText = "Average He12c"
-        dgvTargets.Columns("He12c").DefaultCellStyle.Format = "E2"
+        dgvTargets.Columns("He12c").DefaultCellStyle.Format = "0.00"
         dgvTargets.Columns("Le12c").HeaderText = "Average Le12c"
-        dgvTargets.Columns("Le12c").DefaultCellStyle.Format = "E2"
-        dgvTargets.Columns("Ratio").DefaultCellStyle.Format = "E2"
+        dgvTargets.Columns("Le12c").DefaultCellStyle.Format = "0.00"
+        dgvTargets.Columns("Ratio").DefaultCellStyle.Format = "0.00"
 
         dgvTargets.Font = New Font("Arial Narrow", TableFontSize)
         TargetInfo.Columns.Clear()
@@ -2686,8 +2686,8 @@ Public Class SNICSrFrm
                 C13Rat(iPos) += C13C12(iRun) / SigC13C12(iRun) ^ 2            ' weighted mean
                 SigC13(iPos) += 1 / SigC13C12(iRun) ^ 2
 
-                he12c += Double.Parse(InputData(iRun).Item("HE12C").ToString())
-                le12c += Double.Parse(InputData(iRun).Item("LE12C").ToString())
+                he12c += Double.Parse(InputData(iRun).Item("HE12C").ToString()) * 1000000.0
+                le12c += Double.Parse(InputData(iRun).Item("LE12C").ToString()) * 1000000.0
 
                 TargetRuns(iPos) += 1
             End If
