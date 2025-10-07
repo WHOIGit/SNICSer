@@ -5490,12 +5490,6 @@ Public Class SNICSrFrm
                 aCmd = "Entering results loop"
                 For i = 0 To TargetData.Rows.Count - 1
                     If (GroupNum = 0) Or (GroupNum = TargetGroups(i)) Then      ' only if doing all groups or a specified group
-                        aCmd = "Error accessing NonPerformance flags"
-                        Dim NonPerf As String = "0"
-                        If TargetNonPerf(i) Then NonPerf = "1"
-                        aCmd = "Error accessing IsSmall flags"
-                        Dim IsSmall As String = "0"
-                        If TargetIsSmall(i) Then IsSmall = "1"
                         aCmd = "Error accessing TargetData SampleName"
                         Dim theSampleName As String = TargetData.Rows(i).Item("SampleName")
                         theSampleName = theSampleName.Replace("'", "''")        ' for SQL syntax
@@ -5515,6 +5509,14 @@ Public Class SNICSrFrm
                         If TargetComments(i) Is Nothing Then TargetComments(i) = ""
                         Dim iPos As Integer = TargetData.Rows(i).Item("Pos")
                         Dim RunDateTime As String = Date.FromOADate(TargetRunTimes(iPos)).ToString("yyyy-MM-ddTHH:mm:ss")
+
+                        aCmd = "Error accessing NonPerformance flags"
+                        Dim NonPerf As String = "0"
+                        If TargetNonPerf(iPos) Then NonPerf = "1"
+                        aCmd = "Error accessing IsSmall flags"
+                        Dim IsSmall As String = "0"
+                        If TargetIsSmall(iPos) Then IsSmall = "1"
+
                         If TargetIsReadOnly(iPos) Then
                             NumNotSaved += 1
                         Else
@@ -5555,7 +5557,7 @@ Public Class SNICSrFrm
                                         aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
                                                              & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
                                                              & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
-                                                             & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
+                                                             & ExtErr(iPos).ToString & ", date_1 = '" & CalcDate _
                                                              & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
                                                              & ", fm_corr = " & FmCorr(iPos).ToString _
                                                              & ", sig_fm_corr = " & SigFmCorr(iPos).ToString _
@@ -5575,7 +5577,7 @@ Public Class SNICSrFrm
                                         aCmd = "UPDATE dbo.snics_results" & TTE & " SET num_runs = " & TargetData.Rows(i).Item("N") & ", sample_type_1 = '" _
                                                               & TargetData.Rows(i).Item("Typ") & "', norm_ratio = " & TargetRat(iPos).ToString _
                                                               & ", int_err = " & IntErr(iPos).ToString & " , ext_err = " _
-                                                              & ExtErr(i).ToString & ", date_1 = '" & CalcDate _
+                                                              & ExtErr(iPos).ToString & ", date_1 = '" & CalcDate _
                                                               & "', del_13c = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c = " & TargetData(i).Item("SigC13") _
                                                               & ", fm_corr = " & FmCorr(iPos).ToString _
                                                               & ", sig_fm_corr = " & SigFmCorr(iPos).ToString _
@@ -5600,14 +5602,14 @@ Public Class SNICSrFrm
                                                         & ExtErr(iPos).ToString & ", date_2 = '" & CalcDate _
                                                         & "', del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
                                                         & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
-                                                        & ", lg_blk_fm_2 = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(i).ToString _
+                                                        & ", lg_blk_fm_2 = " & LgBlkFm(iPos).ToString & ", sig_lg_blk_fm_2 = " & SigLgBlkFm(iPos).ToString _
                                                         & ", fm_mb_corr_2 = " & FmMBCorr(iPos).ToString & ", sig_fm_mb_corr_2 = " & SigFmMBCorr(iPos).ToString _
                                                         & ", tot_mass2 = " & TotalMass(iPos).ToString _
                                                         & ", sig_tot2 = " & SigTotalMass(iPos).ToString _
                                                         & ", blank_fm_2 = " _
                                                         & MBBlkFm(iPos).ToString & ", sig_blank_fm_2 = " & SigMBBlkFm(iPos).ToString & ", blank_mass_2 = " _
                                                         & MBBlkMass(iPos).ToString & ", sig_blank_mass_2 = " & SigMBBlkMass(iPos).ToString _
-                                                        & ", comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
+                                                        & ", comment_2 = '" & TargetComments(iPos).Trim & "', analyst2 = '" & UserName & "', " _
                                                         & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall _
                                                         & ", norm_method_2 = '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString & "'" _
                                                         & ", std_mult2 = " & StdMult.ToString _
@@ -5622,7 +5624,7 @@ Public Class SNICSrFrm
                                                         & ", del_13c_2 = " & TargetData.Rows(i).Item("DelC13") & ", sig_13c_2 = " & TargetData(i).Item("SigC13") _
                                                         & ", fm_corr_2 = " & FmCorr(iPos).ToString & ", sig_fm_corr_2 = " & SigFmCorr(iPos).ToString _
                                                         & ", lg_blk_fm_2 = NULL, sig_lg_blk_fm_2 = NULL, fm_mb_corr_2 = NULL, sig_fm_mb_corr_2 = NULL, blank_fm_2 = NULL," _
-                                                        & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(i).Trim & "', analyst2 = '" & UserName & "', " _
+                                                        & " sig_blank_fm_2 = NULL, blank_mass_2 = NULL, comment_2 = '" & TargetComments(iPos).Trim & "', analyst2 = '" & UserName & "', " _
                                                         & "np_2 = " & NonPerf & ", ss_2 = " & IsSmall _
                                                         & ", norm_method_2 = '" & theNormMethod & " " & RunCalcNum(RunKeys(iPos, 1)).ToString & "'" _
                                                         & ", std_mult2 = " & StdMult.ToString _
