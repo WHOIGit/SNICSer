@@ -1276,9 +1276,10 @@ Public Class SNICSrFrm
         Try
             FileOpen(1, HomeDirectory & "/SNICSer.dir", OpenMode.Input)
             GetDirectoryName = LineInput(1)
-            FileClose(1)
         Catch ex As Exception
             ' do nothing
+        Finally
+            FileClose(1)
         End Try
     End Function
 
@@ -1316,7 +1317,7 @@ Public Class SNICSrFrm
         If ofdReLoadFile.ShowDialog() = Windows.Forms.DialogResult.OK Then
             FileName = ofdReLoadFile.FileName
             lblStatus.Text = "Loading File..."
-            LoadRawDataFromSource(FileName)
+            LoadRawDataFromFile(FileName)
             btnLoad.Visible = True
             IamLoading = False
             tsmBlankCorrect.Visible = True
@@ -1614,6 +1615,9 @@ Public Class SNICSrFrm
                         Dim i As Integer = 0
                         inpFields = inpLine.Split(vbTab)
                         For i = 0 To InputData.Columns.Count - 1
+                            If String.IsNullOrEmpty(inpFields(i)) Then
+                                Continue For
+                            End If
                             NewRow(i) = inpFields(i)
                         Next
                         If inpFields.Length > InputData.Columns.Count Then
