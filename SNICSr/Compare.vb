@@ -42,4 +42,5 @@
         My.Computer.Clipboard.SetImage(bm)
         MsgBox("Visible portion saved to clipboard")
     End Sub
+
 End Class

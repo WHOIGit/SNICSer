@@ -28,6 +28,7 @@ Partial Class Compare
         Me.btnSaveToClipboard = New System.Windows.Forms.Button()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblFirstAnalyst = New System.Windows.Forms.Label()
+        Me.lblCompareDescription = New System.Windows.Forms.Label()
         Me.lblSecondAnalyst = New System.Windows.Forms.Label()
         CType(Me.dgvCompare, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -44,11 +45,12 @@ Partial Class Compare
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvCompare.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
         Me.dgvCompare.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvCompare.Location = New System.Drawing.Point(0, 78)
+        Me.dgvCompare.Location = New System.Drawing.Point(0, 89)
         Me.dgvCompare.Name = "dgvCompare"
         Me.dgvCompare.ReadOnly = True
         Me.dgvCompare.RowHeadersVisible = False
-        Me.dgvCompare.Size = New System.Drawing.Size(1130, 685)
+        Me.dgvCompare.RowHeadersWidth = 47
+        Me.dgvCompare.Size = New System.Drawing.Size(1628, 699)
         Me.dgvCompare.TabIndex = 0
         '
         'lblComparison
@@ -57,7 +59,7 @@ Partial Class Compare
         Me.lblComparison.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblComparison.Location = New System.Drawing.Point(0, 0)
         Me.lblComparison.Name = "lblComparison"
-        Me.lblComparison.Size = New System.Drawing.Size(112, 24)
+        Me.lblComparison.Size = New System.Drawing.Size(130, 26)
         Me.lblComparison.TabIndex = 1
         Me.lblComparison.Text = "Comparison"
         '
@@ -65,7 +67,7 @@ Partial Class Compare
         '
         Me.btnSaveToFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSaveToFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSaveToFile.Location = New System.Drawing.Point(1006, 49)
+        Me.btnSaveToFile.Location = New System.Drawing.Point(1504, 49)
         Me.btnSaveToFile.Name = "btnSaveToFile"
         Me.btnSaveToFile.Size = New System.Drawing.Size(124, 23)
         Me.btnSaveToFile.TabIndex = 2
@@ -76,7 +78,7 @@ Partial Class Compare
         '
         Me.btnSaveToClipboard.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSaveToClipboard.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSaveToClipboard.Location = New System.Drawing.Point(968, 6)
+        Me.btnSaveToClipboard.Location = New System.Drawing.Point(1466, 6)
         Me.btnSaveToClipboard.Name = "btnSaveToClipboard"
         Me.btnSaveToClipboard.Size = New System.Drawing.Size(162, 23)
         Me.btnSaveToClipboard.TabIndex = 3
@@ -87,19 +89,29 @@ Partial Class Compare
         '
         Me.lblFirstAnalyst.AutoSize = True
         Me.lblFirstAnalyst.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblFirstAnalyst.Location = New System.Drawing.Point(350, 22)
+        Me.lblFirstAnalyst.Location = New System.Drawing.Point(0, 30)
         Me.lblFirstAnalyst.Name = "lblFirstAnalyst"
-        Me.lblFirstAnalyst.Size = New System.Drawing.Size(98, 24)
+        Me.lblFirstAnalyst.Size = New System.Drawing.Size(119, 26)
         Me.lblFirstAnalyst.TabIndex = 4
         Me.lblFirstAnalyst.Text = "1st Analyst"
+        '
+        'lblCompareDescription
+        '
+        Me.lblCompareDescription.AutoSize = True
+        Me.lblCompareDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCompareDescription.Location = New System.Drawing.Point(677, 0)
+        Me.lblCompareDescription.Name = "lblCompareDescription"
+        Me.lblCompareDescription.Size = New System.Drawing.Size(195, 26)
+        Me.lblCompareDescription.TabIndex = 6
+        Me.lblCompareDescription.Text = "Comparing against"
         '
         'lblSecondAnalyst
         '
         Me.lblSecondAnalyst.AutoSize = True
         Me.lblSecondAnalyst.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSecondAnalyst.Location = New System.Drawing.Point(350, 46)
+        Me.lblSecondAnalyst.Location = New System.Drawing.Point(0, 60)
         Me.lblSecondAnalyst.Name = "lblSecondAnalyst"
-        Me.lblSecondAnalyst.Size = New System.Drawing.Size(107, 24)
+        Me.lblSecondAnalyst.Size = New System.Drawing.Size(126, 26)
         Me.lblSecondAnalyst.TabIndex = 5
         Me.lblSecondAnalyst.Text = "2nd Analyst"
         '
@@ -107,7 +119,8 @@ Partial Class Compare
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1133, 763)
+        Me.ClientSize = New System.Drawing.Size(1631, 788)
+        Me.Controls.Add(Me.lblCompareDescription)
         Me.Controls.Add(Me.lblSecondAnalyst)
         Me.Controls.Add(Me.lblFirstAnalyst)
         Me.Controls.Add(Me.btnSaveToClipboard)
@@ -127,5 +140,6 @@ Partial Class Compare
     Friend WithEvents btnSaveToClipboard As System.Windows.Forms.Button
     Friend WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Friend WithEvents lblFirstAnalyst As System.Windows.Forms.Label
-    Friend WithEvents lblSecondAnalyst As System.Windows.Forms.Label
+    Friend WithEvents lblCompareDescription As Label
+    Friend WithEvents lblSecondAnalyst As Label
 End Class

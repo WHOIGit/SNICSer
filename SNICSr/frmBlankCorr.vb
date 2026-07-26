@@ -41,7 +41,8 @@
                     .CommitGroupToDatabaseToolStripMenuItem.Enabled = True
                 End If
             End If
-            SNICSrFrm.BlankCorrectedResultsToolStripMenuItem.Visible = True
+            SNICSrFrm.FirstAnalystBlankCorrectedResultsToolStripMenuItem.Visible = True
+            SNICSrFrm.SecondAnalystBlankCorrectedResultsToolStripMenuItem.Visible = CBool(SNICSrFrm.TheWheel.SecondAuthName <> "")
         End With
         Me.Visible = False
     End Sub
